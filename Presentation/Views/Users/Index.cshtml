@@ -1,0 +1,19 @@
+﻿@{
+
+    ViewData["Title"] = "Team Members";
+}
+<partial name="Partials/Sections/_AddMemberForm" model="new AddMemberViewModel()" /> @* "model="new AddMemberForm()" suggested by chat gpt to force the model to view used as it interfered with  @model IEnumerable<Member> in the partial view *@
+<partial name="Partials/Sections/_EditMemberForm" model="new EditMemberViewModel()" /> @* same as above *@
+
+<section id="team-members">
+    <div class="page-header">
+        <h2>@ViewData["Title"]</h2>
+        <button type="button" data-modal="true" data-target="#addMemberModal" class="btn btn-add btn-blue">Add Member</button>
+    </div>
+
+    <div class="member-list">
+
+        <partial name="Partials/Sections/_MemberList" />
+
+    </div>
+</section>

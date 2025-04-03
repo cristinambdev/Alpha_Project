@@ -1,0 +1,38 @@
+﻿@* <nav class="nav-links">
+    <a class="nav-link @(Context.Request.Path == "/" ? "active" : "" )" asp-action="Index" asp-controller="Admin">
+        <i class="fa-solid fa-diagram-project"></i>
+        <span>Dashboard</span>
+    </a>
+    <a class="nav-link @(Context.Request.Path == "admin/projects" ? "active" : "" )" asp-action="Projects" asp-controller="Admin">
+        <i class="fa-duotone fa-solid fa-briefcase" alt="briefcase icon"></i>
+        <icon></icon>
+        <span>Projects</span>
+    </a>
+    <a class="nav-link @(Context.Request.Path == "/admin/members" ? "active" : "")" asp-action="Members" asp-controller="Admin">
+        <i class="fa-duotone fa-solid fa-user-group" alt="contacts icon"></i>
+        <span>Team Members</span>
+    </a>
+    <a class="nav-link @(Context.Request.Path == "/admin/clients" ? "active" : "")" asp-action="Clients" asp-controller="Admin">
+        <i class="fa-duotone fa-solid fa-handshake" alt="hansdhake icon"></i>
+        <span>Clients</span>
+    </a>
+</nav> *@
+
+<nav class="nav-links">
+    <a class="nav-link @(Context.Request.Path == "/" ? "active" : "" )" asp-controller="Admin" asp-action="Index">
+        <i class="fa-solid fa-diagram-project"></i>
+        <span>Dashboard</span>
+    </a>
+    <a class="nav-link @(Context.Request.Path == "/projects" ? "active" : "" )" asp-controller="Projects" asp-action="Index">
+        <i class="fa-duotone fa-solid fa-briefcase" alt="briefcase icon"></i>
+        <span>Projects</span>
+    </a>
+    <a class="nav-link @(Context.Request.Path == "/members" ? "active" : "")" asp-controller="Members"  asp-action="Index">
+        <i class="fa-duotone fa-solid fa-user-group" alt="contacts icon"></i>
+        <span>Team Members</span>
+    </a>
+    <a class="nav-link @(Context.Request.Path == "/clients" ? "active" : "")" asp-controller="Clients" asp-action="Index">
+        <i class="fa-duotone fa-solid fa-handshake" alt="hansdhake icon"></i>
+        <span>Clients</span>
+    </a>
+</nav>

@@ -1,0 +1,51 @@
+﻿@model Business.Models.ClientResult // following the structure in "_MemberList" suggested by Chat gpt
+
+<div class="client-list">
+    <table>
+        <thead>
+            <tr>
+                <th class="client-check"><input type="checkbox" /></th>
+                <th class="client-info">Client Name</th>
+                <th class="client-location">Location</th>
+                <th class="client-phone">Phone</th>
+                <th class="client-date">Date</th>
+                <th class="client-status">Status</th>
+                <th class="client-actions"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Succeeded && Model.Result != null && Model.Result.Any())
+            {
+                @foreach (var client in Model.Result)
+                {
+                    <tr>
+                        <td class="client-check"><input type="checkbox" /></td>
+                        <td class="client-info">
+                            <img class="client-image" src="~/images/Image_Admin_Dashboard.svg" alt="" />
+                            <div class="client-name">@client.ClientName</div>
+                            <div class="client-email">@client.Email</div>
+                        </td>
+                        <td class="client-location">@client.Address</td>
+                        <td class="client-phone">@client.Phone</td>
+                        <td class="client-date">@client.Date</td>
+                        <td class="client-status">
+                            <div class="badge @(client.Status == "Active" ? "success" : "warning")">
+                                @client.Status
+                            </div>
+                        </td>
+                        <td class="client-actions">
+                            <i class="fa-solid fa-ellipsis" data-modal="true" data-target="#editClientModal"></i>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="no-clients-row">
+                    <td>No clients found</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
