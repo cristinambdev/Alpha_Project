@@ -1,0 +1,19 @@
+﻿@model Business.Models.ClientResult
+@{
+
+    ViewData["Title"] = "Clients";
+}
+
+<partial name="Partials/Sections/_AddClientForm" model="new Presentation.Models.AddClientViewModel()" /> @* suggested by chat gpt to force the model to view used as it interfered with "@model Business.Models.ClientResult" in the partial view  *@
+<partial name="Partials/Sections/_EditClientForm" model="new Presentation.Models.EditClientViewModel()" />
+
+<section id="clients">
+    <div class="page-header">
+        <h2>@ViewData["Title"]</h2>
+        <button type="button" data-modal="true" data-target="#addClientModal" class="btn btn-add btn-blue">Add Client</button>
+    </div>
+
+    <div class="surface client-list">
+        <partial name="Partials/Sections/_ClientList"  model="Model"/>
+    </div>
+</section>

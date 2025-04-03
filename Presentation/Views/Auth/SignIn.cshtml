@@ -1,0 +1,53 @@
+﻿@model SignInViewModel
+
+@{
+    Layout = "_CleanLayout";
+
+    ViewData["Title"] = "Log In";
+}
+
+<section id="login" class="surface center-screen">
+
+    <form asp-controller="Auth" asp-action="SignIn" method="post" novalidate enctype="multipart/form-data">
+
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+        <h1>@ViewData["Title"] </h1>
+
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" />
+        </div>
+
+        <div class="form-group click">
+            <label asp-for="IsPersistent"></label>
+            <input asp-for="IsPersistent" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
+        {
+            <div class="alert-notification error">
+                @ViewBag?.ErrorMessage
+            </div>
+        }
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-submit btn-blue">Log in</button>
+        </div>
+
+        <div class="form-footer">
+            <span>Don't have an account?</span>
+            <a asp-controller="Auth" asp-action="SignUp">Sign Up</a>
+        </div>
+    </form>
+
+
+
+
+</section>

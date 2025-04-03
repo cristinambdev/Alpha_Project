@@ -1,0 +1,45 @@
+﻿@model Business.Models.ProjectResult<IEnumerable<Domain.Models.Project>> //suggested by chat GPT as ProjectResult is a generic <T>
+
+@if (Model != null && Model.Succeeded && Model.Result != null && Model.Result.Any())
+{
+    @foreach (var project in Model.Result)
+    {
+        <div class="surface project-card">
+
+            <div class="project-header">
+                <div class="project-info">
+                    <img class="project-image" src="~/images/Image_Website_Redesign.svg" alt="project-avatar">
+                    <div class="project-name">@project.ProjectName</div>
+                    <div class="project-client">@project.Client.ClientName</div>
+                </div>
+                <i class="fa-solid fa-ellipsis" aria-controls="projectDropdown" aria-expanded="false"></i>
+                <partial name= "Partials/Components/_ProjectDropdown" />
+            </div>
+
+            <div class="project-description">
+                <p>@project.Description</p>
+            </div>
+
+            <div class="project-footer">
+                <div class="project-deadline">
+                    <i class="fa-regular fa-clock"></i>
+                    <div class="deadline">1 week left</div>
+                </div>
+                <div class="project-members">
+                    <img src="~/images/avatar_4.svg" alt="member-avatar" />
+                    <img src="~/images/avatar_8.svg" alt="member-avatar" />
+                </div>
+            </div>
+
+        </div>
+    }
+}
+
+else
+{
+    <p class="mt-3">No projects found.</p>
+}
+
+
+
+
