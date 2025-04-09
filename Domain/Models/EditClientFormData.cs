@@ -1,7 +1,8 @@
 ﻿namespace Domain.Models;
 
-public class AddClientFormData
+public class EditClientFormData
 {
+    public string? Id { get; set; }
     public string? Image { get; set; }
     public string ClientName { get; set; } = null!;
 

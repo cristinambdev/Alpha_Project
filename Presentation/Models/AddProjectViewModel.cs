@@ -7,7 +7,7 @@ public class AddProjectViewModel
 {
     [Display(Name = "Project Image", Prompt = "Select an image")]
     [DataType(DataType.Upload)]
-    public IFormFile? ClientImage { get; set; }
+    public IFormFile? Image { get; set; }
 
     [Display(Name ="Project Name", Prompt = "Project Name")]
     [Required(ErrorMessage ="Required")]
@@ -21,7 +21,7 @@ public class AddProjectViewModel
 
     [Display(Name = "description", Prompt = "Type something")]
     [DataType(DataType.MultilineText)]
-    public string? ProjectDescription { get; set; }
+    public string? Description { get; set; }
 
     [Display(Name = "Start Date")]
     [Required(ErrorMessage = "Required")]
@@ -38,9 +38,14 @@ public class AddProjectViewModel
     [DataType(DataType.Text)]
     public string Members { get; set; } = null!;
 
-    [Display(Name = "Budget", Prompt = "0")]
+    [Display(Name = "Budget", Prompt = "")]
     [Required(ErrorMessage = "Required")]
     [DataType(DataType.Currency)]
     public decimal Budget {  get; set; }
+
+    public string UserId { get; set; } = null!;
+
+    public int StatusId { get; set; }
+
 
 }

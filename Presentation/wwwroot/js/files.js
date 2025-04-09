@@ -50,10 +50,87 @@
             if (e.target === modal) {
                 modal.style.display = 'none';
             }
-        })
-    })
+        });
+    });
+    document.addEventListener('DOMContentLoaded', () => {
+        function setupDropdown(toggleSelector, menuSelector) {
+            const toggleButtons = document.querySelectorAll(toggleSelector);
 
-   
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent click from bubbling up
+
+                    const isExpanded = button.getAttribute('aria-expanded') === 'true';
+                    const dropdownMenu = document.querySelector(button.getAttribute('aria-controls'));
+
+                    // Close all other dropdowns before opening the clicked one
+                    document.querySelectorAll(menuSelector).forEach(menu => {
+                        if (menu !== dropdownMenu) {
+                            menu.classList.add('hide');
+                            const otherButton = document.querySelector(`[aria-controls="${menu.id}"]`);
+                            if (otherButton) {
+                                otherButton.setAttribute('aria-expanded', false);
+                            }
+                        }
+                    });
+
+                    if (isExpanded) {
+                        button.setAttribute('aria-expanded', false);
+                        dropdownMenu.addEventListener('animationend', () => {
+                            dropdownMenu.classList.add('hide');
+                        }, { once: true });
+                    } else {
+                        button.setAttribute('aria-expanded', true);
+                        dropdownMenu.classList.remove('hide');
+                    }
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (event) => {
+                document.querySelectorAll(menuSelector).forEach(menu => {
+                    if (!menu.contains(event.target)) {
+                        menu.classList.add('hide');
+                        const button = document.querySelector(`[aria-controls="${menu.id}"]`);
+                        if (button) {
+                            button.setAttribute('aria-expanded', false);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Initialize dropdowns
+        setupDropdown('.fa-ellipsis', '.menu-dropdown-project');
+        setupDropdown('.bi-gear-fill', '.settings');
+    });
+    //// open close project dropdown menu
+    //const dropdownMenuBtn = document.querySelector('.fa-ellipsis')
+    //const dropdownMenu = document.querySelector('#projectDropdown')
+
+
+    //dropdownMenuBtn.addEventListener('click', () => {
+
+    //    const isExpanded = dropdownMenuBtn.getAttribute('aria-expanded') === 'true'
+
+
+    //    if (isExpanded) {
+
+    //        dropdownMenuBtn.setAttribute('aria-expanded', false)
+    //        dropdownMenu.addEventListener('animationend', () => {
+    //            dropdownMenu.classList.add('hide')
+
+    //        }, { once: true })
+
+    //    }
+    //    else {
+    //        dropdownMenuBtn.setAttribute('aria-expanded', true)
+    //        dropdownMenu.classList.remove('hide')
+
+    //    }
+    //})
+
+
 
     // handle image-previewer
     document.querySelectorAll('.image-previewer').forEach(previewer => {
@@ -77,7 +154,7 @@
     const forms = document.querySelectorAll('form')
     forms.forEach(form => {
         form.addEventListener('submit', async (e) => {
-            e.preventDefault() // stops site to uppdate itself
+            e.preventDefault() // stops site to uppdate
 
 
             clearErrorMessages(form)  // Clear previous error messages
@@ -86,14 +163,8 @@
 
 
             try {
-                //const res = await fetch(form.action, {
-                //    method: 'post',
-                //    body: formData
-                //})
-                //suggested by Chat GPT
-                const method = form.dataset.method || form.getAttribute('method') || 'post';
                 const res = await fetch(form.action, {
-                    method: method.toLowerCase(),
+                    method: 'post',
                     body: formData
                 })
 
@@ -178,41 +249,3 @@ async function processImage(file, imagePreview, previewer, previewSize = 150) {
         console.error("Failed on image-processing: ", error)
     }
 }
-
-//handle form select
-document.querySelectorAll('.form-select').foreach(select => {
-    const trigger = select.querySelector('.form-select-trigger')
-    const triggerText = select.querySelector('.form-select-text')
-    const options = select.querySelectorAll('.form-select-option')
-    const hiddenInput = select.querySelector('input[type="hidden]')
-    const placeholder = select.dataset.placeholder || "Choose"
-
-
-    const setValue = (value = "", text = placeholder) => {
-        triggerText.textContent = text
-        hiddenInput.value = value
-        select.classList.toggle('has-placeholder', !value)
-    }
-
-    setValue()
-
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation()
-        document.querySelectorAll('.form-select-open')
-            .forEach(el => el !== select && el.classList.remove('open'))
-        select.classList.remove('open')
-    })
-
-    options.forEach(option =>
-        option.addEventListener('click', () => {
-            setValue(option.dataset.value, option.textContent)
-            select.classList.remove('open')
-        })
-    )
-
-    document.addEventListener('click', e => {
-        if (!select.contains(e.target))
-            select.classList.remove('open')
-    })
-
-})

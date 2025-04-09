@@ -6,68 +6,81 @@
     ViewData["Title"] = "Create Account";
 }
 
-<section id="signup" class="surface center-screen">
+<section id="signup" class="card">
+    
+    <div class="card-header">
+        <h1>@ViewData["Title"]</h1>
+    </div>
 
-    <form asp-controller="Auth" asp-action="SignUp" method="post" novalidate enctype="multipart/form-data">
+   <div class="card-body">
 
-        <h1>@ViewData["Title"] </h1>
+           
+        <form asp-controller="" asp-action="" method="post" novalidate>
+                <button type="submit" class="btn btn-external">
+                    <img src="~/Images/icon_google.svg" />
+                    <span>Sign Up with Google</span>
+                </button>
+        </form>
 
-        @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
-        {
-            <div class="alert-notification error">
-                @ViewBag?.ErrorMessage
+        <div class="or-divider"> <span>or</span></div>
+
+        <form asp-controller="Auth" asp-action="SignUp" method="post" novalidate enctype="multipart/form-data">
+            @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
+            {
+                <div class="alert-notification error">
+                    @ViewBag?.ErrorMessage
+                </div>
+            }
+                <div class="form-group">
+                    <label class="form-label" asp-for="FirstName"></label>
+                    <input class="form-input" asp-for="FirstName" />
+                    <span asp-validation-for="FirstName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="LastName"></label>
+                    <input class="form-input" asp-for="LastName" />
+                    <span asp-validation-for="LastName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Email"></label>
+                <input class="form-input" asp-for="Email" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Password"></label>
+                    <input class="form-input" asp-for="Password" />
+                    <span asp-validation-for="Password"></span>
+                </div>
+
+                <div class="form-group">
+                <label class="form-label" asp-for="ConfirmPassword"></label>
+                <input class="form-input" asp-for="ConfirmPassword" />
+                <span asp-validation-for="ConfirmPassword"></span>
+                </div>
+
+            <div class="form-group-checkbox">
+                <label class="form-checkbox">
+                    <input type="checkbox" class="form-checkbox-input" id="terms-checkbox" checked />
+                    <span class="checkbox-box"></span>
+                </label>
+                <label for="terms-checkbox" class="checkbox-label">I accept <a href="#">Terms and Conditions</a></label>
+
             </div>
-        }
 
+                <div class="form-group">
+                    <button type="submit" class="btn btn-submit btn-blue">Create Account</button>
+                </div>
 
-        <div class="form-group">
-            <label asp-for="FirstName"></label>
-            <input asp-for="FirstName" />
-            <span asp-validation-for="FirstName"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="LastName"></label>
-            <input asp-for="LastName" />
-            <span asp-validation-for="LastName"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input asp-for="Email" />
-            <span asp-validation-for="Email"></span>
-        </div>
-
-
-        <div class="form-group">
-            <label asp-for="Password"></label>
-            <input asp-for="Password" />
-            <span asp-validation-for="Password"></span>
-        </div>
-
-        <div class="form-group">
-            <label asp-for="ConfirmPassword"></label>
-            <input asp-for="ConfirmPassword" />
-            <span asp-validation-for="ConfirmPassword"></span>
-        </div>
-
-        <div class="form-group click">
-            <label asp-for="TermsAndConditions">I accept <a href="#">Terms and Conditions</a></label>
-            <input asp-for="TermsAndConditions" type="checkbox" id="TermsAndConditions" name="TermsAndConditions" value="on" required />
-            <span asp-validation-for="TermsAndConditions"></span>
-        </div>
-
-        <div class="form-group">
-            <button type="submit" class="btn btn-submit btn-blue">Create Account</button>
-        </div>
-
-        <div class="form-footer">
+                </form>
+    
+        <div class="card-footer">
             <span>Already have an account?</span>
             <a asp-controller="Auth" asp-action="SignIn">Log in</a>
         </div>
-    </form>
-
-
-
+   </div>
 
 </section>

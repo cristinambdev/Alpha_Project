@@ -21,4 +21,17 @@
     </PackageReference>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Content Update="wwwroot\js\tags.js">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
 </Project>

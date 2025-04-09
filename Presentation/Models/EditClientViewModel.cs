@@ -5,8 +5,7 @@ namespace Presentation.Models;
 
 public class EditClientViewModel
 {
-
-    public int Id {get; set;}
+    public string? Id {get; set;}
 
 
     [Display(Name = "Client Image", Prompt = "Enter image")]
@@ -15,16 +14,14 @@ public class EditClientViewModel
 
     [Display(Name = "Client Name", Prompt = "Enter client name")]
     [DataType(DataType.Text)]
-    [Required(ErrorMessage = "Required")]
     public string ClientName { get; set; } = null!;
 
     [Display(Name = "Email", Prompt = "Enter email address")]
     [DataType(DataType.EmailAddress)]
-    [Required(ErrorMessage = "Required")]
     [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email")]
     public string Email { get; set; } = null!;
 
-    [Display(Name = "Location", Prompt = "Enter Location")]
+    [Display(Name = "Address", Prompt = "Enter address")]
     [DataType(DataType.Text)]
     public string? Address { get; set; }
 
