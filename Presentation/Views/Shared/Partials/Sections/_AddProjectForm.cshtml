@@ -2,6 +2,7 @@
 
 <div id="addProjectModal" class="modal">
     <div class="modal-content">
+        <span></span>
 
         <div class="modal-header">
             <h3>Add Project</h3>
@@ -12,7 +13,7 @@
 
             <div class="image-previewer square">
                 <img src="" class="image-preview"/>
-                <input asp-for="ClientImage" accept="image/*" class="hide" selected />
+                <input asp-for="Image" accept="image/*" class="hide" selected />
             </div>
 
 
@@ -33,10 +34,10 @@
             </div>
 
                 <div class="form-group">
-                    <label asp-for="ProjectDescription">Description</label>
+                    <label asp-for="Description">Description</label>
                     <div class="field-group">
-                        <input asp-for="ProjectDescription" />
-                        <span asp-validation-for="ProjectDescription"></span>
+                        <input asp-for="Description" />
+                        <span asp-validation-for="Description"></span>
                     </div>
                 </div>
 

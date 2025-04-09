@@ -13,17 +13,14 @@ public class EditMemberViewModel
 
     [Display(Name = "First Name", Prompt = "Your first name")]
     [DataType(DataType.Text)]
-    [Required(ErrorMessage = "Required")]
     public string FirstName { get; set; } = null!;
 
     [Display(Name = "Last Name", Prompt = "Your last name")]
     [DataType(DataType.Text)]
-    [Required(ErrorMessage = "Required")]
     public string LastName { get; set; } = null!;
 
     [Display(Name = "Email", Prompt = "Your email address")]
     [DataType(DataType.EmailAddress)]
-    [Required(ErrorMessage = "Required")]
     [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email")]
     public string Email { get; set; } = null!;
 
@@ -33,7 +30,6 @@ public class EditMemberViewModel
 
     [Display(Name = "Job Title", Prompt = "Your job title")]
     [DataType(DataType.Text)]
-    [Required(ErrorMessage = "Required")]
     public string JobTitle { get; set; } = null!;
 
     [Display(Name = "Address", Prompt = "Your address")]

@@ -9,6 +9,7 @@
         </div>
 
         <form novalidate method="post" asp-action="EditMember" asp-controller="Members">
+            <input asp-for="Id" readonly type="hidden" />
 
             <div class="image-previewer circle">
                 <img src="" class="image-preview" />

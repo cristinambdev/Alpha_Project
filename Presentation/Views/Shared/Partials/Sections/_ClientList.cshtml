@@ -1,4 +1,4 @@
-﻿@model Business.Models.ClientResult // following the structure in "_MemberList" suggested by Chat gpt
+﻿@model Business.Models.ClientResult 
 
 <div class="client-list">
     <table>
@@ -21,7 +21,7 @@
                     <tr>
                         <td class="client-check"><input type="checkbox" /></td>
                         <td class="client-info">
-                            <img class="client-image" src="~/images/Image_Admin_Dashboard.svg" alt="" />
+                            <img class="client-image" src="@client.Image" alt="" />
                             <div class="client-name">@client.ClientName</div>
                             <div class="client-email">@client.Email</div>
                         </td>

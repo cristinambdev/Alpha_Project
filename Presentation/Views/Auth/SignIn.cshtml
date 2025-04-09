@@ -6,47 +6,64 @@
     ViewData["Title"] = "Log In";
 }
 
-<section id="login" class="surface center-screen">
+<section id="login" class="card">
 
-    <form asp-controller="Auth" asp-action="SignIn" method="post" novalidate enctype="multipart/form-data">
+    <div class="card-header">
+        <h1>@ViewData["Title"]</h1>
+    </div>
 
-        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+    <div class="card-body">
+        <form asp-controller="" asp-action="" method="post" novalidate>
+            <button type="submit" class="btn btn-external">
+                <img src="~/Images/icon_google.svg" />
+                <span>Log in with Google</span>
+            </button>
+        </form>
 
-        <h1>@ViewData["Title"] </h1>
+        <div class="or-divider"> <span>or</span></div>
 
 
-        <div class="form-group">
-            <label asp-for="Email"></label>
-            <input asp-for="Email" />
-        </div>
+        <form asp-controller="Auth" asp-action="SignIn" method="post" novalidate enctype="multipart/form-data">
+            @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
+            {
+                <div class="alert-notification error">
+                    @ViewBag?.ErrorMessage
+                </div>
+            }
+            <input type="hidden" name="returnUrl" value="@ViewBag!.ReturnUrl" />
 
-        <div class="form-group">
-            <label asp-for="Password"></label>
-            <input asp-for="Password" />
-        </div>
-
-        <div class="form-group click">
-            <label asp-for="IsPersistent"></label>
-            <input asp-for="IsPersistent" />
-        </div>
-
-        @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
-        {
-            <div class="alert-notification error">
-                @ViewBag?.ErrorMessage
+       
+            <div class="form-group">
+                <label class="form-label" asp-for="Email"></label>
+                <input class="form-input" asp-for="Email" />
             </div>
-        }
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-submit btn-blue">Log in</button>
-        </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Password"></label>
+                <input class="form-input" asp-for="Password" />
+            </div>
 
-        <div class="form-footer">
+            <div class="form-group-checkbox">
+                <label class="form-checkbox">
+                    <input type="checkbox" class="form-checkbox-input" id="ispersistent-checkbox" asp-for="IsPersistent" checked />
+                    <span class="checkbox-box"></span>
+                </label>
+                <label for="ispersistent-checkbox" asp-for="IsPersistent" class="checkbox-label">Remember me <a href="#">Forgot Password?</a></label>
+            
+            </div>
+
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-submit btn-blue">Log in</button>
+            </div>
+
+        
+        </form>
+        <div class="card-footer">
             <span>Don't have an account?</span>
             <a asp-controller="Auth" asp-action="SignUp">Sign Up</a>
         </div>
-    </form>
-
+    </div>
 
 
 

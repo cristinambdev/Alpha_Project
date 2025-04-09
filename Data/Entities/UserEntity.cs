@@ -8,7 +8,7 @@ public class UserEntity : IdentityUser
 
     public string? LastName { get; set; } 
 
-    public string? JobTite { get; set; }
+    public string? JobTitle { get; set; }
 
     public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
 

@@ -3,15 +3,15 @@ using Data.Entities;
 using Domain.Extentions;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.SqlServer.Server;
 using Presentation.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Presentation.Controllers;
 
-public class ClientsController(IClientService clientService) : Controller
+public class ClientsController(IClientService clientService, IWebHostEnvironment env) : Controller
 {
     private readonly IClientService _clientService = clientService;
+    private readonly IWebHostEnvironment _env = env;
 
     [HttpGet]
     [Route("clients")]
@@ -25,18 +25,55 @@ public class ClientsController(IClientService clientService) : Controller
     [HttpPost]
     public async Task<IActionResult> AddClient(AddClientViewModel form)
     {
-        var addClientFormData = form.MapTo<AddClientFormData>();
 
-        var result = await _clientService.CreateClientsAsync(addClientFormData);
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState
+                .Where(x => x.Value?.Errors.Count > 0)
+                .ToDictionary(
+                    kvp => kvp.Key,
+                    kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToList()
+                );
+            return BadRequest(new { success = false, errors });
+        }
+        //map formData 
+        var client = form.MapTo<AddClientFormData>();
+        //var result = await _clientService.CreateClientAsync(form);
 
-        return Json(new { });
+        //upload image handling
+        if (form.ClientImage != null)
+        {
+            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+            Directory.CreateDirectory(uploadFolder);
+
+            var filePath = Path.Combine(uploadFolder, $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}");
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await form.ClientImage.CopyToAsync(stream);
+            }
+        }
+            
+       var result = await _clientService.CreateClientAsync(client);
+
+        if (result.Succeeded)
+        {
+            return Ok(new { success = true });
+        }
+        else
+        {
+            return Problem("Unable to submit data");
+        }
+
+      
 
     }
 
 
     [HttpPost]
-    public IActionResult EditClient(EditClientViewModel form)
+    public async Task<IActionResult> EditClient(EditClientFormData form)
     {
+
         if (!ModelState.IsValid)
         //manage information through API
         {
@@ -49,18 +86,19 @@ public class ClientsController(IClientService clientService) : Controller
             return BadRequest(new { success = false, errors });
         }
         // Send Data to clientService
+        //var editClientFormData = form.MapTo<EditClientFormData>();
+        //var result = await _clientService.UpdateClientAsync(editClientFormData);
+        var result = await _clientService.UpdateClientAsync(form);
+        if (result.Succeeded)
+        {
+            return Ok(new { success = true });
+        }
+        else
+        {
+            return Problem("Unable to edit data");
+        }
 
-        return Ok(new { success = true });
-
-        ////with "ClientService"
-        //var result = await _clientService.UpdateClientAsync(form);
-        //if (result)
-        //{
-        //    return Ok(new { success = true });
-        //}
-        //else
-        //{
-        //    return Problem("Unable to edit data");
-        //}
     }
+
+
 }

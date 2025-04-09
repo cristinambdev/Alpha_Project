@@ -8,10 +8,10 @@
             <button type="button" class="btn-close" data-close="true"></button>
         </div>
 
-        <form novalidate method="post" asp-action="AddClient" asp-controller="Clients">
+        <form novalidate method="post" asp-controller="Clients"  asp-action="AddClient" enctype="multipart/form-data">
 
             <div class="image-previewer circle">
-                <img src="" class="image-preview" />
+                <img src="#" class="image-preview" alt="Image Preview"/>
                 <input asp-for="ClientImage" accept="image/*" class="hide" selected/>
             </div>
             
