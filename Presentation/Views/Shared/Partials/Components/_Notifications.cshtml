@@ -1,3 +1,14 @@
-﻿
-    <button type="button" datatype="dropdown" data-target="#notifications" class="btn-notification"></button>
+﻿<div id="notification-container">
+    <button type="button" data-type="dropdown" data-target="#notification-dropdown" class="btn-notification">
+        <i class="dot dot-yellow fa-solid fa-circle hide"></i>
+        <i class="fa-solid fa-bell" style="--fa-primary-opacity: 0.4; --fa-secondary-opacity: 1;"></i>
+    </button>
+
+    <div id="notification-dropdown" class="dropdown">
+        @await Html.PartialAsync("Partials/Components/_NotificationsDropdown")
+    </div>
+  
+
+</div>
+   
 

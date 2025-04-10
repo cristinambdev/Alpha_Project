@@ -1,4 +1,10 @@
-﻿    
-    <button type="button" datatype="dropdown" data-target="#account" class="btn btn-account"> <img src="~/images/avatar_5.svg" alt="avatar"> </button>
-    @await Html.PartialAsync("Partials/Components/_SettingsDropdown")
+﻿    <div id="account-container">
+        <button type="button" data-type="dropdown" data-target="#account-dropdown" class="btn btn-account">
+            <img src="~/images/avatar_5.svg" alt="template-avatar">
+        </button>
+    </div>
+<div id="account-dropdown" class="dropdown">
+        @await Html.PartialAsync("Partials/Components/_AccountDropdown")
+    </div>
+   
  
