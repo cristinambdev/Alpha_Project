@@ -26,9 +26,9 @@
 
                 <div class="search-bar">@await Html.PartialAsync("Partials/Components/_SearchBar")</div>
 
-                @*  <div class="notifications"> @await Html.PartialAsync("Partials/Components/_Notifications") </div>  *@
+                 <div class="notifications"> @await Html.PartialAsync("Partials/Components/_Notifications") </div> 
 
-                <div class="settings"> @await Html.PartialAsync("Partials/Components/_Settings") </div>
+                @* <div class="settings"> @await Html.PartialAsync("Partials/Components/_Settings") </div> *@
 
                 <div class="account">
                     <hr>
@@ -38,7 +38,10 @@
             </header>
 
            <div class="content">
-                @RenderBody()
+               
+                    @RenderBody()
+            
+               
             </div>
             
 

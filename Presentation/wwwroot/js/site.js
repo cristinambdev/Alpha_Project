@@ -1,6 +1,102 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
     const previewSize = 150
 
+
+    //handle dropdowns
+
+    const dropdowns = document.querySelectorAll('[data-type="dropdown"]')
+
+    document.addEventListener('click', function (event) {
+
+        let clickedDropdown = null
+
+        dropdowns.forEach(dropdown => {
+
+            const targetId = dropdown.getAttribute('data-target')
+            const targetElement = document.querySelector(targetId)
+
+            if (dropdown.contains(event.target)) {
+                clickedDropdown = targetElement
+
+                document.querySelectorAll('.dropdown.dropdown-show').forEach(openDropDown => {
+                    if (openDropDown !== targetElement) {
+                        openDropDown.classList.remove('dropdown-show')
+                    }
+
+            })
+        targetElement.classList.toggle('dropdown-show')
+              }
+
+        })
+        // If clicked outside all dropdowns, close all
+if (!clickedDropdown && !event.target.closest('.dropdown')) {
+    document.querySelectorAll('.dropdown.dropdown-show').forEach(openDropDown => {
+        openDropDown.classList.remove('dropdown-show')
+    })
+}
+
+})
+
+
+    //dropdowns.forEach(dropdown => {
+    //    dropdown.addEventListener('click', function () {
+    //        const targetId = dropdown.getAttribute('data-target')
+    //        const targetElement = document.querySelector(targetId)
+
+    //        if (targetElement) {
+    //            targetElement.classList.toggle('hide')
+
+    //        }
+
+    //    })
+
+    //})
+
+
+    //handle form select
+    document.querySelectorAll('.form-select').forEach(select => {
+        const trigger = select.querySelector('.form-select-trigger')
+        const triggerText = select.querySelector('.form-select-text')
+        const options = select.querySelectorAll('.form-select-option')
+        const hiddenInput = select.querySelector('input[type="hidden]')
+        const placeholder = select.dataset.placeholder || "Choose"
+
+
+        const setValue = (value = "", text = placeholder) => {
+            triggerText.textContent = text
+            hiddenInput.value = value
+            select.classList.toggle('has-placeholder', !value)
+        }
+
+        setValue()
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation()
+            document.querySelectorAll('.form-select-open')
+                .forEach(el => el !== select && el.classList.remove('open'))
+            select.classList.remove('open')
+        })
+
+        options.forEach(option =>
+            option.addEventListener('click', () => {
+                setValue(option.dataset.value, option.textContent)
+                select.classList.remove('open')
+            })
+        )
+
+        document.addEventListener('click', e => {
+            if (!select.contains(e.target))
+                select.classList.remove('open')
+        })
+
+    })
+
+
+   
+
+
+
+
     //open modal
     const modalButtons = document.querySelectorAll('[data-modal="true"]')
     modalButtons.forEach(button => {
@@ -179,40 +275,11 @@ async function processImage(file, imagePreview, previewer, previewSize = 150) {
     }
 }
 
-//handle form select
-document.querySelectorAll('.form-select').foreach(select => {
-    const trigger = select.querySelector('.form-select-trigger')
-    const triggerText = select.querySelector('.form-select-text')
-    const options = select.querySelectorAll('.form-select-option')
-    const hiddenInput = select.querySelector('input[type="hidden]')
-    const placeholder = select.dataset.placeholder || "Choose"
 
 
-    const setValue = (value = "", text = placeholder) => {
-        triggerText.textContent = text
-        hiddenInput.value = value
-        select.classList.toggle('has-placeholder', !value)
-    }
 
-    setValue()
 
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation()
-        document.querySelectorAll('.form-select-open')
-            .forEach(el => el !== select && el.classList.remove('open'))
-        select.classList.remove('open')
-    })
 
-    options.forEach(option =>
-        option.addEventListener('click', () => {
-            setValue(option.dataset.value, option.textContent)
-            select.classList.remove('open')
-        })
-    )
 
-    document.addEventListener('click', e => {
-        if (!select.contains(e.target))
-            select.classList.remove('open')
-    })
 
-})
+
