@@ -65,6 +65,11 @@
     --border-color: var(--gray-500);
     --border-focus-color: var(--blue-semilight);
     --divider-color: var(--gray-200);
+    /*shapes - circle*/
+    --circle-gray-background-color: var(--dark-opacity-60);
+    --circle-gray-border-color: var(--gray-500);
+    --circle-gray-color: var(--white-100);
+   
     /*text*/
     --text-color: var(--dark-400);
     --text-muted-color: var(--gray-800);
@@ -238,25 +243,26 @@ html, body {
 }
 
 .surface,
-.card   {
+.card {
     padding: 1rem 2rem 1rem 2rem;
     border-radius: 1rem;
     background-color: var(--card-background-color);
     border: 1px solid var(--card-border-color);
     box-shadow: var(--box-shadow);
     color: var(--card-text-color);
-    
 }
 
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
+    margin-bottom: .8rem;
+    background: none;
+    border: none;
 }
 
 .card-body {
-    
+   
 }
 
 .card-footer {
@@ -265,6 +271,26 @@ html, body {
     font-weight: 700;
     margin-top: 2rem;
 }
+/*modals*/
+
+.modal {
+    z-index: 500;
+    overflow-y: auto;
+    display: none;
+    justify-content: center;
+    align-items: flex-start; /* chat gpt*/
+    background-color: var(--modal-background-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+ .modal.modal-show {
+        display: flex !important;
+    }
+    
+
 /*Dropdown Menu*/
 .dropdown {
     display: none;
@@ -686,7 +712,8 @@ a:hover {
         font-family: var(--font-fa-free);
     }
 
-.btn-close {
+.btn-close,
+.btn-remove {
     all: unset; /* suggested by Chat GPT to remove all Bootstrap styling */
     transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
     background-color: var(--btn-close--background-color);
@@ -703,26 +730,23 @@ a:hover {
     outline: none;
 }
 
-    .btn-close::after {
-        content:'\f00d';
+    .btn-close::after,
+    .btn-remove::after {
+        content: '\f00d';
         font-family: var(--font-fa-free);
         font-weight: 700;
     }
 
-    
 
-    .btn-close:hover {
+
+    .btn-close:hover,
+    .btn-remove:hover {
         color: var(--btn-close--hover-text-color);
         background-color: var(--btn-close--hover-background-color);
         border: var(--btn-close--hover-border-color);
         border-radius: 14px;
     }
 
-    .btn-close::after {
-        content: '\f00d';
-        font-family: var(--font-fa-free);
-        font-weight: var(--font-bold);
-    }
 /**/
     .btn-submit {
         width: 100%;
@@ -795,6 +819,7 @@ a:hover {
 .open {
     display: flex !important;
 }
+
 /*Darkmode toggle button*/
 
 .darkmode {
@@ -918,53 +943,6 @@ a:hover {
     .image-previewer.square {
         border-radius: 16px;
     }
-
-/*modal*/
-.modal {
-    z-index: 5;
-    overflow-y: hidden;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--modal-screen-background-color);
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-    .modal .modal-content {
-        background-color: var(--white-100);
-        border-radius: 16px;
-        box-shadow: var(--shadows-popup);
-        padding: 2rem;
-        max-height: 90dvh;
-        overflow-y: auto; /* Enable scrolling inside the modal */
-    }
-
-        .modal .modal-content .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            border-bottom: none !important;
-        }
-/* Hide scrollbar for Chrome, Edge, Safari by Chat GPT*/
-.modal-content::-webkit-scrollbar {
-    width: 0;
-    display: none;
-}
-/* Hide scrollbar for Firefox  by Chat GPT */
-.modal-content {
-    scrollbar-width: none;
-}
-
-/* Hide scrollbar for IE and older Edge  by Chat GPT */
-.modal-content {
-    -ms-overflow-style: none;
-}
-
 /*TABLES*/
 table {
     width: 100%;
@@ -1320,31 +1298,6 @@ table {
     animation: closeMenu 50ms forwards;
 }
 
-/* Animations open-close dropdown menu*/
-@keyframes openMenu {
-    0% {
-        transform: translateY(-40%);
-        opacity: 0;
-    }
-
-    100% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-@keyframes closeMenu {
-    0% {
-        transform: translateY(0);
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateY(-40%);
-        opacity: 0;
-    }
-}
-
 
 /* Menu Horizontal */
 .menu-horizontal {
@@ -1376,6 +1329,7 @@ form {
     display: grid;
     position: relative;
     margin-bottom: .8rem;
+    width: 100%;
 }
 
 
@@ -1393,6 +1347,7 @@ form {
     transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
     background-color: var(--form-input-background-color);
     border: 1px solid var(--form-input-border-color);
+    position: relative;
 }
 
 
@@ -1404,6 +1359,11 @@ form-input:focus
 form-input::placeholder 
 {
     color: var(--form-input-placeholder-color);
+}
+
+input[type="hidden"] {
+    display: none;
+    visibility: hidden;
 }
 
 .form-label {
@@ -1471,24 +1431,21 @@ form-input::placeholder
     cursor: pointer;
     margin-top: 2px;
 }
-
-
 .form-select {
-        position: relative;
-        font-family: var(--font-standard);
-        width: 100%;
+    position: relative;
+    font-family: var(--font-standard);
+    width: 100%;
+}
+
+    .form-select.has-placeholder .form-select-trigger {
+        color: var(--form-input-placeholder-color);
+        font-size: .9em;
     }
 
-.form-select.has-placeholder .form-select-trigger {
-     
-        color: var(--form-input-placeholder-color);
-       font-size: .9rem;
-                      
-}
-
-form-select:not(.has-placeholder).form-select-trigger {
-    color: var(--form-input-text-color);
-}
+    .form-select:not(.has-placeholder) .form-select-trigger {
+        color: var(--form-input-text-color); 
+        font-size: .9em;
+    }
 
 
 .form-select-trigger {
@@ -1497,7 +1454,7 @@ form-select:not(.has-placeholder).form-select-trigger {
     background-color: var(--form-input-background-color);
     border: 1px solid var(--form-input-border-color);
     padding: .5rem 1rem;
-    border-radius: 16px;
+    border-radius: 14px;
     font-size: 1em;
     cursor: pointer;
     display: flex;
@@ -1515,27 +1472,36 @@ form-select:not(.has-placeholder).form-select-trigger {
     .form-select-trigger::before {
         content: '\f141';
         font-family: var(--font-fa-free);
+        font-weight: 900; 
         color: var(--form-input-text-color);
         position: absolute;
         right: 1rem;
         pointer-events: none;
     }
-.form-select-options {
+        .form-select-options {
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
     width: 100%;
-    background-color: var(--form-input-background-color);
-    border: 1px solid var(--form-input-border-color);
+    display: none; 
+    background-color: var(--form-input-background-color); 
+    border: 1px solid var(--form-input-border-color); 
     border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     list-style: none;
     padding: 0;
     margin: 0;
     z-index: 999;
-    display: none;
 }
-.form-select-option {
+
+.form-select .form-select-options.open {
+    display: block;
+    background-color: var(--form-input-background-color);
+    z-index: 9999; /* Test high z-index */
+}
+
+
+.form-select-options .form-select-option {
     padding: .5rem 1rem;
     cursor: pointer;
     transition: background-color 0.1s ease-in-out;
@@ -1544,32 +1510,88 @@ form-select:not(.has-placeholder).form-select-trigger {
 
 }
 
-.form-select-option:hover {
-    background-color: var(--blue-light-opacity);
-}
-
-.form-select-option.open {
-    display: block;
+    .form-select-options .form-select-option:hover {
+        background-color: var(--blue-light-opacity);
     }
-    textarea {
-        position: relative;
-        resize: none;
-        min-height: 150px;
-    }
-    f
 
-form .form-group-flex {
+.form-input-extended {
     display: flex;
     align-items: center;
+    position: relative;
+}
+form-input-extended .form-input{
+    padding-left: 3rem;
+}
+    .form-input-extended i {
+    position: absolute;
+    z-index: 1;
+    left: 10px;
+    top: 16px;
+
+}
+
+    /*Wysiwyg textarea*/
+.wysiwyg {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+
+#add-project-description {
+    resize: none;
+    min-height: 150px;
+    display: none;
+}
+
+
+.wysiwyg-editor {
+    min-height: 150px;
+    position: relative;
+    z-index: 999999;
+    width: 100%;
+    font-size: 1em;
+    font-weight: 400;
+    font-style: normal;
+    font-family: var(--font-standard);
+    color: var(--form-input-text-color);
+    outline: none;
+    border-radius: .9rem;
+    transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
+    background-color: var(--form-input-background-color);
+    border: 1px solid var(--form-input-border-color);
+    
+}
+    .wysiwyg-editor:focus {
+        border: 1px solid var(--form-input-border-focus--color)
+    }
+    .wysiwyg-editor::placeholder {
+        color: var(--form-input-placeholder-color);
+        font-size: .9em;
+        padding: 0;
+    }
+
+.wysiwyg-toolbar {
+    position: absolute;
+    width: 100%;
+    z-index: 999999;
+    bottom: 0;
+    border-radius: 0 0 .9rem .9rem;
+
+}
+
+.ql-editor {
+    border-radius: .9rem;
+}
+
+
+
+form .form-horizontal-group {
+    display: flex;
+    align-items: flex-start;
     justify-content: space-between;
     gap: .8rem;
 }
 
-
-form .field-group {
-    position: relative;
-    font-size: .9rem;
-}
 .search-form {
     display: flex;
     align-items: center;
@@ -1598,9 +1620,6 @@ form .field-group {
     .form-search-input::placeholder {
         font-size: .9em;
     }
-
-
-
 
     form .input-validation-error {
         border-color: var(--error-text-color);
@@ -1648,8 +1667,7 @@ form .field-validation-error {
     #login .card-header {
         justify-content: center;
         margin-top: 2rem;
-        background: none;
-        border: none;
+        
     }
 
   
@@ -1669,19 +1687,25 @@ form .field-validation-error {
 }
 
 
-#addProjectModal .modal-content {
+#addProjectModal .card {
+    min-width: 550px;
+    
+}
+
+#addProjectModal .card-body {
+    
+
+}
+
+#editProjectModal .card{
     width: 550px;
 }
 
-#editProjectModal .modal-content {
+#addMemberModal .card {
     width: 550px;
 }
 
-#addMemberModal .modal-content {
-    width: 550px;
-}
-
-#editMemberModal .modal-content {
+#editMemberModal .card{
     width: 550px;
 }
 
@@ -1694,10 +1718,10 @@ form .field-validation-error {
     height: 100%;
 }
 
-#addClientModal .modal-content {
+#addClientModal .card{
     width: 550px;
 }
 
-#editClientModal .modal-content {
+#editClientModal .card {
     width: 550px;
 }
