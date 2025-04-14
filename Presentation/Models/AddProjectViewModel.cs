@@ -19,18 +19,18 @@ public class AddProjectViewModel
     [DataType(DataType.Text)]
     public string ClientName { get; set; } = null!;
 
-    [Display(Name = "description", Prompt = "Type something")]
-    [DataType(DataType.MultilineText)]
+    [Display(Name = "Description", Prompt = "Type something")]
+    //[DataType(DataType.MultilineText)]
     public string? Description { get; set; }
 
     [Display(Name = "Start Date")]
     [Required(ErrorMessage = "Required")]
-    [DataType(DataType.Date)]
+    //[DataType(DataType.Date)]
     public DateTime StartDate { get; set; }
 
     [Display(Name = "End Date")]
     [Required(ErrorMessage = "Required")]
-    [DataType(DataType.Date)]
+    //[DataType(DataType.Date)]
     public DateTime EndDate { get; set; }
 
     [Display(Name = "Members", Prompt = "Add Project Members")]

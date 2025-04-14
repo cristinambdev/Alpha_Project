@@ -43,11 +43,6 @@ else
 
  @model Business.Models.ProjectResult<IEnumerable<Domain.Models.Project>>
 
-@{
-    var projectCount = Model?.Result?.Count() ?? 0;
-}
-
-<div>Debug: Found @projectCount projects</div>
 
 @if (Model != null && Model.Succeeded && Model.Result != null && Model.Result.Any())
 {
@@ -83,6 +78,6 @@ else
 }
 else
 {
-    <p class="mt-3">No projects found. Succeeded: @(Model?.Succeeded), Status: @(Model?.StatusCode)</p>
+    <p class="mt-3">No projects found. </p>
 }
 
