@@ -10,6 +10,12 @@
 
         <div class="card-body"> 
             <form novalidate method="post" asp-action="AddProject" asp-controller="Projects" enctype="multipart/form-data">
+                <div class="form-group">
+                    <div class="image-previewer square">
+                        <img src="" class="image-preview" />
+                        <input asp-for="ClientImage" accept="image/*" class="hide" />
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="form-label" asp-for="ProjectName">Project Name</label>

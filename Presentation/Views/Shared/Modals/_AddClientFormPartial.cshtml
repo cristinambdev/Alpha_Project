@@ -1,0 +1,59 @@
+﻿@model AddClientViewModel
+
+<section id="addClientModal" class="modal">
+    <div class="card">
+        
+        <div class="card-header">
+            <h3>Add Client</h3>
+            <button type="button" class="btn-close" data-type="close" data-target="#addClientModal"></button>
+        </div>
+
+        <div class="card-body">
+
+            <form novalidate method="post" asp-controller="Clients" asp-action="AddClient" enctype="multipart/form-data">
+                    
+                <div class="image-previewer circle">
+                    <img src="" class="image-preview" />
+                    <input asp-for="ClientImage" accept="image/*" class="hide" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="ClientName"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="ClientName" />
+                        <span asp-validation-for="ClientName"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Email"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Email" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Address"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Address" />
+                        <span asp-validation-for="Address"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Phone"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Phone" />
+                        <span asp-validation-for="Phone"></span>
+                    </div>
+                </div>
+               
+
+                <button type="submit" class="btn btn-submit btn-blue">Add Client</button>
+            </form>
+        </div>
+        
+
+    </div>
+</section>

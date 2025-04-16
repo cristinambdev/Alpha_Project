@@ -2,8 +2,8 @@
 
     ViewData["Title"] = "Projects";
 }
-<partial name="Partials/Sections/_AddProjectForm" model="new Presentation.Models.AddProjectViewModel()" />
-<partial name="Partials/Sections/_EditProjectForm" model="new Presentation.Models.EditProjectViewModel()" />
+<partial name="Modals/_AddProjectFormPartial" model="new Presentation.Models.AddProjectViewModel()" />
+<partial name="Modals/_EditProjectFormPartial" model="new Presentation.Models.EditProjectViewModel()" />
 
 <section id="projects">
     <div class="page-header">
@@ -15,9 +15,10 @@
         <p>STARTED [<span>0</span>]</p>
         <p>COMPLETED [<span>0</span>]</p>
     </div>
-    <div class="project-list">
-        <partial name="Partials/Sections/_ProjectList" />
+    <section class="project-list">
 
-    </div>
+        <partial name="ListsItems/_ProjectListItemPartial" />
+
+    </section>
 
 </section>

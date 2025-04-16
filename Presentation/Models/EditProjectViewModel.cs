@@ -20,7 +20,7 @@ public class EditProjectViewModel
 
     [Display(Name = "description", Prompt = "Type something")]
     [DataType(DataType.MultilineText)]
-    public string? ProjectDescription { get; set; }
+    public string? Description { get; set; }
 
     [Display(Name = "Start Date")]
     [DataType(DataType.Date)]

@@ -1,0 +1,103 @@
+﻿@model EditMemberViewModel
+
+<div id="editMemberModal" class="modal">
+    <div class="card">
+
+
+        <div class="card-header">
+            <h3>Edit Member</h3>
+            <button type="button" class="btn-close" data-type="close" data-target="#editMemberModal"></button>
+        </div>
+
+        <div class="card-body">
+            <form novalidate method="post" asp-action="EditMember" asp-controller="Members" enctype="multipart/form-data">
+
+                <div class="image-previewer circle">
+                    <img src="" class="image-preview" />
+                    <input asp-for="MemberImage" accept="image/*" class="hide" />
+                </div>
+
+                <div class="form-horizontal-group">
+                    <div class="form-group">
+                        <label class="form-label" asp-for="FirstName"></label>
+                        <div class="field-group">
+                            <input class="form-input" asp-for="FirstName" />
+                            <span asp-validation-for="FirstName"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="LastName"></label>
+                        <div class="field-group">
+                            <input class="form-input" asp-for="LastName" />
+                            <span asp-validation-for="LastName"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Email"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Email" />
+                        <span asp-validation-for="Email"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Phone"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Phone" />
+                        <span asp-validation-for="Phone"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="JobTitle"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="JobTitle" />
+                        <span asp-validation-for="JobTitle"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Address"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Address" />
+                        <span asp-validation-for="Address"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <div class="form-horizontal-group">
+                        <div class="form-group">
+                            <div class="field-group">
+                                <input class="form-input" asp-for="Day" />
+                                <span asp-validation-for="Day"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="field-group">
+                                <input class="form-input" asp-for="Month" />
+                                <span asp-validation-for="Month"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="field-group">
+                                <input class="form-input" asp-for="Year" />
+                                <span asp-validation-for="Year"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+         
+                <button type="submit" class="btn btn-submit btn-blue">Save</button>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+
+

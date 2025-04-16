@@ -21,23 +21,23 @@
        
         
         <aside class="sidebar">
-            @await Html.PartialAsync("Partials/Components/_AlphaLogotype")
-            @await Html.PartialAsync("Partials/Components/_NavLinks")
+            @await Html.PartialAsync("Components/_AlphaLogotypePartial")
+            @await Html.PartialAsync("Components/_NavLinksPartial")
         </aside>
 
 
         <main class="main">
             <header class="header">
 
-                <div class="search-bar">@await Html.PartialAsync("Partials/Components/_SearchBar")</div>
+                <div class="search-bar">@await Html.PartialAsync("Components/_SearchBarPartial")</div>
 
-                 <div class="notifications"> @await Html.PartialAsync("Partials/Components/_Notifications") </div> 
+                 <div class="notifications"> @await Html.PartialAsync("Components/_NotificationsPartial") </div> 
 
                 @* <div class="settings"> @await Html.PartialAsync("Partials/Components/_Settings") </div> *@
 
                 <div class="account">
                     <hr>
-                    @await Html.PartialAsync("Partials/Components/_Account")
+                    @await Html.PartialAsync("Components/_AccountPartial")
                 </div>
 
             </header>

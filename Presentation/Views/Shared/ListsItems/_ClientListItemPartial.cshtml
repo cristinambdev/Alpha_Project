@@ -1,6 +1,6 @@
 ﻿@model Business.Models.ClientResult 
 
-<div class="client-list">
+<div class="card">
     <table>
         <thead>
             <tr>
@@ -14,7 +14,26 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model != null && Model.Succeeded && Model.Result != null && Model.Result.Any())
+            <tr>
+                <td class="client-check"><input type="checkbox" /></td>
+                <td class="client-info">
+                    <img class="client-image" src="~/Images/Image_Website_Redesign.svg" alt="client image" />
+                    <div class="client-name">GitLab Inc.</div>
+                    <div class="client-email">gitlab@domain.com</div>
+                </td>
+                <td class="client-location">Sveavägen 15 11154 Stockholm</td>
+                <td class="client-phone">+46 767554390</td>
+                <td class="client-date">2025-09-03</td>
+                <td class="client-status">
+                    <div class="badge success">
+                        <span class="success">active</span>
+                    </div>
+                </td>
+                <td class="client-actions">
+                    <i class="fa-solid fa-ellipsis" data-type="modal" data-target="#editClientModal"></i>
+                </td>
+            </tr>
+           @*  @if (Model != null && Model.Succeeded && Model.Result != null && Model.Result.Any())
             {
                 @foreach (var client in Model.Result)
                 {
@@ -44,7 +63,7 @@
                 <tr class="no-clients-row">
                     <td>No clients found</td>
                 </tr>
-            }
+            } *@
         </tbody>
     </table>
 </div>
