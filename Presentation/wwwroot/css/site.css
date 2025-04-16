@@ -1,4 +1,6 @@
-/*fonts*/
+/* =========================
+GOOGLE FONTS IMPORTS
+========================= */
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap');
 
@@ -60,7 +62,9 @@
     --shadows-popup: 0px 50px 50px rgba(4, 15, 21, 0.15), 0px 40px 30px rgba(4, 15, 21, 0.15);
     --shadow--blue-button: 0px 4px 16px rgba(0, 129, 255, 0.18);
     --transparent: transparent;
-    --box-shadow: -16px 30px 25px rgba(4, 15, 21, 0.02), 0px 20px 30px rgba(4, 15, 21, 0.1);
+    --box-shadow3: 0 5px 5px 1px rgba(0, 0, 0, 0.05);
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08), 0 6px 20px rgba(0, 0, 0, 0.05);
+    --box-shadow2: 0 0 5px 2px rgba(137, 137, 137, 0.1);
     /*borders and dividers*/
     --border-color: var(--gray-500);
     --border-focus-color: var(--blue-semilight);
@@ -69,12 +73,11 @@
     --circle-gray-background-color: var(--dark-opacity-60);
     --circle-gray-border-color: var(--gray-500);
     --circle-gray-color: var(--white-100);
-   
     /*text*/
     --text-color: var(--dark-400);
     --text-muted-color: var(--gray-800);
     --text-muted-semilight-color: var(--gray-600);
-    /*    --text-detail-color: var(--gray-500);
+    /* --text-detail-color: var(--gray-500);
 */ --text-heading-color: var(--dark-100);
     /*backgrounds*/
     --background-color: var(--white-200);
@@ -136,7 +139,7 @@
     --btn-close--hover-background-color: var(--blue-light-opacity);
     /*card*/
     --card-text-color: var(--dark-400);
-    --card-border-color: var(--white-100);
+    --card-border-color: var(--white-200);
     --card-background-color: var(--white-100);
     /*dropdown*/
     --dropdown-text-color: var(--dark-400);
@@ -144,8 +147,8 @@
     --dropdown-background-color: var(--white-100);
     /*form*/
     --form-text-color: var(--dark-400);
-    --form-border-color: trasnparent;
-    --form-background-color: trasparent;
+    --form-border-color: transparent;
+    --form-background-color: transparent;
     /*form-label*/
     --form-label-color: var(--dark-400);
     /*form-checkbox*/
@@ -214,9 +217,12 @@
     --navlink-background-active-color: var(--blue-accent-10);
 }*/
 }
+    
 
-/*base*/
 
+/* =========================
+   GLOBAL RESETS
+========================= */
 *, *::before, *::after {
     box-sizing: border-box;
     margin: 0;
@@ -233,36 +239,30 @@ html, body {
     background-color: var(--background-color);
 }
 
-/*structure*/
+/* =========================
+   STRUCTURE AND LAYOUT
+========================= */
 .center-screen {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100dvh;
-  
 }
 
-.surface,
 .card {
-    padding: 1rem 2rem 1rem 2rem;
+    padding: 1.5rem;
     border-radius: 1rem;
-    background-color: var(--card-background-color);
+    background-color: var(--white-100);
     border: 1px solid var(--card-border-color);
     box-shadow: var(--box-shadow);
     color: var(--card-text-color);
 }
-
-.card-header {
+    .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: .8rem;
     background: none;
     border: none;
-}
-
-.card-body {
-   
 }
 
 .card-footer {
@@ -271,14 +271,13 @@ html, body {
     font-weight: 700;
     margin-top: 2rem;
 }
-/*modals*/
 
 .modal {
     z-index: 500;
     overflow-y: auto;
     display: none;
     justify-content: center;
-    align-items: flex-start; /* chat gpt*/
+    align-items: flex-start;
     background-color: var(--modal-background-color);
     position: fixed;
     top: 0;
@@ -286,16 +285,19 @@ html, body {
     right: 0;
     bottom: 0;
 }
- .modal.modal-show {
+
+    .modal.modal-show {
         display: flex !important;
     }
-    
 
-/*Dropdown Menu*/
+
+/* =========================
+   DROPDOWN MENUS
+========================= */
 .dropdown {
     display: none;
-    position:absolute;
-    right: 0px;
+    position: absolute;
+    right: 0;
     top: 50px;
     padding: 1rem;
     border-radius: 1rem;
@@ -303,6 +305,7 @@ html, body {
     border: 1px solid var(--dropdown-border-color);
     box-shadow: var(--box-shadow);
     color: var(--card-text-color);
+    z-index: 99;
 }
 
 .dropdown-header {
@@ -317,49 +320,50 @@ html, body {
     gap: .5em;
 }
 
-.dropdown-options .dropdown-option {
+    .dropdown-options .dropdown-option {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.5rem;
+    }
 
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-
-
-}
 .dropdown .divider {
     margin: .8rem 0;
 }
+
 .dropdown-actions {
     display: grid;
     gap: .5em;
 }
 
-.dropdown-actions .dropdown-action {
-    transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
-    font-size: 1em;
-    font-family: var(--font-standard);
-    font-weight: var(--font-semibold);
-    text-decoration: none;
-    color: var(--navlink-text-color);
-    background-color: var(--navlink-background-color);
-    border-radius: 1rem;
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
+    .dropdown-actions .dropdown-action {
+        transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
+        font-size: 1em;
+        font-family: var(--font-standard);
+        font-weight: var(--font-semibold);
+        text-decoration: none;
+        color: var(--navlink-text-color);
+        background-color: var(--navlink-background-color);
+        border-radius: 1rem;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+.dropdown-action:hover {
+    color: var(--navlink-text-hover-color);
+    background-color: var(--navlink-background-hover-color);
 }
 
-    .dropdown-action:hover {
-        color: var(--navlink-text-hover-color);
-        background-color: var(--navlink-background-hover-color);
-    }
+.dropdown-action.active {
+    color: var(--navlink-text-active-color);
+    background-color: var(--navlink-background-active-color);
+}
 
-    .dropdown-action.active {
-        color: var(--navlink-text-active-color);
-        background-color: var(--navlink-background-active-color);
-    }
-
-
+/* =========================
+   LAYOUT STRUCTURE
+========================= */
 .portal {
     display: grid;
     grid-template-columns: 300px 1fr;
@@ -374,13 +378,12 @@ html, body {
     gap: 2rem;
 }
 
-
 .header {
     border-bottom: 1px solid var(--border-color);
     display: grid;
     align-items: center;
     grid-template-columns: 1fr auto auto;
-    padding: 1rem 3rem 1rem 2rem; 
+    padding: 1rem 3rem 1rem 2rem;
     gap: 1.5rem;
 }
 
@@ -388,39 +391,45 @@ html, body {
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 1.5rem;    
+        gap: 1.5rem;
     }
 
-    .header .account hr {
-        transform: rotate(180deg);
-        height: 2rem;
-        border: 1px solid var(--border-300);
-    }
+        .header .account hr {
+            transform: rotate(180deg);
+            height: 2rem;
+            border: 1px solid var(--border-300);
+        }
 
 .main {
-    
+    /* Main content area */
 }
+
 .content {
-    padding: 1rem 2rem;
+    padding: 1rem;
 }
-  
+
+/* =========================
+   NOTIFICATIONS & ACCOUNT DROPDOWNS
+========================= */
 #notification-container,
 #account-container {
-        position: relative;
-    }
+    position: relative;
+}
 
 #notification-dropdown {
     min-width: 400px;
+    z-index: 99;
 }
 
     #notification-dropdown .dropdown-header {
         margin: 0 .5rem;
-
     }
+
     #notification-dropdown .notifications {
         display: grid;
         gap: .6rem;
     }
+
         #notification-dropdown .notifications .notification {
             transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
             color: var(--user-notification-text-color);
@@ -434,17 +443,18 @@ html, body {
             border-radius: 1rem;
             width: 100%;
         }
-        #notification-dropdown .notifications .notification:hover {
-            color: var(--user-notification-text-hover-color);
-            border: 2px solid var(--user-notification-border-hover-color);
-            background-color: var(--user-notification-background-hover-color);
-            
-        }
+
+            #notification-dropdown .notifications .notification:hover {
+                color: var(--user-notification-text-hover-color);
+                border: 2px solid var(--user-notification-border-hover-color);
+                background-color: var(--user-notification-background-hover-color);
+            }
+
             #notification-dropdown .notifications .notification img {
                 height: 56px;
                 width: 56px;
-                
             }
+
             #notification-dropdown .notifications .notification .project-image {
                 height: 56px;
                 width: 56px;
@@ -452,6 +462,7 @@ html, body {
                 overflow: hidden;
                 border-radius: 14px;
             }
+
             #notification-dropdown .notifications .notification .user-image {
                 border-radius: 50%;
                 height: 56px;
@@ -462,8 +473,9 @@ html, body {
 
             #notification-dropdown .notifications .notification .message {
                 display: flex;
-               flex-direction:column;
+                flex-direction: column;
             }
+
                 #notification-dropdown .notifications .notification .message .title {
                     color: var(--user-notification-text-color);
                     font-weight: 700;
@@ -474,12 +486,13 @@ html, body {
                     font-size: .9rem;
                 }
 
-    #account-dropdown {
-        min-width: 300px;
-        right: 50px;
-        top: 75px;
-        z-index: 999;
-    }
+#account-dropdown {
+    min-width: 300px;
+    right: 50px;
+    top: 75px;
+    z-index: 999;
+}
+
     #account-dropdown .account-name {
         color: var(--account-name-text-color);
         border: 2px solid var(--account-name-border-color);
@@ -494,21 +507,40 @@ html, body {
         width: 100%;
     }
 
-    #account-dropdown .account-name img {
-        width: 40px;
-        height: 40px;
-        border: 2px solid var(--account-name-image-border-color);
-        border-radius: 50%;
-        object-fit: cover;
+        #account-dropdown .account-name img {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--account-name-image-border-color);
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+/* =========================
+   PROJECT DROPDOWN
+========================= */
+.dropdown-project {
+    width: 250px;
+    padding: .8rem;
+    right: 30px;
+    top: 75px;
+    z-index: 9;
+    box-shadow: 0 0 5px 2px rgba(137, 137, 137, 0.25);
+}
+
+    .dropdown-project .remove {
+        color: var(--red-dark);
     }
-    /*typography*/
-    h1, h2, h3, h4, h5, h6 {
-        margin: 0;
-        padding: 0;
-        font-family: var(--font-standard);
-        color: var(--text-heading-color);
-        font-style: normal;
-    }
+
+/* =========================
+   TYPOGRAPHY
+========================= */
+h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-standard);
+    color: var(--text-heading-color);
+    font-style: normal;
+}
 
 h1 {
     font-size: 36px;
@@ -540,15 +572,28 @@ h6 {
     font-weight: var(--font-smibold);
 }
 
-/*statuses*/
+/* =========================
+   STATUS LABELS / BADGES
+========================= */
+.badge {
+    border-radius: 10px;
+    display: inline-block;
+    padding: .25rem .5rem;
+    font-size: .9em;
+    font-weight: 400;
+    font-style: normal;
+    font-family: var(--font-standard);
+}
+
 .success {
     background-color: var(--light-green) !important;
     color: var(--green) !important;
 }
 
 .warning {
-    background-color: var(--yellow) !important;
-    color: var(--dark-yellow) !important;
+    background-color: var(--yellow-semilight) !important;
+    color: var(--yellow-dark) !important;
+    border: 1px solid var(--yellow-semilight) !important;
 }
 
 .alert-notification {
@@ -569,11 +614,26 @@ h6 {
 }
 
 .normal {
-    background-color: var(--white-400) !important;
-    color: var(--text-color) !important;
+    background-color: var(--gray-100) !important;
+    color: var(--dark-100) !important;
+    border: 1px solid var(--gray-100);
 }
 
-/*links*/
+.danger {
+    background-color: var(--red-light) !important;
+    color: var(--red) !important;
+    border: 1px solid var(--red-light);
+}
+
+.red {
+    background-color: var(--red) !important;
+    color: var(--white-100) !important;
+    border: 1px solid var(--white-100);
+}
+
+/* =========================
+   LINKS
+========================= */
 a {
     color: var(--link-color);
     text-decoration: none;
@@ -584,7 +644,17 @@ a {
     transition: color 0.1s ease-in-out;
 }
 
-/* Nav Links */
+    a:hover {
+        color: var(--link-color);
+        text-decoration: underline;
+    }
+
+.tab-link {
+    font-family: var(--font-standard);
+    font-weight: var(--font-bold);
+    font-size: 15px;
+}
+
 .nav-links {
     display: grid;
     gap: 1rem;
@@ -614,18 +684,14 @@ a {
         color: var(--navlink-text-active-color);
         background-color: var(--navlink-background-active-color);
     }
-a:hover {
-    color: var(--link-color);
-    text-decoration: underline;
+
+/* =========================
+   BUTTONS & TOGGLES
+========================= */
+.dropdown-actions button {
+    all: unset; /* removes all inherited styles from bootstrap */
 }
 
-.tab-link {
-    font-family: var(--font-standard);
-    font-weight: var(--font-bold);
-    font-size: 15px;
-}
-
-/*buttons and toggles*/
 .btn {
     transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
     border-radius: 1rem;
@@ -639,7 +705,8 @@ a:hover {
     padding: .8rem 1rem;
 }
 
-.btn-external {
+.btn-external,
+.btn-message {
     background-color: var(--btn-external-background-color);
     border: 1px solid var(--btn-external-border-color);
     color: var(--btn-external-text-color);
@@ -652,21 +719,20 @@ a:hover {
     align-items: center;
     grid-template-columns: auto 1fr;
     font-weight: 700;
-
 }
 
-    .btn-external:hover {
+    .btn-external:hover,
+    .btn-message:hover {
         background-color: var(--btn-external-hover-background-color);
         border: 1px solid var(--btn-external-hover-border-color);
         color: var(--btn-external-hover-text-color);
     }
 
-    .btn-blue {
+.btn-blue {
     color: var(--btn-text-color);
     background-color: var(--btn-background-color);
     border-color: var(--btn-border);
     box-shadow: var(--shadow--blue-button);
-    min-width: 150px;
 }
 
     .btn-blue:hover {
@@ -676,7 +742,7 @@ a:hover {
     }
 
 .btn-account {
-    background-color:var(--btn-account-background-color);
+    background-color: var(--btn-account-background-color);
     border: 2px solid var(--btn-account-border-color);
     color: var(--btn-account-text-color);
     border-radius: 50%;
@@ -686,6 +752,7 @@ a:hover {
     overflow: hidden;
     cursor: pointer;
 }
+
     .btn-account img {
         position: absolute;
         object-fit: contain;
@@ -707,14 +774,14 @@ a:hover {
     height: 40px;
 }
 
-    .btn-add::before {
-        content: '\2b';
-        font-family: var(--font-fa-free);
-    }
+.btn-add::before {
+    content: '\2b';
+    font-family: var(--font-fa-free);
+}
 
 .btn-close,
 .btn-remove {
-    all: unset; /* suggested by Chat GPT to remove all Bootstrap styling */
+    all: unset; /* remove all Bootstrap default styles */
     transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
     background-color: var(--btn-close--background-color);
     border: var(--btn-close--border-color);
@@ -724,9 +791,9 @@ a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99;
+    z-index: 9;
     height: 35px;
-    width:35px;
+    width: 35px;
     outline: none;
 }
 
@@ -737,8 +804,6 @@ a:hover {
         font-weight: 700;
     }
 
-
-
     .btn-close:hover,
     .btn-remove:hover {
         color: var(--btn-close--hover-text-color);
@@ -747,17 +812,41 @@ a:hover {
         border-radius: 14px;
     }
 
-/**/
-    .btn-submit {
-        width: 100%;
-        margin-top: 1rem;
+.btn-submit {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.btn-action {
+    background-color: var(--btn-close--background-color);
+    border: var(--btn-close--border-color);
+    color: var(--btn-close-text-color);
+    cursor: pointer;
+    font-size: 1.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+    height: 35px;
+    width: 35px;
+    outline: none;
+}
+
+    .btn-action:hover {
+        color: var(--btn-close--hover-text-color);
+        background-color: var(--btn-close--hover-background-color);
+        border: var(--btn-close--hover-border-color);
+        border-radius: 14px;
     }
 
-.btn-logout {
+.fa-ellipsis {
+    cursor: pointer;
 }
 
 
-/*dots*/
+/* =========================
+   DOTS
+========================= */
 .dot {
     font-size: .5em;
     background-color: var(--dot-background-color);
@@ -767,7 +856,6 @@ a:hover {
     align-items: center;
     justify-content: center;
     background-color: var(--dot-background-color);
-
 }
 
     .dot.dot-red {
@@ -782,36 +870,20 @@ a:hover {
         color: var(--dot-yellow-text-color);
     }
 
-    .btn-notification .dot {
+.btn-notification .dot {
     position: absolute;
-    right:-3px;
+    right: -3px;
     top: 1px;
-    z-index:1;
+    z-index: 1;
 }
 
-/*badges*/
-.badge {
-    border-radius: 10px;
-    display: inline-block;
-    padding: .25rem .5rem;
-    font-size:.9em;
-    font-weight: 400;
-    font-style: normal;
-    font-family: var(--font-standard);
-
-}
-
-.badge.badge-red {
-    background-color: var(--badge-red-background-color);
-    border: 1px solid var(--badge-red-border-color);
-    color: var(--badge-red-text-color);
-}
-
-
-/*helpers*/
+/* =========================
+   HELPER CLASSES
+========================= */
 .hide {
     display: none !important;
 }
+
 .dropdown.dropdown-show {
     display: block !important;
 }
@@ -820,8 +892,9 @@ a:hover {
     display: flex !important;
 }
 
-/*Darkmode toggle button*/
-
+/* =========================
+   DARK MODE TOGGLE
+========================= */
 .darkmode {
     cursor: pointer;
     display: flex;
@@ -843,7 +916,7 @@ a:hover {
     cursor: pointer;
     z-index: 1;
 }
-  
+
     #darkModeToggle::before {
         content: "";
         width: 16px;
@@ -857,17 +930,18 @@ a:hover {
         transition: all 0.5s ease-in;
     }
 
-
     #darkModeToggle:checked {
         background: var(--dark-100);
     }
-
 
         #darkModeToggle:checked::before {
             background: var(--white-300);
             left: 20px;
         }
-/*dividers*/
+
+/* =========================
+   DIVIDERS
+========================= */
 .divider {
     display: flex;
     align-items: center;
@@ -875,35 +949,42 @@ a:hover {
     margin: 2rem 0;
 }
 
-.divider::before,
-.divider::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid var(--divider-color);
-}
+    .divider::before,
+    .divider::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid var(--divider-color);
+    }
 
-.divider:not(:empty)::before {
-    margin-right: 1rem;
-}
-.divider:not(:empty)::after {
-    margin-left: 1rem;
-}
+    .divider:not(:empty)::before {
+        margin-right: 1rem;
+    }
+
+    .divider:not(:empty)::after {
+        margin-left: 1rem;
+    }
+
     .divider span {
         font-size: .95em;
         text-transform: uppercase;
         background-color: var(--divider-background-color);
-        color: var( --text-muted-semilight-color);
+        color: var(--text-muted-semilight-color);
     }
-    
-    /*header*/
+
+
+/* =========================
+   PAGE HEADER
+========================= */
 .page-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
-/*Image previewer*/
+/* =========================
+   IMAGE PREVIEWER
+========================= */
 .image-previewer {
     border: 2px dashed var(--border-color);
     height: 150px;
@@ -921,8 +1002,8 @@ a:hover {
         content: '\f030';
         font-family: var(--font-fa-free);
         font-weight: var(--font-bold);
-        background-color: var(--dark-500);
-        color: var(--white-400);
+        background-color: var(--circle-gray-background-color);
+        color: var(--circle-gray-color);
         padding: 1rem;
         border-radius: 50%;
         position: relative;
@@ -931,7 +1012,6 @@ a:hover {
 
     .image-previewer.selected::after {
         content: '\f044';
-        bottom: 0;
         position: absolute;
         bottom: 5px;
     }
@@ -943,7 +1023,10 @@ a:hover {
     .image-previewer.square {
         border-radius: 16px;
     }
-/*TABLES*/
+
+/* =========================
+   TABLES
+========================= */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -988,28 +1071,126 @@ table {
             height: 48px;
         }
 
-
-/*LISTS*/
+/* =========================
+    PROJECT LIST LAYOUT
+========================= */
 .project-list {
     display: grid;
-    gap: 2rem;
-    margin-left: 3rem;
-    margin-right: 6rem;
+    grid-template-columns: repeat(1, 1fr);
+    column-gap: 2rem;
+    row-gap: 3rem;
+    padding: 2rem;
 }
 
-@media (min-width: 768px) {
+
+@media (min-width: 968px) {
     .project-list {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
-@media (min-width: 968px) {
+@media (min-width: 1200px) {
     .project-list {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
+@media (min-width: 1400px) {
+    .project-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
 
+/* =========================
+   PROJECT CARD DETAILS
+========================= */
+.project.card {
+    width: 350px;
+    padding: .5rem;
+}
+
+    .project.card .card-header {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        grid-template-areas: "img name action" "img client action";
+        align-items: center;
+        column-gap: 1rem;
+    }
+
+        .project.card .card-header .project-image {
+            grid-area: img;
+            width: 56px;
+            height: 56px;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+            .project.card .card-header .project-image img {
+                width: 56px;
+                height: 56px;
+                object-fit: contain;
+            }
+
+        .project.card .card-header .project-name {
+            grid-area: name;
+            font-weight: var(--font-bold);
+        }
+
+        .project.card .card-header .client-name {
+            grid-area: client;
+            font-weight: var(--text-extra-muted-color);
+            font-size: 1rem;
+        }
+
+        .project.card .card-header .project-actions {
+            grid-area: action;
+            font-weight: var(--font-bold);
+        }
+
+    .project.card .card-body {
+        font-size: 1rem;
+    }
+
+    .project.card .card-footer {
+        grid-area: project-footer;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .project.card .card-footer .project-time {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .7rem;
+            padding: .5rem 1rem;
+            border-radius: .8rem;
+            font-size: .9rem;
+        }
+
+        .project.card .card-footer .members {
+            display: flex;
+            gap: .5rem;
+            align-items: center;
+        }
+
+            .project.card .card-footer .members .user-image {
+                grid-area: img;
+                width: 30px;
+                height: 30px;
+                overflow: hidden;
+                border-radius: 16px;
+            }
+
+                .project.card .card-footer .members .user-image img {
+                    width: 30px;
+                    height: 30px;
+                    object-fit: contain;
+                }
+
+/* =========================
+   CLIENT LIST TABLE VIEW
+========================= */
 .client-list {
     height: 90%;
 }
@@ -1043,181 +1224,78 @@ table {
             color: var(--text-muted-color);
         }
 
-.member-list {
+/* =========================
+    MEMBER LIST LAYOUT
+========================= */
+.members-list {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 3rem;
-    margin-left: 4rem;
-    margin-right: 8rem;
+    grid-template-columns: repeat(1, 1fr);
+    column-gap: 2rem;
+    row-gap: 3rem;
+    padding: 2rem;
 }
 
-    .member-list .card-member {
-        text-align: center;
+
+@media (min-width: 968px) {
+    .members-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .members-list {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+/* =========================
+    MEMEBER CARD DETAILS
+========================= */
+    .member.card {
+        width: 350px;
         display: grid;
-        gap: .8rem;
-        position: relative;
+        gap: 0;
     }
 
-.card-member .fa-ellipsis {
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    cursor: pointer;
-}
-
-.card-member .member-card-avatar {
-    margin-top: 2rem;
-}
-
-.card-member .jobtitle {
-    background-color: var(--white-400);
-    font-weight: var(--font-semibold);
-    display: inline;
-    padding: .2rem .5rem;
-    border-radius: 10px;
-    margin: 0 auto 1rem;
-    width: 50%;
-}
-
-
-.card-member button {
-    margin-top: .8rem;
-    font-weight: var(--font-semibold);
-}
-/*    .member-list table tr {
-        grid-template-areas: "check info email phone address birthdate status actions";
-        grid-template-columns: auto 3fr 3fr 2fr 2fr 2fr 2fr 50px;
-    }
-
-    .member-list .member-info {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-template-areas: "image name" "image role";
-        column-gap: 1rem;
-        align-items: center;
-    }
-
-.member .member-info .membert-image {
-    grid-area: image;
-    width: 48px;
-    height: 48px;
-}
-
-.member-list .member-info .member-name {
-    grid-area: name;
-    font-weight: var(--font-bold);
-}
-
-.member-list .member-info .member-role {
-    grid-area: role;
-    color: var(--text-muted-color);
-}
-
-.member-list .member-info .member-email {
-    grid-area: email;
-    color: var(--text-muted-color);
-}
-
-.member-list .member-info .member-phone {
-    grid-area: phone;
-    color: var(--text-muted-color);
-}
-
-.member-list .member-info .member-address {
-    grid-area: address;
-    color: var(--text-muted-color);
-}
-
-.member-list .member-info .member-birthdate {
-    grid-area: birthdate;
-    color: var(--text-muted-color);
-}
-
-.member-list .member-info .member-status {
-    grid-area: status;
-    color: var(--text-muted-color);
-}
-
-.member-list .member-info .member-actions {
-    grid-area: actions;
-    color: var(--text-muted-color);
-}*/
-.fa-ellipsis {
-    cursor: pointer;
-}
-
-
-
-/* Project card */
-.project-card {
-    width: 450px;
-    margin-top: 2rem;
-    padding: 1.6rem;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    grid-template-areas: "project-header" "project-description" "project-footer"
-}
-
-.project-header {
-    grid-area: project-header;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    position: relative;
-}
-
-    .project-header .project-info {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        grid-template-areas: "project-image project-name" "project-image project-client";
-        column-gap: 1rem;
-        align-items: center;
-    }
-
-        .project-header .project-info .project-image {
-            grid-area: project-image;
+        .member.card .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
         }
 
-        .project-header .project-info .project-name {
-            grid-area: project-name;
-            font-weight: var(--font-bold);
+        .member.card .card-body {
+            display: grid;
+            gap: 1rem;
+            text-align: center;
+        }
+            .member.card .card-body .jobtitle {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .member.card .card-body img {
+                border-radius: 50%;
+                height: 150px;
+                width: 150px;
+                border: 3px solid var(--account-name-image-border-color);
+                object-fit: cover;
+            }
+
+        .member.card .card-footer {
+            padding: 0;
+        }
+        .member.card .card-footer .btn {
+            display: flex;
+            align-items: center;
+            margin: 0;
         }
 
-        .project-header .project-info .project-client {
-            grid-area: project-client;
-            font-weight: var(--text-extra-muted-color);
-            font-size: 1rem;
-        }
 
-.project-card .project-description {
-    grid-area: project-description;
-    min-height: 150px;
-    font-size: 1rem;
-}
 
-.project-card .project-footer {
-    grid-area: project-footer;
-    display: flex;
-    flex-direction: row;
-    align-content: center;
-    justify-content: space-between;
-}
 
-    .project-card .project-footer .project-deadline {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        gap: .7rem;
-        padding: .5rem;
-        background-color: var(--background-color);
-        border-radius: .8rem;
-        font-size: .9rem;
-    }
-
-/*COMPONENTS*/
-/* Logotype */
+/* =========================
+   LOGOTYPE
+========================= */
 .alpha-logotype {
     font-size: 26px;
     font-weight: var(--font-bold);
@@ -1235,71 +1313,13 @@ table {
         color: var(--text-color);
     }
 
-    .alpha-logotype a:hover {
-        text-decoration: none !important;
-    } 
+        .alpha-logotype a:hover {
+            text-decoration: none !important;
+        }
 
-
-#projectDropdown {
-    width: 230px;
-    height: 200px;
-    position: absolute;
-    top: 35px;
-    right: 0;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    gap: .5rem;
-    background-color: var(--background-color);
-    cursor: pointer;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.2s ease, transform 0.3s ease;
-    text-decoration: none;
-}
-
-.menu-dropdown-project .dropdown-edit,
-.menu-dropdown-project .dropdown-add-member,
-.menu-dropdown-project .dropdown-delete-project {
-    display: flex;
-    align-items: center;
-    gap: .8rem;
-    padding: .7rem;
-    border-radius: 16px;
-    color: var(--font-black);
-}
-
-.menu-dropdown-project > .dropdown-edit:hover,
-.menu-dropdown-project > .dropdown-add-member:hover,
-.menu-dropdown-project > .dropdown-delete-project:hover {
-    background-color: var(--white-100);
-}
-
-.menu-dropdown-project .divider {
-    border-top: 1px solid var(--border-color);
-}
-
-.menu-dropdown-project .dropdown-delete-project {
-    color: var(--red);
-}
-
-#projectDropdown.hide,
-#settingsDropdown.hide {
-    display: none;
-}
-
-.project-card .project-header .fa-ellipsis[aria-expanded="true"] ~ #projectDropdown,
-.project-card .project-header .fa-ellipsis[aria-expanded="true"] ~ #memberDropdown {
-    animation: openMenu 50ms forwards;
-}
-
-.project-card .project-header .fa-ellipsis[aria-expanded="false"] ~ #projectDropdown,
-.project-card .project-header .fa-ellipsis[aria-expanded="false"] ~ #memberDropdown {
-    animation: closeMenu 50ms forwards;
-}
-
-
-/* Menu Horizontal */
+/* =========================
+   HORIZONTAL MENU
+========================= */
 .menu-horizontal {
     display: flex;
     flex-direction: row;
@@ -1309,7 +1329,6 @@ table {
     font-weight: var(--font-bold);
     color: var(--text-muted-color);
     border-bottom: .4px solid var(--border-color);
-    margin-bottom: 0;
 }
 
     .menu-horizontal .active {
@@ -1317,9 +1336,9 @@ table {
         border-bottom: 3px solid var(--navlink-text-active-color);
     }
 
-
-/*Forms*/
-
+/* =========================
+   FORMS
+========================= */
 form {
     width: 100%;
     text-align: left;
@@ -1331,8 +1350,6 @@ form {
     margin-bottom: .8rem;
     width: 100%;
 }
-
-
 
 .form-input {
     width: 100%;
@@ -1350,14 +1367,11 @@ form {
     position: relative;
 }
 
-
-form-input:focus
-{
+form-input:focus {
     border: 1px solid var(--form-input-border-focus--color);
 }
 
-form-input::placeholder 
-{
+form-input::placeholder {
     color: var(--form-input-placeholder-color);
 }
 
@@ -1408,29 +1422,30 @@ input[type="hidden"] {
         top: 2px;
         left: 6px;
         width: 5px;
-        height: 10px; 
+        height: 10px;
         border: solid var(--white-100);
         border-width: 0 2px 2px 0;
         transform: rotate(45deg) scale(0);
         opacity: 0;
         transition: all 0.1s ease-in-out;
     }
+
 .form-checkbox-input:checked + .checkbox-box {
     background-color: var(--blue);
     border-color: var(--blue);
 }
 
-.form-checkbox-input:checked + .checkbox-box::after {
-    transform: rotate(45deg) scale(1);
-    opacity: 1;
-    
-}
+    .form-checkbox-input:checked + .checkbox-box::after {
+        transform: rotate(45deg) scale(1);
+        opacity: 1;
+    }
 
 .checkbox-label {
     font-weight: 400;
     cursor: pointer;
     margin-top: 2px;
 }
+
 .form-select {
     position: relative;
     font-family: var(--font-standard);
@@ -1443,10 +1458,9 @@ input[type="hidden"] {
     }
 
     .form-select:not(.has-placeholder) .form-select-trigger {
-        color: var(--form-input-text-color); 
+        color: var(--form-input-text-color);
         font-size: .9em;
     }
-
 
 .form-select-trigger {
     width: 100%;
@@ -1464,28 +1478,29 @@ input[type="hidden"] {
     position: relative;
 }
 
-.form-select-trigger .form-select-text {
-    flex: 1;
-    text-align: left;
-}
+    .form-select-trigger .form-select-text {
+        flex: 1;
+        text-align: left;
+    }
 
     .form-select-trigger::before {
         content: '\f141';
         font-family: var(--font-fa-free);
-        font-weight: 900; 
+        font-weight: 900;
         color: var(--form-input-text-color);
         position: absolute;
         right: 1rem;
         pointer-events: none;
     }
-        .form-select-options {
+
+.form-select-options {
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
     width: 100%;
-    display: none; 
-    background-color: var(--form-input-background-color); 
-    border: 1px solid var(--form-input-border-color); 
+    display: none;
+    background-color: var(--form-input-background-color);
+    border: 1px solid var(--form-input-border-color);
     border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     list-style: none;
@@ -1497,9 +1512,8 @@ input[type="hidden"] {
 .form-select .form-select-options.open {
     display: block;
     background-color: var(--form-input-background-color);
-    z-index: 9999; /* Test high z-index */
+    z-index: 9999;
 }
-
 
 .form-select-options .form-select-option {
     padding: .5rem 1rem;
@@ -1507,7 +1521,6 @@ input[type="hidden"] {
     transition: background-color 0.1s ease-in-out;
     border-radius: var(--border-radius);
     margin: .5rem;
-
 }
 
     .form-select-options .form-select-option:hover {
@@ -1519,35 +1532,39 @@ input[type="hidden"] {
     align-items: center;
     position: relative;
 }
-form-input-extended .form-input{
+
+form-input-extended .form-input {
     padding-left: 3rem;
 }
-    .form-input-extended i {
+
+.form-input-extended i {
     position: absolute;
     z-index: 1;
     left: 10px;
     top: 16px;
-
 }
 
-    /*Wysiwyg textarea*/
+
+/* =========================
+   WYSIWYG TEXTAREA
+========================= */
 .wysiwyg {
     position: relative;
     margin-bottom: 20px;
 }
 
-
-#add-project-description {
+#add-project-description,
+#edit-project-description {
     resize: none;
     min-height: 150px;
     display: none;
+    z-index: 9;
 }
-
 
 .wysiwyg-editor {
     min-height: 150px;
     position: relative;
-    z-index: 999999;
+    z-index: 999;
     width: 100%;
     font-size: 1em;
     font-weight: 400;
@@ -1559,11 +1576,12 @@ form-input-extended .form-input{
     transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
     background-color: var(--form-input-background-color);
     border: 1px solid var(--form-input-border-color);
-    
 }
+
     .wysiwyg-editor:focus {
-        border: 1px solid var(--form-input-border-focus--color)
+        border: 1px solid var(--form-input-border-focus--color);
     }
+
     .wysiwyg-editor::placeholder {
         color: var(--form-input-placeholder-color);
         font-size: .9em;
@@ -1573,18 +1591,18 @@ form-input-extended .form-input{
 .wysiwyg-toolbar {
     position: absolute;
     width: 100%;
-    z-index: 999999;
+    z-index: 9999;
     bottom: 0;
     border-radius: 0 0 .9rem .9rem;
-
 }
 
 .ql-editor {
     border-radius: .9rem;
 }
 
-
-
+/* =========================
+   HORIZONTAL FORM GROUPS
+========================= */
 form .form-horizontal-group {
     display: flex;
     align-items: flex-start;
@@ -1592,11 +1610,15 @@ form .form-horizontal-group {
     gap: .8rem;
 }
 
+/* =========================
+   SEARCH FORMS
+========================= */
 .search-form {
     display: flex;
     align-items: center;
     padding-right: 1rem;
 }
+
 .form-search-input {
     position: relative;
     width: 100%;
@@ -1614,16 +1636,16 @@ form .form-horizontal-group {
 }
 
     .form-search-input:focus {
-   
         border-bottom: 1px solid var(--border-focus-color);
     }
+
     .form-search-input::placeholder {
         font-size: .9em;
     }
 
-    form .input-validation-error {
-        border-color: var(--error-text-color);
-    }
+form .input-validation-error {
+    border-color: var(--error-text-color);
+}
 
 form .field-validation-error {
     position: absolute;
@@ -1641,15 +1663,15 @@ form .field-validation-error {
     gap: .5rem;
 }
 
-
+/* =========================
+   AUTHENTICATION PAGES
+========================= */
 #login,
 #signup {
     padding: 1rem 4.5rem 1rem 4.5rem;
     min-width: 650px;
     margin: 0 auto;
     text-align: center;
-}
-#signup {
 }
 
 .form-group-checkbox {
@@ -1662,54 +1684,27 @@ form .field-validation-error {
     width: 100%;
 }
 
+#signup .card-header,
+#login .card-header {
+    justify-content: center;
+    margin-top: 2rem;
+}
 
-    #signup .card-header,
-    #login .card-header {
-        justify-content: center;
-        margin-top: 2rem;
-        
-    }
+#login .alert-notification,
+#signup .alert-notification {
+    text-align: center;
+    margin: 2rem 0;
+}
 
-  
-    #login .alert-notification,
-    #signup .alert-notification {
-        text-align: center;
-        margin: 2rem 0;
-    }
-
-   
-
-
-
-/*sections*/
-
+/* =========================
+   SECTIONS
+========================= */
 #team-members {
 }
 
-
-#addProjectModal .card {
-    min-width: 550px;
-    
-}
-
-#addProjectModal .card-body {
-    
-
-}
-
-#editProjectModal .card{
-    width: 550px;
-}
-
-#addMemberModal .card {
-    width: 550px;
-}
-
-#editMemberModal .card{
-    width: 550px;
-}
-
 #projects {
+    display: grid;
+    gap: 2rem;
 }
 
 #clients {
@@ -1718,10 +1713,14 @@ form .field-validation-error {
     height: 100%;
 }
 
-#addClientModal .card{
-    width: 550px;
+#addProjectModal .card,
+#editProjectModal .card {
+    min-width: 550px;
 }
 
+#addMemberModal .card,
+#editMemberModal .card,
+#addClientModal .card,
 #editClientModal .card {
     width: 550px;
 }
