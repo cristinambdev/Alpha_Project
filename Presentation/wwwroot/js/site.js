@@ -60,10 +60,12 @@
 
 
     //handle form select
-    document.querySelectorAll('.form-select').forEach(select => {
-        const trigger = select.querySelector('.form-select-trigger');
-        const triggerText = select.querySelector('.form-select-text');
-        const options = select.querySelectorAll('.form-select-option');
+    document.querySelectorAll('.custom-select').forEach(select => {
+       
+
+        const trigger = select.querySelector('.custom-select-trigger');
+        const triggerText = select.querySelector('.custom-select-text');
+        const options = select.querySelectorAll('.custom-select-option');
         const hiddenInput = select.querySelector('input[type="hidden"]');
         const placeholder = select.dataset.placeholder || "Choose";
 
@@ -71,13 +73,14 @@
             triggerText.textContent = text;
             hiddenInput.value = value;
             select.classList.toggle('has-placeholder', !value);
-        };
+        }
 
         setValue();
+        
 
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            document.querySelectorAll('.form-select-open')
+            document.querySelectorAll('.custom-select.open')
                 .forEach(el => el !== select && el.classList.remove('open'));
             select.classList.toggle('open');
         })

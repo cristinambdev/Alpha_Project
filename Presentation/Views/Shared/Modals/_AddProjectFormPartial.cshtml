@@ -28,13 +28,13 @@
                  <div class="form-group">
                     <label class="form-label" asp-for="ClientName">Client Name</label>
 
-                    <div class="form-select" data-placeholder="Choose a client">
-                        <button type="button" class="form-select-trigger">
-                            <span class="form-select-text"></span>
+                    <div class="custom-select" data-placeholder="Choose a client">
+                        <button type="button" class="custom-select-trigger">
+                            <span class="custom-select-text"></span>
                         </button>
-                        <ul class="form-select-options">
-                            <li class="form-select-option" data-value="1">Client 1</li>
-                            <li class="form-select-option" data-value="2">Client 2</li>
+                        <ul class="custom-select-options">
+                            <li class="custom-select-option" data-value="1">Client 1</li>
+                            <li class="custom-select-option" data-value="2">Client 2</li>
                         </ul>
                         <input type="hidden" name="client-select-value" asp-for="ClientName" />
                         <span asp-validation-for="ClientName"></span>
@@ -95,18 +95,17 @@
 
                     <div class="form-group">
                         <label class="form-label" asp-for="Members"> Members</label>
-
-                        <div class="form-select" data-placeholder="Choose a member">
-                            <button type="button" class="form-select-trigger">
-                                <span class="form-select-text"></span>
-                            </button>
-                            <ul class="form-select-options">
-                                <li class="form-select-option" data-value="1">Cristina Mosquera</li>
-                                <li class="form-select-option" data-value="2">Hans Martinez</li>
-                            </ul>
-                            <input type="hidden" name="member-select-value" asp-for="Members" />
-                            <span asp-validation-for="Members"></span>
-                        </div>
+                    <div class="custom-select" data-placeholder="Choose a member">
+                        <button type="button" class="custom-select-trigger">
+                            <span class="custom-select-text"></span>
+                        </button>
+                        <ul class="custom-select-options">
+                            <li class="custom-select-option" data-value="1">Member 1</li>
+                            <li class="custom-select-option" data-value="2">Member 2</li>
+                        </ul>
+                        <input type="hidden" name="member-select-value" asp-for="Members" />
+                        <span asp-validation-for="Members"></span>
+                    </div>
                        
                     </div>
 
