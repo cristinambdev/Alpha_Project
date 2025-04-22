@@ -15,8 +15,16 @@
  
 
     <div class="card-body">
-        @* <a> suggested by Chat GPT to get a cleaner external login *@
-        <a asp-controller="Auth" asp-action="ExternalSignIn" asp-route-provider="Google" asp-route-returnUrl="@ViewBag.ReturnUrl" class="btn btn-external">
+        @* <form asp-controller="Auth" asp-action="ExternalSignIn" asp-route-provider="Google"class="external-account" method="post" novalidate>
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl"/>
+            <button type="submit" name="provider" value="Google" class="btn btn-external">
+                <img src="~/Images/icon_google.svg" />
+                <span>Log in with Google</span>
+            </button>
+        </form> *@
+
+        <a asp-controller="Auth" asp-action="ExternalSignIn" asp-route-provider="Google" asp-route-returnUrl="@ViewBag.ReturnUrl"
+            class="btn btn-external">
             <img src="~/images/icon_google.svg" />
             <span>Log in with Google</span>
         </a>
