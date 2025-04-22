@@ -4,6 +4,7 @@ using Data.Repositories;
 using Domain.Extentions;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace Business.Services;
@@ -13,7 +14,8 @@ public interface IUserService
     Task<UserResult> AddUserToRole(string userId, string roleName);
     Task<UserResult> CreateUserAsync(SignUpFormData formData, string roleName = "User");
     Task<UserResult> GetUsersAsync();
-  
+    
+
 }
 
 public class UserService(IUserRepository userRepository, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager) : IUserService
@@ -25,8 +27,11 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
     public async Task<UserResult> GetUsersAsync()
     {
-        var result = await _userRepository.GetAllAsync();
-        return result.MapTo<UserResult>(); // dynamic mapping
+        //var result = await _userRepository.GetAllAsync();
+        //return result.MapTo<UserResult>(); // dynamic mapping
+
+        var list = await _userManager.Users.ToListAsync();
+        return list.MapTo<UserResult>();
     }
     public async Task<UserResult> AddUserToRole(string userId, string roleName)
     {
@@ -88,8 +93,8 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
             return new UserResult { Succeeded = false, StatusCode = 500, Error = ex.Message };
         }
 
-
-
     }
 
 }
+
+

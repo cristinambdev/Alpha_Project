@@ -1,11 +1,17 @@
-﻿namespace Domain.Models;
+﻿
+using System.ComponentModel.DataAnnotations;
+
+namespace Domain.Models;
 
 
 public class SignInFormData
 {
-    public string Email { get; set; } = null!;
+    [Required]
+    public string? Email { get; set; }
 
-    public string Password { get; set; } = null!;
+    [Required]
+    public string? Password { get; set; }
 
+    [Required]
     public bool IsPersistent { get; set; }
 }

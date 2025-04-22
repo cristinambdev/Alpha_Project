@@ -1,4 +1,4 @@
-﻿@model SignUpViewModel
+﻿@model Presentation.Models.SignUpViewModel
 
 @{
     Layout = "_CleanLayout";
@@ -24,7 +24,8 @@
 
         <div class="divider"> <span>or</span></div>
 
-        <form asp-controller="Auth" asp-action="SignUp" method="post" novalidate enctype="multipart/form-data">
+        <form asp-controller="Auth" asp-action="SignUp" method="post" novalidate enctype="multipart/form-data" class="no-ajax">
+
             @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
             {
                 <div class="alert-notification error">
@@ -64,13 +65,14 @@
 
             <div class="form-group-checkbox">
                 <label class="form-checkbox">
-                    <input type="checkbox" class="form-checkbox-input" id="terms-checkbox" checked />
+                    <input type="checkbox" asp-for="TermsAndConditions" class="form-checkbox-input" id="terms-checkbox" checked />
                     <span class="checkbox-box"></span>
                 </label>
-                <label for="terms-checkbox" class="checkbox-label">I accept <a href="#">Terms and Conditions</a></label>
-
+                <label for="terms-checkbox" asp-for="TermsAndConditions" class="checkbox-label">I accept <a href="#">Terms and Conditions</a></label>
+                <span asp-validation-for="TermsAndConditions"></span>
             </div>
 
+            
                 <div class="form-group">
                     <button type="submit" class="btn btn-submit btn-blue">Create Account</button>
                 </div>
@@ -84,3 +86,4 @@
    </div>
 
 </section>
+

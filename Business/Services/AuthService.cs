@@ -3,6 +3,7 @@ using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Business.Models;
 
+
 namespace Business.Services;
 
 public interface IAuthService
@@ -12,10 +13,10 @@ public interface IAuthService
     Task<AuthResult> SignUpAsync(SignUpFormData formData);
 }
 
-public class AuthService(IUserService userService, SignInManager<UserEntity> signInManager) : IAuthService
+public class AuthService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager) : IAuthService
 {
-    private readonly IUserService _userService = userService;
     private readonly SignInManager<UserEntity> _signInManager = signInManager;
+    private readonly UserManager<UserEntity> _userManager = userManager;
 
 
     public async Task<AuthResult> SignInAsync(SignInFormData formData)
@@ -23,17 +24,9 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
         if (formData == null)
             return new AuthResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are supplied." };
 
-        // Add debug logging
-        Console.WriteLine($"Attempting login for: {formData.Email}");
 
-        var result = await _signInManager.PasswordSignInAsync(formData.Email, formData.Password, formData.IsPersistent, false);
+        var result = await _signInManager.PasswordSignInAsync(formData.Email!, formData.Password!, formData.IsPersistent, false);
 
-        // Additional logging
-        Console.WriteLine($"Login result: Succeeded={result.Succeeded}, IsLockedOut={result.IsLockedOut}, IsNotAllowed={result.IsNotAllowed}");
-
-
-        // Additional logging
-        Console.WriteLine($"Login result: Succeeded={result.Succeeded}, IsLockedOut={result.IsLockedOut}, IsNotAllowed={result.IsNotAllowed}");
 
         if (!result.Succeeded)
         {
@@ -49,9 +42,7 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
 
         return new AuthResult { Succeeded = true, StatusCode = 200 };
 
-        //return result.Succeeded
-        //  ? new AuthResult { Succeeded = true, StatusCode = 200 }
-        //  : new AuthResult { Succeeded = false, StatusCode = 401, Error = "Invalid Email or password." };
+       
     }
 
 
@@ -59,11 +50,19 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
     {
         if (formData == null)
             return new AuthResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are supplied." };
-
-        var result = await _userService.CreateUserAsync(formData);
+        var userEntity = new UserEntity
+        {
+            UserName = formData.Email,
+            FirstName = formData.FirstName,
+            LastName = formData.LastName,
+            Email = formData.Email,
+        
+        };
+        
+        var result = await _userManager.CreateAsync(userEntity, formData.Password);
         return result.Succeeded
            ? new AuthResult { Succeeded = true, StatusCode = 201 }
-           : new AuthResult { Succeeded = false, StatusCode = result.StatusCode, Error = result.Error };
+           : new AuthResult { Succeeded = false, StatusCode = 400, Error = "Not user created"};
     }
 
 
@@ -72,4 +71,6 @@ public class AuthService(IUserService userService, SignInManager<UserEntity> sig
         await _signInManager.SignOutAsync();
         return new AuthResult { Succeeded = true, StatusCode = 200 };
     }
+
+
 }

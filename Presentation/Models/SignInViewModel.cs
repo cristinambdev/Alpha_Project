@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Presentation.Models;
 
@@ -11,11 +12,13 @@ public class SignInViewModel
     public string Email { get; set; } = null!;
 
     [Required]
-    [RegularExpression(@"^(?=.*[a-z)(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$")]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$")]
     [DataType(DataType.Password)]
     [Display(Name = "Password", Prompt = "Enter Password")]
     public string Password { get; set; } = null!;
 
     [Display(Name = "Remember me")]
     public bool IsPersistent { get; set; }
+
 }
+

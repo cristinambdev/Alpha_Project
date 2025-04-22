@@ -1,19 +1,18 @@
-﻿using Business.Services;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
-//[Authorize]
+[Authorize]
 public class AdminController : Controller
 {
     
     public IActionResult Index()
     {
-        return View();
+        return RedirectToAction("Users");
     }
 
-
+    //[Authorize(Roles = "admin")] //rol hantering
     [Route("members")]
     public IActionResult Users()
     {
@@ -21,12 +20,13 @@ public class AdminController : Controller
      
     }
 
+    //[Authorize(Roles = "admin")] //rol hantering
     [Route("clients")]
     public IActionResult Clients()
     {
         return View();
     }
-
+    
     [Route("projects")]
     public IActionResult Projects()
     {

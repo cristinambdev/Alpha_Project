@@ -12,35 +12,41 @@
         <h1>@ViewData["Title"]</h1>
     </div>
 
+ 
+
     <div class="card-body">
-        <form asp-controller="" asp-action="" method="post" novalidate>
-            <button type="submit" class="btn btn-external">
+        @* <form asp-controller="Auth" asp-action="ExternalSignIn" asp-route-provider="Google"class="external-account" method="post" novalidate>
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl"/>
+            <button type="submit" name="provider" value="Google" class="btn btn-external">
                 <img src="~/Images/icon_google.svg" />
                 <span>Log in with Google</span>
             </button>
-        </form>
+        </form> *@
 
+        <a asp-controller="Auth" asp-action="ExternalSignIn" asp-route-provider="Google" asp-route-returnUrl="@ViewBag.ReturnUrl"
+            class="btn btn-external">
+            <img src="~/images/icon_google.svg" />
+            <span>Log in with Google</span>
+        </a>
         <div class="divider"> <span>or</span></div>
 
 
-        <form asp-controller="Auth" asp-action="SignIn" method="post" novalidate enctype="multipart/form-data">
-            @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
-            {
-                <div class="alert-notification error">
-                    @ViewBag?.ErrorMessage
-                </div>
-            }
-            <input type="hidden" name="returnUrl" value="@ViewBag!.ReturnUrl" />
+        <form novalidate asp-controller="Auth" asp-action="SignIn" class="no-ajax" method="post" enctype="multipart/form-data">
+
+            
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
 
        
             <div class="form-group">
                 <label class="form-label" asp-for="Email"></label>
                 <input class="form-input" asp-for="Email" />
+
             </div>
 
             <div class="form-group">
                 <label class="form-label" asp-for="Password"></label>
                 <input class="form-input" asp-for="Password" />
+
             </div>
 
             <div class="form-group-checkbox">
@@ -49,8 +55,15 @@
                     <span class="checkbox-box"></span>
                 </label>
                 <label for="ispersistent-checkbox" asp-for="IsPersistent" class="checkbox-label">Remember me <a href="#">Forgot Password?</a></label>
+
             
             </div>
+
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage as string))
+            {
+                <div class="alert-notification error">@ViewBag.ErrorMessage</div>
+            }
+
 
 
             <div class="form-group">
@@ -66,5 +79,5 @@
     </div>
 
 
-
 </section>
+

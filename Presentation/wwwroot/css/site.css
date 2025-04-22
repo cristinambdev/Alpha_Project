@@ -418,12 +418,48 @@ html, body {
 #notification-container,
 #account-container {
     position: relative;
+   
 }
 
-#notification-dropdown {
-    min-width: 400px;
-    z-index: 99;
-}
+    #account-container .btn-account {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+        padding: 1rem;
+        cursor: pointer;
+        width: 100%;
+        position: relative;
+        outline: none;
+    }
+
+        #account-container .btn-account:focus,
+        #account-container .btn-account:focus-visible,
+        #account-container .btn-account:active {
+            outline: none;
+            box-shadow: none;
+        }
+
+        #account-container .btn-account::-moz-focus-inner {
+            border: 0;
+        }
+        #account-container .btn-account .account-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #account-container .btn-account .account-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+            text-align: left;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+       
+       #notification-dropdown {
+            min-width: 400px;
+            z-index: 99;
+        }
 
     #notification-dropdown .dropdown-header {
         margin: 0 .5rem;
@@ -603,14 +639,20 @@ h6 {
 .alert-notification {
     padding: .5rem 1rem;
     border-radius: 10px;
-    margin: 1.5rem 0;
+    margin: 1rem 0;
 }
 
     .error,
     .alert-notification.error {
-        background-color: var(--light-red) !important;
-        color: var(--dark-red) !important;
+        background-color: var(--red-light) !important;
+        color: var(--red) !important;
     }
+
+#login .alert-notification,
+#signup .alert-notification {
+    text-align: center;
+    margin: 2rem 0;
+}
 
 .info {
     background-color: var(--blue-accent-10) !important;
@@ -746,21 +788,14 @@ a {
     }
 
 .btn-account {
-    background-color: var(--btn-account-background-color);
-    border: 2px solid var(--btn-account-border-color);
-    color: var(--btn-account-text-color);
-    border-radius: 50%;
-    height: 40px;
-    width: 40px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
+    all: unset;
 }
+
 
     .btn-account img {
         position: absolute;
         object-fit: contain;
-        top: 0;
+        top: 10px;
         left: 0;
         height: 40px;
         width: 40px;
@@ -1658,17 +1693,17 @@ form .form-horizontal-group {
     }
 
 form .input-validation-error {
-    border-color: var(--error-text-color);
+    border-color: var(--alert-notification-error-text-color);
 }
 
 form .field-validation-error {
     position: absolute;
     z-index: 1;
     right: .18rem;
-    top: 4px;
+    bottom: 4px;
     font-size: .8em;
-    background-color: var(--error-background-color);
-    color: var(--error-text-color);
+    background-color: var(--alert-notification-error-backgrodund-color);
+    color: var(--alert-notification-error-text-color);
     padding: .4rem 1rem;
     border-radius: 14px;
     display: flex;
@@ -1682,8 +1717,8 @@ form .field-validation-error {
 ========================= */
 #login,
 #signup {
-    padding: 1rem 4.5rem 1rem 4.5rem;
-    min-width: 650px;
+    padding: 1rem 3rem 1rem 3rem;
+    width: 600px;
     margin: 0 auto;
     text-align: center;
 }
@@ -1704,11 +1739,7 @@ form .field-validation-error {
     margin-top: 2rem;
 }
 
-#login .alert-notification,
-#signup .alert-notification {
-    text-align: center;
-    margin: 2rem 0;
-}
+
 
 /* =========================
    SECTIONS

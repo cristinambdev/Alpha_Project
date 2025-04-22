@@ -1,10 +1,27 @@
-﻿    <div id="account-container">
+﻿
+@{
+    var provider = User?.FindFirstValue(ClaimTypes.AuthenticationMethod);
+    // var provider = User?.Identities.FirstOrDefault()?.AuthenticationType ?? "Local Identity";
+
+    if (string.IsNullOrEmpty(provider))
+        provider = "Local Identity";
+    var email = User?.FindFirstValue(ClaimTypes.Email);
+}
+<div id="account-container">
         <button type="button" data-type="dropdown" data-target="#account-dropdown" class="btn btn-account">
-            <img src="~/images/avatar_5.svg" alt="template-avatar">
+            <div class="account-image">
+                <img src="~/images/avatar_5.svg" alt="template-avatar">
+            </div>
+            <div class="account-info">
+                <span class="provider">@provider</span>
+                <span class="email">@email</span>
+            </div>
+              
         </button>
-    </div>
+  
+</div>
 <div id="account-dropdown" class="dropdown dropdown-account">
-        @await Html.PartialAsync("Dropdowns/_AccountDropdownPartial")
-    </div>
+     @await Html.PartialAsync("Dropdowns/_AccountDropdownPartial")
+</div>
    
  

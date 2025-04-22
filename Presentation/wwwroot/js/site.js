@@ -103,8 +103,9 @@
     //handle submit forms
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
+        if (form.classList.contains('no-ajax')) return; //chat gpt so that skips the AJAX logic and ViewBag comments are shown
         form.addEventListener('submit', async (e) => {
-            e.preventDefault(); // stops site to uppdate itself
+            e.preventDefault(); 
 
             clearErrorMessages(form);  // Clear previous error messages
 
