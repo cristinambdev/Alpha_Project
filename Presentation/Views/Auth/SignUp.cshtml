@@ -14,13 +14,12 @@
 
    <div class="card-body">
 
-           
-        <form asp-controller="" asp-action="" method="post" novalidate>
-                <button type="submit" class="btn btn-external">
-                    <img src="~/Images/icon_google.svg" />
-                    <span>Sign Up with Google</span>
-                </button>
-        </form>
+        <a asp-controller="Auth" asp-action="ExternalSignIn" asp-route-provider="Google" asp-route-returnUrl="@ViewBag.ReturnUrl"
+           class="btn btn-external">
+            <img src="~/images/icon_google.svg" />
+            <span>Sign Up with Google</span>
+        </a>
+        
 
         <div class="divider"> <span>or</span></div>
 

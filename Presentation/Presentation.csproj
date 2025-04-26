@@ -4,7 +4,8 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-	</PropertyGroup>
+	  <UserSecretsId>af4de6cb-f38c-47e8-80bb-963a861dfcb4</UserSecretsId>
+  </PropertyGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Business\Business.csproj" />
