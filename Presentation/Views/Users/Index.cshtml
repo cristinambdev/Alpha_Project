@@ -1,9 +1,10 @@
-﻿@{
+﻿@model UsersViewModel
+@{
 
     ViewData["Title"] = "Team Members";
 }
-<partial name="Modals/_AddMemberFormPartial" model="new AddMemberViewModel()" /> @* "model="new AddMemberForm()" suggested by chat gpt to force the model to view used as it interfered with  @model IEnumerable<Member> in the partial view *@
-<partial name="Modals/_EditMemberFormPartial" model="new EditMemberViewModel()" /> @* same as above *@
+@await Html.PartialAsync("Modals/_AddMemberFormPartial", Model.AddMemberForm)
+@await Html.PartialAsync("Modals/_EditMemberFormPartial", Model.EditMemberForm)
 
 <section id="team-members">
     <div class="page-header">
@@ -12,8 +13,14 @@
     </div>
 
     <div class="members-list">
-
-        <partial name="ListsItems/_MemberListItemPartial" />
+        @if(Model.Users != null && Model.Users.Any())
+        {
+            @foreach (var user in Model.Users)
+            {
+                @await Html.PartialAsync("ListsItems/_MemberListItemPartial", user)
+               
+            }
+        }
 
     </div>
 </section>

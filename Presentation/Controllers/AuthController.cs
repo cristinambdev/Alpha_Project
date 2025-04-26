@@ -46,34 +46,6 @@ public class AuthController(UserManager<UserEntity> userManager, SignInManager<U
         ModelState.AddModelError("Unable", "Unable to create user.");
         return View(model);
 
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        var user = new UserEntity
-            //        {
-            //            UserName = model.Email,
-            //            FirstName = model.FirstName,
-            //            LastName = model.LastName,
-            //            Email = model.Email,
-            //        };
-
-        //        var result = await _userManager.CreateAsync(user, model.Password);
-
-        //        if (result.Succeeded)
-        //        {
-
-        //            return RedirectToAction("SignIn", "Auth");
-        //        }
-
-        //    }
-        //    catch (Exception ex)
-        //    {//by chat GPT 
-        //        Console.WriteLine(ex);
-        //        ModelState.AddModelError(string.Empty, "An error occurred during registration.");
-        //    }
-        //}
-        //return View(model);
         }
 
     #endregion

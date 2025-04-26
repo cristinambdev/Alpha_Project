@@ -80,21 +80,36 @@ public class ClientService(IClientRepository clientRepository) : IClientService
     {
         try
         {
+            if (formData == null)
+                return new ClientResult { Succeeded = false, StatusCode = 400, Error = "Form data can't be null" };
+
+            // Debug output to help diagnose issues
+            Debug.WriteLine($"UpdateClientAsync called for client ID: {formData.Id}");
+
+
             var existingClient = await _clientRepository.GetAsync(x => x.Id == formData.Id);
-            if (existingClient == null)
+            if (existingClient.Result == null)
             {
-                throw new Exception("Client not found");
+                Debug.WriteLine($"Client with ID '{formData.Id}' not found");
+                return new ClientResult { Succeeded = false,  StatusCode = 404, Error = "Client not found"};
             }
 
             var clientEntity = formData.MapTo<ClientEntity>();
+            Debug.WriteLine($"Mapped to entity with ID: {clientEntity.Id}, Name: {clientEntity.ClientName}");
 
-            var result = await _clientRepository.AddAsync(clientEntity);
-            return new ClientResult { Succeeded = true, StatusCode = 201 };
+
+            var updateResult = await _clientRepository.UpdateAsync(clientEntity);
+            Debug.WriteLine($"Update result: Success={updateResult.Succeeded}, Status={updateResult.StatusCode}, Error={updateResult.Error}");
+
+            return new ClientResult { Succeeded = false, StatusCode = updateResult.StatusCode, Error = updateResult.Error};
+           
         }
 
-        catch 
+        catch (Exception ex)
         {
-            
+            Debug.WriteLine($"Error updating client: {ex.Message}");
+            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+
             return new ClientResult { Succeeded = false, StatusCode = 500 };
         }
 

@@ -1,86 +1,263 @@
 ﻿using Business.Services;
+using Data.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
+using Microsoft.EntityFrameworkCore;
+using Domain.Extentions;
+using Domain.Models;
+using Business.Models;
+using Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace Presentation.Controllers;
 
-public class UsersController(IUserService userService) : Controller
+public class UsersController(IUserService userService, AppDbContext context, IWebHostEnvironment env, UserManager<UserEntity> userManager) : Controller
 {
     private readonly IUserService _userService = userService;
+    private readonly AppDbContext _context = context;
+    private readonly IWebHostEnvironment _env = env;
+    private readonly UserManager<UserEntity> _userManager = userManager;
+    
 
     [HttpGet]
     [Route("members")]
     public async Task<IActionResult> Index()
-
     {
-        var members = await _userService.GetUsersAsync();
-        return View("Index",members);  // suggested by Chat GPT to explicitly specigy "Members" to ensure the correct view is used as there was mismatch  
+
+        var userResult = await _userService.GetUsersAsync();
+
+        var viewModel = new UsersViewModel()
+        {
+            Users = userResult?.Result?.Select(user => new UserViewModel
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                JobTitle = user.JobTitle,
+                UserImage = user.UserImage,
+                PhoneNumber = user.PhoneNumber
+
+            }).ToList() ?? new List<UserViewModel>()
+        };
+        foreach (var user in userResult?.Result!)
+        {
+            Console.WriteLine($"User Image: {user.UserImage}, Phone: {user.PhoneNumber}");
+        }
+        return View(viewModel);
     }
 
     [HttpPost]
-    public IActionResult AddMember(AddMemberViewModel form)
+    public async Task<IActionResult> AddMember(AddMemberViewModel form)
     {
+      
+            try
+            {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState
+                    .Where(x => x.Value?.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
+                    );
+                return BadRequest(new { success = false, errors });
+            }
+
+            // By Chat GPT. Check if the email already exists and retrieves message
+            var existingUser = await _userManager.FindByEmailAsync(form.Email);
+            if (existingUser != null)
+            {
+                ModelState.AddModelError("Email", "A user with the same email already exists.");
+                var errors = ModelState
+                    .Where(x => x.Value?.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
+                    );
+                return BadRequest(new { success = false, errors });
+            }
+
+            //  Handle the file upload
+            string? imagePath = null; // suggested by chat GPT to store the image 
+            if (form.UserImage != null)
+            {
+                var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "members");
+                Directory.CreateDirectory(uploadPath);
+
+                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.UserImage.FileName)}";
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await form.UserImage.CopyToAsync(stream);
+                }
+
+                imagePath = $"/uploads/members/{fileName}";
+            }
+
+            var user = new UserEntity
+            {
+                FirstName = form.FirstName,
+                LastName = form.LastName,
+                Email = form.Email,
+                UserName = form.Email,
+                PhoneNumber = form.Phone,
+                JobTitle = form.JobTitle,
+                UserImage = imagePath,
+                Address = new UserAddressEntity
+                {
+                    StreetName = form.StreetName!,
+                    PostalCode = form.PostalCode!,
+                    City = form.City!
+                },
+            };
+     
+            var result = await _userManager.CreateAsync(user, "TempPassword123!");
+
+            if (!result.Succeeded)
+            {
+                
+                return BadRequest(new{ success = false, errors = result.Errors.Select(e => e.Description)});
+            }
+
+            return Ok(new { success = true });
+      
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { success = false, error = ex.Message });
+        }
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserData(string id) //with the help of Claude.Ai to get userdata that will be populated in the edit form
+    {
+        //var user = await _userService.GetUserByIdAsync(id);
+
+        var user = await _userManager.Users
+                                  .Include(u => u.Address) // Include the Address entity
+                                  .FirstOrDefaultAsync(u => u.Id == id);
+        if (user == null)
+            return NotFound();
+
+        return Json(new
+        {
+            id = user.Id,
+            firstName = user.FirstName,
+            lastName = user.LastName,
+            email = user.Email,
+            phoneNumber = user.PhoneNumber,
+            jobTitle = user.JobTitle,
+            userImage = user.UserImage,
+            streetName = user.Address?.StreetName,
+            postalCode = user.Address?.PostalCode,
+            city = user.Address?.City,
+
+        });
+
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> EditMember([FromForm] EditMemberViewModel form) // [FromForm] suggested by chat GPT as form is handling different formats
+    {
+
         if (!ModelState.IsValid)
-        //manage information through API
         {
             var errors = ModelState
                 .Where(x => x.Value?.Errors.Count > 0)
-                .ToDictionary( // kvp - key value pair , JSON object
+                .ToDictionary(
                     kvp => kvp.Key,
                     kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
                  );
             return BadRequest(new { success = false, errors });
         }
-        // Send Data to memberService
-        return Ok(new { success = true });
 
-        //with "MemberService"
-        //var result = await _memberService.AddMemberAsync(form);
-        //if (result)
-        //{
-        //    return Ok(new { success = true });
-        //}
-        //else
-        //{
-        //    return Problem("Unable to submit data");
-        //}
-
-    }
-
-
-    [HttpPost]
-    public IActionResult EditMember(EditMemberViewModel form)
-    {
-        if (!ModelState.IsValid)
-        //manage information through API
+        //// Handle image upload
+        string? imagePath = null;// byt chat GPT - Keep existing image by default
+        if (form.UserImage != null && form.UserImage.Length > 0)
         {
-            var errors = ModelState
-                .Where(x => x.Value?.Errors.Count > 0)
-                .ToDictionary( // kvp - key value pair , JSON object
-                    kvp => kvp.Key,
-                    kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
-                 );
-            return BadRequest(new { success = false, errors });
+            var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "members");
+            Directory.CreateDirectory(uploadPath);
+
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.UserImage.FileName)}";
+            var filePath = Path.Combine(uploadPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await form.UserImage.CopyToAsync(stream);
+            }
+
+            imagePath = $"/uploads/members/{fileName}";
         }
-        // Send Data to memberService
+        // Get the existing user with address
+        var user = await _userManager.Users
+            .Include(u => u.Address)
+            .FirstOrDefaultAsync(u => u.Id == form.Id);
 
-        return Ok(new { success = true });
+        if (user == null)
+        {
+            return NotFound();
+        }
+        // Update user properties
+        user.FirstName = form.FirstName;
+        user.LastName = form.LastName;
+        user.Email = form.Email;
+        user.UserName = form.Email; // Critical for Identity
+        user.PhoneNumber = form.Phone;
+        user.JobTitle = form.JobTitle;
 
-        ////with "MemberService"
-        //var result = await _membService.UpdateMemberAsync(form);
-        //if (result)
+        if (imagePath != null)
+        {
+            user.UserImage = imagePath;
+        }
+
+        // Handle address
+        user.Address ??= new UserAddressEntity { UserId = user.Id };
+        user.Address.StreetName = form.StreetName ?? string.Empty;
+        user.Address.PostalCode = form.PostalCode ?? string.Empty;
+        user.Address.City = form.City ?? string.Empty;
+
+        // Save changes
+        var result = await _userManager.UpdateAsync(user);
+        //var editUserFormData = new EditUserFormData
         //{
-        //    return Ok(new { success = true });
-        //}
-        //else
-        //{
-        //    return Problem("Unable to edit data");
-        //}
+        //    Id = form.Id!,
+        //    FirstName = form.FirstName,
+        //    LastName = form.LastName,
+        //    Email = form.Email,
+        //    PhoneNumber = form.Phone,
+        //    JobTitle = form.JobTitle,
+        //    UserImage = imagePath,
+        //    StreetName = form.StreetName,
+        //    PostalCode = form.PostalCode,
+        //    City = form.City
+        //};
+
+
+        //var result = await _userService.UpdateUserAsync(editUserFormData);
+
+        if (result.Succeeded)
+        {
+            return Ok(new { success = true });
+        }
+
+        return Problem("Unable to edit data");
+
     }
 
-    //public async Task<IActionResult> GetMembers()
-    //{
-    //    var members = await _memberService.GetAllMembers();
-    //    return View(members);
-    //}
+    [HttpGet]
+    public async Task<JsonResult> SearchUsers(string term)
+    {
+        if (string.IsNullOrEmpty(term))
+            return Json(new List<object>());
+
+        var users = await _context.Users
+            .Where(x => x.FirstName!.Contains(term) || x.LastName!.Contains(term) || x.Email!.Contains(term))
+            .Select(x => new { x.Id, x.UserImage, FullName = x.FirstName + " " + x.LastName })
+            .ToListAsync();
+
+        return Json(users);
+    }
 }

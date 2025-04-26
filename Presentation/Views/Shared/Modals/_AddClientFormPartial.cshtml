@@ -12,7 +12,8 @@
 
             <form novalidate method="post" asp-controller="Clients" asp-action="AddClient" enctype="multipart/form-data">
                     
-                <div class="image-previewer circle">
+               
+                <div class="image-previewer square">
                     <img src="" class="image-preview" />
                     <input asp-for="ClientImage" accept="image/*" class="hide" />
                 </div>
@@ -32,14 +33,34 @@
                         <span asp-validation-for="Email"></span>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label" asp-for="Address"></label>
-                    <div class="field-group">
-                        <input class="form-input" asp-for="Address" />
-                        <span asp-validation-for="Address"></span>
+                  
+                    <div class="form-group">
+                            <label class="form-label" asp-for="StreetName"></label>
+                            <div class="field-group">
+                                <input class="form-input" asp-for="StreetName" />
+                                <span asp-validation-for="StreetName"></span>
+                            </div>
                     </div>
-                </div>
+                
+                    <div class="form-horizontal-group">
+                        <div class="form-group">
+                            <label class="form-label" asp-for="PostalCode"></label>
+                            <div class="field-group">
+                                <input class="form-input" asp-for="PostalCode" />
+                                <span asp-validation-for="PostalCode"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" asp-for="City"></label>
+                            <div class="field-group">
+                                <input class="form-input" asp-for="City" />
+                                <span asp-validation-for="City"></span>
+                            </div>
+                        </div>
+
+                    </div>
+                
 
                 <div class="form-group">
                     <label class="form-label" asp-for="Phone"></label>
@@ -48,7 +69,14 @@
                         <span asp-validation-for="Phone"></span>
                     </div>
                 </div>
-               
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Date"></label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Date" />
+                        <span asp-validation-for="Date"></span>
+                    </div>
+                </div>
 
                 <button type="submit" class="btn btn-submit btn-blue">Add Client</button>
             </form>

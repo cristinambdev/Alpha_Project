@@ -1,22 +1,21 @@
-﻿
-@model Business.Models.ProjectResult<IEnumerable<Domain.Models.Project>>
+﻿@model ProjectViewModel
 
-<div class="project card" data-project-id="1">
+<div class="project card" data-project-id="@Model.Id">
 
     <div class="card-header">
         <div class="project-image">
-            <img src="~/Images/Image_App_Development_Slack.svg" alt="template project" />
+            <img src="@Model.ClientImage" alt="template project" />
         </div>
-        <h6 class="project-name">Website Redesign</h6>
-        <span class="client-name">GitLab Inc.</span>
+        <h6 class="project-name">@Model.ProjectName</h6>
+        <span class="client-name">@Model.ClientName</span>
 
         <div id="project-actions-container">
 
-            <button type="button" data-type="dropdown" data-target="#projectDropdown-1" class="btn-action">
+            <button type="button" data-type="dropdown" data-target="#projectDropdown-@Model.Id" class="btn-action">
                 <i class="fa-solid fa-ellipsis"></i>
             </button>
 
-            <div class="dropdown dropdown-project" id="projectDropdown-1">
+            <div class="dropdown dropdown-project" id="projectDropdown-@Model.Id">
                 <partial name="Dropdowns/_ProjectDropdownPartial" />
             </div>
 
@@ -28,23 +27,22 @@
 
 
     <div class="card-body">
-        <p>It is necessary to develop a website redesign in a corporate style.</p>
+        <p>@Html.Raw(Model.Description)</p>
     </div>
 
 
     <div class="card-footer">
         <div class="project-time warning">
             <i class="fa-regular fa-clock"></i>
-            <div class="deadline">1 week left</div>
+            <div class="deadline">@Model.TimeLeft</div>
         </div>
         <div class="members">
-            <div class="user-image">
-                <img src="~/images/avatar_4.svg" alt="member-avatar" />
-            </div>
-            <div class="user-image">
-                <img src="~/images/avatar_8.svg" alt="member-avatar" />
-            </div>
-
+            @foreach (var userImage in Model.Users)
+            {
+                <div class="user-image">
+                    <img src="@userImage" alt="member-avatar" />
+                </div>
+            }
         </div>
     </div>
 </div>

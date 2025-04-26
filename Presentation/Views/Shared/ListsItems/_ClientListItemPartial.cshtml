@@ -1,6 +1,7 @@
-﻿@model Business.Models.ClientResult 
+﻿    @model IEnumerable<ClientViewModel>
 
-<div class="card">
+    <div class="card">
+
     <table>
         <thead>
             <tr>
@@ -14,57 +15,72 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="client-check"><input type="checkbox" /></td>
-                <td class="client-info">
-                    <img class="client-image" src="~/Images/Image_Website_Redesign.svg" alt="client image" />
-                    <div class="client-name">GitLab Inc.</div>
-                    <div class="client-email">gitlab@domain.com</div>
-                </td>
-                <td class="client-location">Sveavägen 15 11154 Stockholm</td>
-                <td class="client-phone">+46 767554390</td>
-                <td class="client-date">2025-09-03</td>
-                <td class="client-status">
-                    <div class="badge success">
-                        <span class="success">active</span>
-                    </div>
-                </td>
-                <td class="client-actions">
-                    <i class="fa-solid fa-ellipsis" data-type="modal" data-target="#editClientModal"></i>
-                </td>
-            </tr>
-           @*  @if (Model != null && Model.Succeeded && Model.Result != null && Model.Result.Any())
+            @if (Model != null && Model.Any())
             {
-                @foreach (var client in Model.Result)
+                foreach (var client in Model)
                 {
                     <tr>
                         <td class="client-check"><input type="checkbox" /></td>
                         <td class="client-info">
-                            <img class="client-image" src="@client.Image" alt="" />
-                            <div class="client-name">@client.ClientName</div>
-                            <div class="client-email">@client.Email</div>
+                            <img class="client-image" src="@client.Client.Image" alt="client image" />
+                            <div class="client-name">@client.Client.ClientName</div>
+                            <div class="client-email">@client.Client.Email</div>
                         </td>
-                        <td class="client-location">@client.Address</td>
-                        <td class="client-phone">@client.Phone</td>
-                        <td class="client-date">@client.Date</td>
+                        <td class="client-location">@client.Client.StreetName, @client.Client.PostalCode, @client.Client.City </td>
+                        <td class="client-phone">@client.Client.Phone</td>
+                        <td class="client-date">@client.Client.Date</td>
                         <td class="client-status">
-                            <div class="badge @(client.Status == "Active" ? "success" : "warning")">
-                                @client.Status
+                            <div class="badge success">
+                                <span class="success">@client.Client.Status</span>
                             </div>
                         </td>
-                        <td class="client-actions">
-                            <i class="fa-solid fa-ellipsis" data-modal="true" data-target="#editClientModal"></i>
+                        <td class="client-actions" id="editClientModal-@client.Client.Id">
+                            <i class="fa-solid fa-ellipsis"
+                               data-type="modal"
+                               data-target="#editClientModal"
+                               data-id="@client.Client.Id"
+                               data-name="@client.Client.ClientName"
+                               data-email="@client.Client.Email"
+                               data-phone="@client.Client.Phone"
+                               data-address="@client.Client.StreetName, @client.Client.PostalCode, @client.Client.City"
+                               data-status="@client.Client.Status"
+                               data-image="@client.Client.Image"
+                               data-template="@client.Client.Date">
+                           
+                            </i>
                         </td>
-                    </tr>
+                   </tr>
                 }
             }
-            else
-            {
-                <tr class="no-clients-row">
-                    <td>No clients found</td>
-                </tr>
-            } *@
+            
         </tbody>
     </table>
-</div>
 
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.fa-ellipsis').forEach(icon => {
+            icon.addEventListener('click', function () {
+                const modal = document.querySelector('#editClientModal');
+
+                modal.querySelector('[name="ClientName"]').value = this.dataset.name;
+                modal.querySelector('[name="Email"]').value = this.dataset.email;
+                modal.querySelector('[name="Phone"]').value = this.dataset.phone;
+                modal.querySelector('[name="Address"]').value = this.dataset.address;
+
+                // If using a hidden field for ID
+                let idField = modal.querySelector('[name="Id"]');
+                if (idField) {
+                    idField.value = this.dataset.id;
+                }
+
+                // Update status dropdown
+                const statusInput = modal.querySelector('[name="client-select-value"]');
+                if (statusInput) {
+                    statusInput.value = this.dataset.status.toLowerCase() === "active" ? "1" : "2";
+                    modal.querySelector('.custom-select-text').innerText = this.dataset.status;
+                }
+            });
+        });
+    });
+</script>

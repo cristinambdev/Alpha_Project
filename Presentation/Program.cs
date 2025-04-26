@@ -83,7 +83,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
-
+app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseRouting();
@@ -96,6 +96,7 @@ app.UseAuthorization();
 app.MapStaticAssets();
 
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/admin/overview"));
+app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Admin}/{action=Index}/{id?}")

@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace Presentation.Models;
 
 public class EditClientViewModel
 {
-    public string? Id {get; set;}
+    public IEnumerable<SelectListItem> Statuses { get; set; } = [];
 
+    public string? Id {get; set;}
 
     [Display(Name = "Client Image", Prompt = "Enter image")]
     [DataType(DataType.Upload)]
@@ -21,9 +23,19 @@ public class EditClientViewModel
     [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email")]
     public string Email { get; set; } = null!;
 
-    [Display(Name = "Address", Prompt = "Enter address")]
+    [Display(Name = "Address", Prompt = "Enter Address")]
     [DataType(DataType.Text)]
-    public string? Address { get; set; }
+    public string? StreetName { get; set; }
+
+
+    [Display(Name = "Postal Code", Prompt = "Enter Postal Code")]
+    [DataType(DataType.Text)]
+    public string? PostalCode { get; set; }
+
+
+    [Display(Name = "City", Prompt = "Enter City")]
+    [DataType(DataType.Text)]
+    public string? City { get; set; }
 
     [Display(Name = "Phone", Prompt = "Enter phone number")]
     [DataType(DataType.PhoneNumber)]

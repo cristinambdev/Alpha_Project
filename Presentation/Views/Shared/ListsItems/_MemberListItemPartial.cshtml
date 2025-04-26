@@ -1,29 +1,24 @@
-﻿
+﻿@model UserViewModel
 
-@model Business.Models.UserResult // suggested by Chat gpt as it is the model type that the action method in controller was passing
 
-@if (Model != null && Model.Result != null && Model.Result.Any())
-{
-    @foreach (var member in Model.Result)
-    {
-        <div class="member card" data-member-id="1">
+    <div class="member card" data-project-id="@Model.Id">
             <div class="card-header">
-                <button type="button" data-type="modal" data-target="#editMemberModal" class="btn-action">
+        <button type="button" data-type="modal" data-target="#editMemberModal" class="btn-action" data-user-id="@Model.Id">
                     <i class="fa-solid fa-ellipsis"></i>
                 </button>
             </div>
 
             <div class="card-body">
                 <div class="user-image">
-                    <img class="user-image" src="~/images/Avatar_2_big.svg" alt="user image" />
+                    <img class="user-image" src="@Model.UserImage" alt="user image" />
                 </div>
-                <h4 class="name">@member.FirstName @member.LastName</h4>
+                <h4 class="name">@Model.FirstName @Model.LastName</h4>
                 <div class="jobtitle">
-                    <span class="badge normal">@member.JobTitle</span>
+                    <span class="badge normal">@Model.JobTitle</span>
                 </div>
                 
-                <span class="email">@member.Email</span>
-                <span class="phone">@member.PhoneNumber</span>
+                <span class="email">@Model.Email</span>
+                <span class="phone">@Model.PhoneNumber</span>
             </div>
 
             <div class="card-footer">
@@ -32,9 +27,4 @@
           
                 
         </div>
-    }
-}
-else
-{
-    <p>No members found.</p>
-}
+ 

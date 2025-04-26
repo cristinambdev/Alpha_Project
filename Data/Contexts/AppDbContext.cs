@@ -14,16 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 
     public virtual DbSet<UserAddressEntity> UserAddreses { get; set; }
 
+    public virtual DbSet<Tag> Tags { get; set; }
+
 }
 
-//public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<UserEntity, IdentityRole>(options)
-//{
-//    public virtual DbSet<ClientEntity> Clients { get; set; }
-
-//    public virtual DbSet<StatusEntity> Statuses { get; set; }
-
-//    public  virtual DbSet<ProjectEntity> Projects { get; set; }
-
-//    public virtual DbSet<UserAddresEntity> UserAddreses {  get; set; }
-
-//}

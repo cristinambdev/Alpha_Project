@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace Presentation.Models;
 
 public class EditProjectViewModel
 {
+    public IEnumerable<SelectListItem> Clients { get; set; } = [];
+
+    public IEnumerable<SelectListItem> Users { get; set; } = [];
+
+    public IEnumerable<SelectListItem> Statuses { get; set; } = [];
+
     public int Id { get; set; }
 
     [DataType(DataType.Upload)]

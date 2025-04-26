@@ -1,19 +1,19 @@
-﻿@model Business.Models.ClientResult
+﻿@model ClientsViewModel
+
 @{
 
     ViewData["Title"] = "Clients";
 }
 
-<partial name="Modals/_AddClientFormPartial" model="new Presentation.Models.AddClientViewModel()" /> @* suggested by chat gpt to force the model to view used as it interfered with "@model Business.Models.ClientResult" in the partial view  *@
-<partial name="Modals/_EditClientFormPartial" model="new Presentation.Models.EditClientViewModel()" />
+@await Html.PartialAsync("Modals/_AddClientFormPartial", Model.AddClientForm) 
+@await Html.PartialAsync("Modals/_EditClientFormPartial", Model.EditClientForm)
 
 <section id="clients">
     <div class="page-header">
         <h2>@ViewData["Title"]</h2>
         <button type="button" data-type="modal" data-target="#addClientModal" class="btn btn-add btn-blue">Add Client</button>
     </div>
-
     <div class="client-list">
-        <partial name="ListsItems/_ClientListItemPartial"  model="Model"/>
-    </div>
+        @await Html.PartialAsync("ListsItems/_ClientListItemPartial", Model.Clients)
+     </div>   
 </section>

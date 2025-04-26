@@ -20,9 +20,20 @@ public class AddClientViewModel
     [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email")]
     public string Email { get; set; } = null!;
 
+
     [Display(Name = "Address", Prompt = "Enter Address")]
     [DataType(DataType.Text)]
-    public string? Address { get; set; }
+    public string? StreetName { get; set; }
+
+
+    [Display(Name = "Postal Code", Prompt = "Enter Postal Code")]
+    [DataType(DataType.Text)]
+    public string? PostalCode { get; set; }
+
+
+    [Display(Name = "City", Prompt = "Enter City")]
+    [DataType(DataType.Text)]
+    public string? City { get; set; }
 
     [Display(Name = "Phone", Prompt = "Enter phone number")]
     [DataType(DataType.PhoneNumber)]

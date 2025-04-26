@@ -1,10 +1,17 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace Presentation.Models;
 
 public class AddProjectViewModel
 {
+    public IEnumerable<SelectListItem> Clients { get; set; } = [];
+
+    public IEnumerable<SelectListItem> Users { get; set; } = [];
+
+    public string Id { get; set; } = null!;
+
     [Display(Name = "Project Image", Prompt = "Select an image")]
     [DataType(DataType.Upload)]
     public IFormFile? ClientImage { get; set; }
@@ -26,12 +33,12 @@ public class AddProjectViewModel
     [Display(Name = "Start Date")]
     [Required(ErrorMessage = "Required")]
     //[DataType(DataType.Date)]
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; set; } = DateTime.Now;
 
     [Display(Name = "End Date")]
     [Required(ErrorMessage = "Required")]
     //[DataType(DataType.Date)]
-    public DateTime EndDate { get; set; }
+    public DateTime EndDate { get; set; } = DateTime.Now;
 
     [Display(Name = "Members", Prompt = "Add Project Members")]
     [Required(ErrorMessage = "Required")]

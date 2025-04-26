@@ -5,11 +5,11 @@ namespace Presentation.Models;
 
 public class EditMemberViewModel
 {
-    public int Id { get; set; }
+    public string? Id { get; set; }
 
     [Display(Name = "Member Image", Prompt = "Select an image")]
     [DataType(DataType.Upload)]
-    public IFormFile? MemberImage { get; set; }
+    public IFormFile? UserImage { get; set; }
 
     [Display(Name = "First Name", Prompt = "Your first name")]
     [DataType(DataType.Text)]
@@ -30,23 +30,23 @@ public class EditMemberViewModel
 
     [Display(Name = "Job Title", Prompt = "Your job title")]
     [DataType(DataType.Text)]
-    public string JobTitle { get; set; } = null!;
+    public string? JobTitle { get; set; } = null!;
 
-    [Display(Name = "Address", Prompt = "Your address")]
-    [DataType(DataType.Text)]
-    public string? Address { get; set; }
+    //[Display(Name = "Address", Prompt = "Your address")]
+    //[DataType(DataType.Text)]
+    //public string? Address { get; set; }
 
-    [Display(Prompt = "Day")]
+    [Display(Name = "Address", Prompt = "Enter Address")]
     [DataType(DataType.Text)]
-    public string? Day { get; set; }
+    public string? StreetName { get; set; }
 
-    [Display(Prompt = "Month")]
+    [Display(Name = "Postal Code", Prompt = "PostalCode")]
     [DataType(DataType.Text)]
-    public string? Month { get; set; }
+    public string? PostalCode { get; set; }
 
-    [Display(Prompt = "Year")]
+    [Display(Name = "City", Prompt = "City")]
     [DataType(DataType.Text)]
-    public string? Year { get; set; }
+    public string? City { get; set; }
 
 }
 

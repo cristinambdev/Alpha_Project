@@ -6,15 +6,15 @@
 
         <div class="card-header">
             <h3>Edit Member</h3>
-            <button type="button" class="btn-close" data-type="close" data-target="#editMemberModal"></button>
+            <button type="button" class="btn-close" data-type="close" data-target="#editMemberModal" ></button>
         </div>
 
         <div class="card-body">
-            <form novalidate method="post" asp-action="EditMember" asp-controller="Members" enctype="multipart/form-data">
-
+            <form novalidate method="post" asp-action="EditMember" asp-controller="Users" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
                 <div class="image-previewer circle">
                     <img src="" class="image-preview" />
-                    <input asp-for="MemberImage" accept="image/*" class="hide" />
+                    <input asp-for="UserImage" accept="image/*" class="hide" />
                 </div>
 
                 <div class="form-horizontal-group">
@@ -61,33 +61,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" asp-for="Address"></label>
+                    <label class="form-label" asp-for="StreetName"></label>
                     <div class="field-group">
-                        <input class="form-input" asp-for="Address" />
-                        <span asp-validation-for="Address"></span>
+                        <input class="form-input" asp-for="StreetName" />
+                        <span asp-validation-for="StreetName"></span>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Date of Birth</label>
-                    <div class="form-horizontal-group">
-                        <div class="form-group">
-                            <div class="field-group">
-                                <input class="form-input" asp-for="Day" />
-                                <span asp-validation-for="Day"></span>
-                            </div>
+                <div class="form-horizontal-group">
+                    <div class="form-group">
+                        <label class="form-label" asp-for="PostalCode"></label>
+                        <div class="field-group">
+                            <input class="form-input" asp-for="PostalCode" />
+                            <span asp-validation-for="PostalCode"></span>
                         </div>
-                        <div class="form-group">
-                            <div class="field-group">
-                                <input class="form-input" asp-for="Month" />
-                                <span asp-validation-for="Month"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="field-group">
-                                <input class="form-input" asp-for="Year" />
-                                <span asp-validation-for="Year"></span>
-                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="City"></label>
+                        <div class="field-group">
+                            <input class="form-input" asp-for="City" />
+                            <span asp-validation-for="City"></span>
                         </div>
                     </div>
                 </div>

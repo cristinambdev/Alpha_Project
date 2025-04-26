@@ -849,6 +849,7 @@ a {
         background-color: var(--btn-close--hover-background-color);
         border: var(--btn-close--hover-border-color);
         border-radius: 14px;
+        cursor: pointer;
     }
 
 .btn-submit {
@@ -1062,6 +1063,11 @@ a {
     .image-previewer.square {
         border-radius: 16px;
     }
+img.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
 
 /* =========================
    TABLES
@@ -1412,6 +1418,9 @@ form {
     background-color: var(--form-input-background-color);
     border: 1px solid var(--form-input-border-color);
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+
 }
 
 form-input:focus {
@@ -1712,11 +1721,100 @@ form .field-validation-error {
     gap: .5rem;
 }
 
+.form-tag-input {
+    font-size: 1em;
+    outline: none;
+    border: none;
+    flex-grow: 1;
+    font-weight: 400;
+    font-family: var(--font-standard);
+    background-color: var(--form-input-background-color);
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    bottom: 5px;
+    color: var(--form-input-text-color);
+    
+}
+
+.form-tag-select.focused,
+.search-results.focused {
+    border: 1px solid var(--form-input-border-focus--color);
+}
+
+
+.form-tag-input::placeholder {
+    color: var(--gray-700);
+    font-size: 1em;
+    font-weight: 400;
+}
+.form-tag-select label,
+.form-tag-select i {
+    cursor: pointer;
+    position: absolute;
+    font-size: 1.1rem;
+    right: 1rem;
+}
+.search-results {
+    background-color:var(--form-error-input-background-color);
+    border: 1px solid var(--form-input-border-color);
+    border-top: none;
+    border-radius: 0 0 13px 13px;
+    padding: 1rem;
+    width: 100%;
+    position: absolute;
+    top: 80%;
+    left: 0;
+    z-index: 10;
+    display: none;
+
+}
+
+.search-item {
+    padding: .5em 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .8em;
+}
+
+    .search-item:hover {
+        background-color: var(--blue-light-opacity);
+        border-radius: 13px;
+    }
+    .search-item.active {
+        background-color: var(--blue-light-opacity);
+        border-radius: 13px;
+    }
+
+.user-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    font-size: .8rem;
+}
+
+.tag {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    background-color: #f1f5f9;
+    border-radius: 12px;
+    padding: .3rem .6rem;
+    font-size: .9rem;
+}
+
 /* =========================
    AUTHENTICATION PAGES
 ========================= */
-#login,
-#signup {
+#login, #signup {
     padding: 1rem 3rem 1rem 3rem;
     width: 600px;
     margin: 0 auto;

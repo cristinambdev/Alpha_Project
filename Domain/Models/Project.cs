@@ -11,7 +11,7 @@ public class Project
 
     public DateTime? StartDate { get; set; }
 
-    public DateTime? EndDate { get; set; }
+    public DateTime? EndDate { get; set; } 
     public decimal? Budget { get; set; }
     public Client Client { get; set; } = null!;
 

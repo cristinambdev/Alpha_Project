@@ -10,6 +10,8 @@
 
         <div class="card-body"> 
             <form novalidate method="post" asp-action="AddProject" asp-controller="Projects" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id"/>
+                <input type="hidden" name="SelectedUserIds" id="SelectedUsersIds"/>
                 <div class="form-group">
                     <div class="image-previewer square">
                         <img src="" class="image-preview" />
@@ -27,15 +29,11 @@
 
                  <div class="form-group">
                     <label class="form-label" asp-for="ClientName">Client Name</label>
-
-                    <div class="custom-select" data-placeholder="Choose a client">
-                        <button type="button" class="custom-select-trigger">
-                            <span class="custom-select-text"></span>
-                        </button>
-                        <ul class="custom-select-options">
-                            <li class="custom-select-option" data-value="1">Client 1</li>
-                            <li class="custom-select-option" data-value="2">Client 2</li>
-                        </ul>
+                   
+                        <div id="tagged-clients" class="form-input form-tag-select">
+                        <input type="text" id="client-search" class="form-tag-input" placeholder="Add Client(s)..." />
+                        <label for="client-search" class="fa-solid fa-ellipsis"></label>
+                        <div id="client-search-results" class="search-results"></div>
                         <input type="hidden" name="client-select-value" asp-for="ClientName" />
                         <span asp-validation-for="ClientName"></span>
                     </div>
@@ -76,7 +74,7 @@
                     <div class="form-horizontal-group">
 
                         <div class="form-group">
-                            <label class="form-label" asp-for="StartDate">Start Date</label>
+                            <label class="form-label" asp-for="StartDate" >Start Date</label>
                             <div class="field-group">
                                 <input class="form-input" type="date" asp-for="StartDate" />
                                 <span asp-validation-for="StartDate"></span>
@@ -95,14 +93,10 @@
 
                     <div class="form-group">
                         <label class="form-label" asp-for="Members"> Members</label>
-                    <div class="custom-select" data-placeholder="Choose a member">
-                        <button type="button" class="custom-select-trigger">
-                            <span class="custom-select-text"></span>
-                        </button>
-                        <ul class="custom-select-options">
-                            <li class="custom-select-option" data-value="1">Member 1</li>
-                            <li class="custom-select-option" data-value="2">Member 2</li>
-                        </ul>
+                        <div id="tagged-users" class="form-input form-tag-select">
+                        <input type="text" id="user-search" class="form-tag-input" placeholder="Add Member(s)..." />
+                        <label for="user-search" class="fa-solid fa-ellipsis"></label>
+                        <div id="user-search-results" class="search-results"></div>
                         <input type="hidden" name="member-select-value" asp-for="Members" />
                         <span asp-validation-for="Members"></span>
                     </div>
@@ -149,5 +143,35 @@
             textarea.value = quill.root.innerHTML;
         })
     }
+
+     const preselectedUsers = []
+
+    initTagSelector({
+          containerId: "tagged-users",
+          inputId: "user-search",
+          resultsId: "user-search-results",
+          searchUrl: (query) => '@Url.Action("SearchUsers", "Users")' + '?term=' + encodeURIComponent(query),
+          displayProperty: "fullName",
+          imageProperty: "MemberImage",
+          tagClass: "user-tag",
+          avatarFolder: "/images/users/",
+          emptyMessage: "No users found.",
+          preselected: preselectedUsers
+    })
+
+    // const preselectedTags = []
+
+    // initTagSelector({
+    //       containerId: "tags",
+    //       inputId: "tag-search",
+    //       resultsId: "tag-search-results",
+    //       searUrl: (query) => '@Url.Action("SearchTags", "Tags")' + '?term=' + encodeURIComponent(query),
+    //       displayProperty: "tagName",
+    //       tagClass: "tag",
+    //       emptyMessage: "No tags found.",
+    //       preselected: preSelectedTags
+    // })
+    
+
    
 </script>

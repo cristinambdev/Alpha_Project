@@ -5,18 +5,21 @@ using Domain.Extentions;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Business.Services;
 
 public interface IUserService
 {
     Task<UserResult> AddUserToRole(string userId, string roleName);
-    Task<UserResult> CreateUserAsync(SignUpFormData formData, string roleName = "User");
+    Task<UserResult> CreateUserAsync(AddUserFormData formData, string roleName = "User");
     Task<UserResult> GetUsersAsync();
+    Task<UserResult> UpdateUserAsync(EditUserFormData formData);
+    Task<UserResult> GetUserByIdAsync(string id);
     
-
-}
+    }
 
 public class UserService(IUserRepository userRepository, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager) : IUserService
 {
@@ -27,11 +30,17 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
     public async Task<UserResult> GetUsersAsync()
     {
-        //var result = await _userRepository.GetAllAsync();
-        //return result.MapTo<UserResult>(); // dynamic mapping
+        var result = await _userRepository.GetAllAsync();
+        return result.MapTo<UserResult>(); // dynamic mapping
 
-        var list = await _userManager.Users.ToListAsync();
-        return list.MapTo<UserResult>();
+        //var list = await _userManager.Users.ToListAsync();
+        //return list.MapTo<UserResult>();
+    }
+
+    public async Task<UserResult> GetUserByIdAsync(string id)
+    {
+        var result = await _userRepository.GetAsync(x => x.Id == id);
+        return result.MapTo<UserResult>();
     }
     public async Task<UserResult> AddUserToRole(string userId, string roleName)
     {
@@ -50,7 +59,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
     }
 
 
-    public async Task<UserResult> CreateUserAsync(SignUpFormData formData, string roleName = "User")
+    public async Task<UserResult> CreateUserAsync(AddUserFormData formData, string roleName = "User")
     {
 
 
@@ -72,10 +81,13 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
                 FirstName = formData.FirstName,
                 LastName = formData.LastName,
                 Email = formData.Email,
-                UserName = formData.Email // UserName is required by Identity
+                UserName = formData.Email,
+                PhoneNumber = formData.PhoneNumber,   
+                UserImage = formData.UserImage
             };
-            var result = await _userManager.CreateAsync(userEntity, formData.Password);
-            
+            var defaultPassword = "TempPassword123!"; //suggested by Chat Gpt
+            var result = await _userManager.CreateAsync(userEntity, defaultPassword);
+            //var result = await _userRepository.AddAsync(userEntity);
             if (result.Succeeded)
             {
                 var addToRoleResult = await AddUserToRole(userEntity.Id, roleName);
@@ -93,6 +105,41 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
             return new UserResult { Succeeded = false, StatusCode = 500, Error = ex.Message };
         }
 
+    }
+
+    public async Task<UserResult> UpdateUserAsync(EditUserFormData formData)
+    {
+        //var existingUser = await _userRepository.GetAsync(x => x.Id == formData.Id);
+        //var userEntity = await _userManager.Users
+        //    .Include(x => x.Address)
+        //    .FirstOrDefaultAsync(x => x.Id == formData.Id);
+        var userEntity = await _userManager.Users
+            .Include(u => u.Address)
+            .FirstOrDefaultAsync(u => u.Id == formData.Id);
+        if (userEntity == null)
+            return new UserResult { Succeeded = false, StatusCode = 404, Error = "User not found" };
+        //userEntity = formData.MapTo<UserEntity>();
+
+        // Update fields on the existing entity
+        userEntity.FirstName = formData.FirstName;
+        userEntity.LastName = formData.LastName;
+        userEntity.Email = formData.Email;
+        userEntity.UserName = formData.Email;
+        userEntity.PhoneNumber = formData.PhoneNumber;
+        userEntity.JobTitle = formData.JobTitle;
+        userEntity.UserImage = formData.UserImage;
+
+        // Update or create address
+        userEntity.Address = new UserAddressEntity();
+
+        userEntity.Address.StreetName = formData.StreetName!;
+        userEntity.Address.PostalCode = formData.PostalCode!;
+        userEntity.Address.City = formData.City!;
+
+        var result = await _userManager.UpdateAsync(userEntity);
+        //var result = await _userRepository.UpdateAsync(userEntity);
+
+        return new UserResult { Succeeded = true, StatusCode = 200};
     }
 
 }
