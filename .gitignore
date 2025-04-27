@@ -8,6 +8,9 @@
 Presentation/appsettings.json
 Presentation/appsettings.Secrets.json
 
+# ignore local secrets file
+Presentation/appsettings.Secrets.json
+
 # User-specific files
 *.rsuser
 *.suo
