@@ -10,7 +10,6 @@ namespace Data.Repositories;
 public interface IBaseRepository<TEntity, TModel> where TEntity : class
 {
     Task<RepositoryResult<bool>> AddAsync(TEntity entity);
-    //Task<RepositoryResult<bool>> DeleteAsync(TEntity entity);
     Task<RepositoryResult<bool>> DeleteAsync(TEntity entity);
     Task<RepositoryResult<bool>> ExistsAsync(Expression<Func<TEntity, bool>> findBy);
     Task<RepositoryResult<IEnumerable<TModel>>> GetAllAsync(bool orderByDescending = false, Expression<Func<TEntity, object>>? sortBy = null, Expression<Func<TEntity, bool>>? where = null, params Expression<Func<TEntity, object>>[] includes);
@@ -123,18 +122,6 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
         if (entity == null)
             return new RepositoryResult<bool> { Succeeded = false, StatusCode = 400, Error = "Entity can't be null." };
 
-        //try
-        //{
-        //    _table.Update(entity);
-        //    await _context.SaveChangesAsync();
-        //    return new RepositoryResult<bool> { Succeeded = true, StatusCode = 200 };
-        //}
-
-        //catch (Exception ex)
-        //{
-        //    Debug.WriteLine(ex.Message);
-        //    return new RepositoryResult<bool> { Succeeded = false, StatusCode = 500, Error = ex.Message };
-        //}
         try
         {
             // Check if entity exists in database
@@ -158,8 +145,7 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error in UpdateAsync: {ex.Message}");
-            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+           
             return new RepositoryResult<bool> { Succeeded = false, StatusCode = 500, Error = ex.Message };
         }
     }
@@ -178,26 +164,13 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+           
             return new RepositoryResult<bool> { Succeeded = false, StatusCode = 500, Error = ex.Message };
         }
     }
-    //public virtual async Task<bool> DeleteAsync(TEntity entity)
-    //{
-    //    try
-    //    {
-    //        _context.Remove(entity);
-    //        var changes = await _context.SaveChangesAsync();
-    //        return changes > 0;
+    
 
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Debug.WriteLine(ex);
-    //        return false;
-    //    }
-
-    }
+}
 
 
 

@@ -289,26 +289,6 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
         return Json(await _context.MiniProjects.ToListAsync());
     }
 
-    //[HttpGet("MiniProjects/GetProjectData/{id}")]
-    //public async Task<IActionResult> GetMiniProjectData(string id)
-    //{
-    //    var result = await _miniProjectService.GetMiniProjectAsync(id);
-    //    if (!result.Succeeded || result.Result == null)
-    //        return NotFound();
-    //    return Json(new
-    //    {
-    //        id = result.Result.Id,
-    //        title = result.Result.Title,
-    //        description = result.Result.Description,
-    //        clientName = result.Result.ClientName,
-    //        startDate = result.Result.StartDate?.ToString("yyyy-MM-dd"),
-    //        endDate = result.Result.EndDate?.ToString("yyyy-MM-dd"),
-    //        budget = result.Result.Budget,
-    //        statusId = result.Result.StatusId,  
-    //        status = result.Result.Status?.StatusName ?? "Unknown",
-    //        projectImage = result.Result.ProjectImage ?? ""
-    //    });
-    //}
 
     [HttpPost]
     public async Task<IActionResult> DeleteMiniProject(string id)
@@ -319,7 +299,8 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
         var result = await _miniProjectService.DeleteMiniProjectAsync(id);
         if (result.Succeeded)
         {
-            return Ok(new { success = true, message = "Deleted" });
+            return Json(new { success = true, message = "MiniProject deleted successfully!" }); // Return JSON for AJAX
+
 
         }
 

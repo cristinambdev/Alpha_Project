@@ -33,15 +33,29 @@ public class AuthController(UserManager<UserEntity> userManager, SignInManager<U
         {
             return View(model);
         }
+        var email = model.Email.Trim().ToLower();
+        //Check if user already exists
+        var existingUser = await _userManager.FindByEmailAsync(model.Email);
+        if (existingUser != null)
+        {
+            ModelState.AddModelError("Email", "An account with this email already exists.");
+            return View(model);
+        }
         var user = new UserEntity { UserName = model.Email, FirstName = model.FirstName, LastName = model.LastName, Email = model.Email };
         var identityResult = await _userManager.CreateAsync(user, model.Password);
-        if (identityResult.Succeeded) 
+        //if (identityResult.Succeeded)
+        //{
+        //    var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
+        //    if (result.Succeeded)
+        //    {
+        //        return LocalRedirect(returnUrl);
+        //    }
+        //}
+        if (identityResult.Succeeded)
         {
-            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, false, false);
-            if (result.Succeeded)
-            {
-                return LocalRedirect(returnUrl);
-            }
+
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToAction("SignIn", "Auth");
         }
         ModelState.AddModelError("Unable", "Unable to create user.");
         return View(model);

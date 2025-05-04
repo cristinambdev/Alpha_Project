@@ -50,6 +50,7 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
     {
         if (formData == null)
             return new AuthResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are supplied." };
+        var email = formData.Email.Trim().ToLower();
         var userEntity = new UserEntity
         {
             UserName = formData.Email,

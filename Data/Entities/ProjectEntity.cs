@@ -30,7 +30,7 @@ public class ProjectEntity
     public StatusEntity Status { get; set; } = null!;
 
     public ICollection<ProjectUserEntity> ProjectUsers { get; set; } = [];
-    public ICollection<ProjectClientEntity> ProjectClients { get; set; } = new List<ProjectClientEntity>();
+    public ICollection<ProjectClientEntity> ProjectClients { get; set; } = [];
 
 
 }

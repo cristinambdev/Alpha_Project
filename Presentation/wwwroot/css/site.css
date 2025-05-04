@@ -1668,15 +1668,25 @@ form-input-extended .form-input {
     left: 10px;
     top: 16px;
 }
-
-
+ .form-input.budget {
+padding-left: 1.4rem;
+padding-bottom: .4rem;
+ }
+.form-input-extended .fa-dollar-sign {
+    padding-bottom: 2rem;
+    position: absolute;
+}
+#StartDate,
+#EndDate,
+#Date {
+    padding-top: .5rem;
+}
 /* =========================
    WYSIWYG TEXTAREA
 ========================= */
 .wysiwyg {
     position: relative;
-/*    margin-bottom: 20px;
-*/}
+}
 
 #add-project-description,
 #edit-project-description {

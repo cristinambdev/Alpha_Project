@@ -23,7 +23,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
 
         var userResult = await _userService.GetUsersAsync();
 
-        var viewModel = new UsersViewModel()
+        var viewModel = new UsersViewModel() // help by chat GPT
         {
             Users = userResult?.Result?.Select(user => new UserViewModel
             {
@@ -236,7 +236,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
             .Where(x => x.FirstName!.Contains(term) || x.LastName!.Contains(term) || x.Email!.Contains(term))
             .Select(x => new { 
                 x.Id,
-                MemberImage = x.UserImage ?? "", 
+                MemberImage = x.UserImage, 
                 //Image = string.IsNullOrEmpty(x.UserImage) ? "" : "/uploads/members/" + x.UserImage,
                 FullName = x.FirstName + " " + x.LastName })
             .ToListAsync();

@@ -35,7 +35,7 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
         var users = await _context.Users.ToListAsync();
         var clients = await _context.Clients.ToListAsync();
 
-        // Map projects to ProjectViewModel
+        // Map projects to ProjectViewModel with help of Chat GPT
         var projectViewModels = allProjects.Select(p => new ProjectViewModel
         {
             Id = p.Id,
@@ -75,7 +75,7 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
             }).ToList()
         };
 
-        return View(model); // Ensure you're passing ProjectsViewModel here
+        return View(model); 
     }
 
 
@@ -129,6 +129,7 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
                 ModelState.AddModelError("UserId", "UserId is required.");
                 return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
             }
+
             //upload image handling
             string? imagePath = null; // suggested by chat GPT to store the image value
             if (form.ClientImage != null)
@@ -146,41 +147,6 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
 
                 imagePath = $"/uploads/clients/{fileName}";
             }
-
-            //// Remove existing project users
-            //var existingMembers = await _context.ProjectUsers
-            //    .Where(pu => pu.ProjectId == form.Id)
-            //    .ToListAsync();
-            //_context.ProjectUsers.RemoveRange(existingMembers);
-            //// Add new project users
-            //if (!string.IsNullOrEmpty(SelectedUserIds))
-            //{
-            //    var userIds = JsonSerializer.Deserialize<List<string>>(SelectedUserIds);
-            //    if (userIds != null)
-            //    {
-            //        foreach (var userId in userIds)
-            //        {
-            //            _context.ProjectUsers.Add(new ProjectUserEntity { ProjectId = form.Id, UserId = userId });
-            //        }
-            //    }
-            //}
-            //// Remove existing project clients
-            //var existingClients = await _context.ProjectClients
-            //    .Where(c => c.ProjectId == form.Id)
-            //    .ToListAsync();
-            //_context.ProjectClients.RemoveRange(existingClients);
-            //// Add new project clients
-            //if (!string.IsNullOrEmpty(SelectedClientIds))
-            //{
-            //    var clientIds = JsonSerializer.Deserialize<List<string>>(SelectedClientIds);
-            //    if (clientIds != null)
-            //    {
-            //        foreach (var clientId in clientIds)
-            //        {
-            //            _context.Add(new ProjectClientEntity { ProjectId = form.Id, ClientId = clientId });
-            //        }
-            //    }
-            //}
 
 
             // Map the view model to form data for the service
@@ -255,7 +221,6 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
         }
 
     }
-    [HttpGet]
 
 
     [HttpDelete]

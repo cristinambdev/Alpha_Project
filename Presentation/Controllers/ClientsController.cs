@@ -34,6 +34,7 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
         {
             // handle error (optional)
         }
+
         // Suggested by Chat GPT. Map the status result into the view and form select
          var statusList = statusResult.Result?
         .Select(status => new SelectListItem
@@ -217,21 +218,6 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
 
     }
 
-    //[HttpDelete]
-    //public async Task<IActionResult> DeleteCustomer([FromRoute] string id)
-    //{
-    //    var client = await _clientService.GetClientByIdAsync(id);
-    //    if (client?.Result == null)
-    //        return NotFound();
-
-    //    var result = await _clientService.DeleteClientAsync(id);
-    //    if (result.Succeeded)
-    //    {
-    //        return RedirectToAction("Index");
-    //    }
-
-    //    return Problem("Unable to delete the client.");
-    //}
 
     [HttpPost("Clients/DeleteCustomer/{id}")]
     public async Task<IActionResult> DeleteCustomer([FromRoute] string id)
@@ -241,7 +227,6 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
 
         if (deleteResult.Succeeded)
         {
-            Console.WriteLine($"Client with ID: {id} deleted successfully. Redirecting to Index.");
             return Json(new { success = true, message = "Client deleted successfully!" }); // Return JSON for AJAX
         }
         else
