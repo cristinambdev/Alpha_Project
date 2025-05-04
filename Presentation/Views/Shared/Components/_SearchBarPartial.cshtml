@@ -1,5 +1,42 @@
 ﻿
-    <form class="search-form" method="get" asp-controller="" asp-action="" novalidate>
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="search" class="form-search-input" placeholder="Search anything...">
+
+<form  class="search-form" method="get" asp-controller="" asp-action="" novalidate>
+    <input type="hidden" id="tagsSearchUrl" value="@Url.Action("SearchTags", "Tags")" />
+    <input type="hidden" id="SelectedTagIds" name="SelectedTagIds" value="[]" />
+    <div id="tags" class="form-tag-select">
+        <input id="tag-search" type="search" class="form-search-input" placeholder="Search anything...">
+        <label for="tag-search" class="fa-solid fa-magnifying-glass"></label>
+        <div id="tag-search-results" class="search-results"></div>
+    </div>
+        
     </form>
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tagsContainer = document.getElementById("tags");
+        if (tagsContainer) {
+            const urlConfig = {
+                tagsSearchUrl: document.getElementById('tagsSearchUrl')?.value || '/Tags/SearchTags'
+            };
+
+            // === SEARCH TAGS===
+            const preselectedTags = []
+
+            initTagSelector({
+                containerId: "tags",
+                inputId: "tag-search",
+                resultsId: "tag-search-results",
+                searchUrl: (query) => `${urlConfig.tagsSearchUrl}?term=${encodeURIComponent(query)}`, // by chat gpt
+                //searchUrl: (query) => '@Url.Action("SearchTags", "Tags")' + '?term=' + encodeURIComponent(query),
+                displayProperty: "tagName",
+                tagClass: "tag",
+                tagType: "tag",
+                hiddenInputId: "SelectedTagIds", //chat gpt
+                emptyMessage: "No tags found.",
+                preselected: preselectedTags
+
+             })
+        }
+    });
+    </script>

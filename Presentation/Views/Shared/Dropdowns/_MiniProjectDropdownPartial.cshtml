@@ -1,0 +1,41 @@
+﻿@model MiniProjectViewModel
+
+    <div class="dropdown-body">
+        <nav class="dropdown-actions">
+       
+        <button class="dropdown-action edit-mini-project-button" data-type="modal" data-target="#editMiniProjectModal"
+                data-id="@Model.Id"
+                data-title="@Model.Title"
+                data-description="@Html.Raw(Model.Description)"
+                data-clientname="@Model.ClientName"
+                data-startdate="@(Model.StartDate?.ToString("yyyy-MM-dd"))"
+                data-enddate="@(Model.EndDate?.ToString("yyyy-MM-dd"))"
+                data-statusid="@Model.StatusId"
+                data-statusname="@Model.StatusName"
+                data-budget="@Model.Budget"
+                data-image="@Model.ProjectImage">
+                <i class="fa-solid fa-pen-to-square"></i>
+            <span data-modal="true" data-target="#editMiniProjectModal">Edit</span>
+            </button>
+            
+        </nav>
+
+        <span class="divider"></span>
+
+
+        <nav class="dropdown-actions">
+        <form class="delete-form" method="post" asp-action="DeleteMiniProject" asp-controller="MiniProjects" asp-route-id="@Model.Id" data-id="@Model.Id">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" /> 
+            <button id="confirmDelete" type="submit" class="dropdown-action remove delete-btn" data-id="@Model.Id" data-user-id="@Model.Id">
+                <i class="fa-solid fa-trash"></i>
+                <span>Delete</span>
+            </button>
+        </form>
+
+        </nav>
+
+    </div>
+   
+   
+

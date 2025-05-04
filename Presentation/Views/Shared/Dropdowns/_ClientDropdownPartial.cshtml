@@ -1,0 +1,29 @@
+﻿@model Client
+
+<div class="dropdown-body">
+
+    <nav class="dropdown-actions">
+
+        <button class="dropdown-action" data-type="modal" data-target="#editClientModal" data-id="@Model.Id" data-user-id="@Model.Id">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span data-modal="true" data-target="#editClientModal">Edit</span>
+        </button>
+
+    </nav>
+
+
+    <nav class="dropdown-actions">
+
+        <form class="delete-form" method="post" asp-action="DeleteCustomer" asp-controller="Clients" asp-route-id="@Model.Id" data-id="@Model.Id">
+            <button type="submit" class="dropdown-action remove delete-btn" data-id="@Model.Id" data-delete-id="@Model.Id">
+                <i class="fa-solid fa-trash"></i>
+                <span>Delete Client</span>
+            </button>
+        </form>
+
+    </nav>
+
+</div>
+@* //NO ACTIVE *@
+@* @await Html.PartialAsync("Components/_DeleteConfirmationPartial")
+ *@

@@ -3,12 +3,8 @@ using Data.Contexts;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
 using Microsoft.EntityFrameworkCore;
-using Domain.Extentions;
-using Domain.Models;
-using Business.Models;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 
 namespace Presentation.Controllers;
 
@@ -52,8 +48,8 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
     public async Task<IActionResult> AddMember(AddMemberViewModel form)
     {
       
-            try
-            {
+        try
+         {
             if (!ModelState.IsValid)
             {
                 var errors = ModelState
@@ -80,7 +76,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
             }
 
             //  Handle the file upload
-            string? imagePath = null; // suggested by chat GPT to store the image 
+            string? imagePath = null; // suggested by chat GPT to store the image value
             if (form.UserImage != null)
             {
                 var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "members");
@@ -134,7 +130,6 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
     [HttpGet]
     public async Task<IActionResult> GetUserData(string id) //with the help of Claude.Ai to get userdata that will be populated in the edit form
     {
-        //var user = await _userService.GetUserByIdAsync(id);
 
         var user = await _userManager.Users
                                   .Include(u => u.Address) // Include the Address entity
@@ -204,7 +199,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
         user.FirstName = form.FirstName;
         user.LastName = form.LastName;
         user.Email = form.Email;
-        user.UserName = form.Email; // Critical for Identity
+        user.UserName = form.Email; 
         user.PhoneNumber = form.Phone;
         user.JobTitle = form.JobTitle;
 
@@ -221,23 +216,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
 
         // Save changes
         var result = await _userManager.UpdateAsync(user);
-        //var editUserFormData = new EditUserFormData
-        //{
-        //    Id = form.Id!,
-        //    FirstName = form.FirstName,
-        //    LastName = form.LastName,
-        //    Email = form.Email,
-        //    PhoneNumber = form.Phone,
-        //    JobTitle = form.JobTitle,
-        //    UserImage = imagePath,
-        //    StreetName = form.StreetName,
-        //    PostalCode = form.PostalCode,
-        //    City = form.City
-        //};
-
-
-        //var result = await _userService.UpdateUserAsync(editUserFormData);
-
+    
         if (result.Succeeded)
         {
             return Ok(new { success = true });
@@ -255,9 +234,28 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
 
         var users = await _context.Users
             .Where(x => x.FirstName!.Contains(term) || x.LastName!.Contains(term) || x.Email!.Contains(term))
-            .Select(x => new { x.Id, x.UserImage, FullName = x.FirstName + " " + x.LastName })
+            .Select(x => new { 
+                x.Id,
+                MemberImage = x.UserImage ?? "", 
+                //Image = string.IsNullOrEmpty(x.UserImage) ? "" : "/uploads/members/" + x.UserImage,
+                FullName = x.FirstName + " " + x.LastName })
             .ToListAsync();
 
         return Json(users);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if(user == null)
+            return NotFound();
+        var result = await _userManager.DeleteAsync(user);
+        if (result.Succeeded)
+        {
+            return RedirectToAction("Index");
+        }
+
+        return Problem("Unable to delete the user.");
     }
 }

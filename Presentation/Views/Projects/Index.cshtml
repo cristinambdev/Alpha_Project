@@ -1,16 +1,19 @@
 ﻿@model ProjectsViewModel
 
-@{
 
+@{
     ViewData["Title"] = "Projects";
+
 }
+
 @await Html.PartialAsync("Modals/_AddProjectFormPartial", Model.AddProjectForm)
 @await Html.PartialAsync("Modals/_EditProjectFormPartial", Model.EditProjectForm)
+
 
 <section id="projects">
     <div class="page-header">
         <h2>@ViewData["Title"]</h2>
-        <button type="button" data-type="modal" data-target="#addProjectModal" class="btn btn-add btn-blue">Add Project</button>
+            <button type="button" data-type="modal" data-target="#addProjectModal" class="btn btn-add btn-blue">Add Project</button>        
     </div>
     @* <div class="menu-horizontal">
         <p class="active">ALL [<span>0</span>]</p>
@@ -25,9 +28,6 @@
                 @await Html.PartialAsync("ListsItems/_ProjectListItemPartial", project)
             }
         }
-
-        
-
     </section>
 
 </section>

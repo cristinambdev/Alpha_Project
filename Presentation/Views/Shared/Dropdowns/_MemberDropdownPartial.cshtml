@@ -1,0 +1,33 @@
+﻿@model UserViewModel
+
+<div class="dropdown-body">
+
+    <nav class="dropdown-actions">
+
+        <button class="dropdown-action" data-type="modal" data-target="#editMemberModal" data-id="@Model.Id" data-user-id="@Model.Id">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span data-modal="true" data-target="#editMemberModal">Edit</span>
+        </button>
+
+    </nav>
+
+
+    <nav class="dropdown-actions">
+        @* Form format suggested by chat gpt to get hold of the delete action *@
+
+        <form class="delete-form" method="post" asp-action="DeleteUser" asp-controller="Users" data-id="@Model.Id">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <button type="submit" class="dropdown-action remove delete-btn" data-id="@Model.Id" data-delete-id="@Model.Id">
+                <i class="fa-solid fa-trash"></i>
+                <span>Delete Member</span>
+            </button>
+
+        </form>
+    
+    </nav>
+
+</div>
+
+@* //NO ACTIVE *@
+@* @await Html.PartialAsync("Components/_DeleteConfirmationPartial")
+ *@

@@ -2,9 +2,9 @@
 
 public class Project
 {
-    public string Id { get; set; } = null!;
+    public int Id { get; set; } 
 
-    public string? Image { get; set; }
+    public string? ClientImage { get; set; }
     public string ProjectName { get; set; } = null!;
 
     public string? Description { get; set; }

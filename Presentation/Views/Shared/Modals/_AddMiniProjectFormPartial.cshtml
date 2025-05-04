@@ -1,0 +1,139 @@
+﻿@model AddMiniProjectViewModel
+
+<section id="addMiniProjectModal" class="modal">
+    <div class="card">
+      
+        <div class="card-header">
+            <h3>Add Mini Project</h3>
+            <button type="button" class="btn-close" data-type="close" data-target="#addMiniProjectModal"></button>
+        </div>
+
+        <div class="card-body"> 
+            <form novalidate method="post" asp-action="AddMiniProject" asp-controller="MiniProjects" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="StatusId" value="1" />
+
+
+                <div class="form-group">
+                    <div class="image-previewer square">
+                        <img src="" class="image-preview" />
+                        <input asp-for="ProjectImage" accept="image/*" class="hide" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Title">Project Name</label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Title" />
+                        <span asp-validation-for="Title"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Description">Description</label>
+
+                    <div class="wysiwyg">
+
+                        <textarea id="add-project-description" asp-for="Description"></textarea>
+
+                        <div id="add-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
+
+                        <div id="add-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
+                            <span class="ql-formats">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                                <button class="ql-underline"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-align" value=""></button>
+                                <button class="ql-align" value="center"></button>
+                                <button class="ql-align" value="right"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="bullet"></button>
+                                <button class="ql-list" value="ordered"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link"></button>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Description"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="ClientName">Client Name</label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="ClientName" />
+                        <span asp-validation-for="ClientName"></span>
+                    </div>
+                </div>
+
+                    <div class="form-horizontal-group">
+
+                        <div class="form-group">
+                            <label class="form-label" asp-for="StartDate" >Start Date</label>
+                            <div class="field-group">
+                                <input class="form-input" type="date" asp-for="StartDate" />
+                                <span asp-validation-for="StartDate"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" asp-for="EndDate">End Date</label>
+                            <div class="field-group">
+                            <input class="form-input" type="date" asp-for="EndDate" />
+                                <span asp-validation-for="EndDate"></span>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="Budget">Budget</label>
+                        <div class="form-input-extended">
+                             <i class="fa-solid fa-dollar-sign"></i>
+                        <input class="form-input" asp-for="Budget"/>
+                            <span asp-validation-for="Budget"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit btn-blue">Create</button>
+           
+              
+            </form>
+        </div>
+ 
+    </div>
+
+</section>
+
+
+<script>
+
+      // === WYSIWYG field ===
+         document.addEventListener('DOMContentLoaded', function() {
+              initWysiwyg('#add-project-description-wysiwyg-editor', '#add-project-description-wysiwyg-toolbar', '#add-project-description', '@Html.Raw(ViewBag.Description ?? "")')
+         })
+
+         function initWysiwyg(wysiwygEditorId, wysiwygToolbarId, textareaId, content) {
+                const textarea = document.querySelector(textareaId)
+                const quill = new Quill(wysiwygEditorId, {
+                    modules: {
+                        syntax: true,
+                        toolbar: wysiwygToolbarId
+                    },
+                    placeholder: 'Type something',
+                    theme: 'snow'
+                })
+
+                if(content)
+                    quill.root.innerHTML = content;
+
+                quill.on('text-change', () => {
+                    textarea.value = quill.root.innerHTML;
+                })
+            }
+
+
+</script>

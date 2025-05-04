@@ -3,9 +3,15 @@
 
     <div class="member card" data-project-id="@Model.Id">
             <div class="card-header">
-        <button type="button" data-type="modal" data-target="#editMemberModal" class="btn-action" data-user-id="@Model.Id">
+    @*         <button type="button" data-type="modal" data-target="#editMemberModal" class="btn-action" >
+     *@            <button type="button" data-type="dropdown" data-target="#memberDropdown-@Model.Id" class="btn-action">
                     <i class="fa-solid fa-ellipsis"></i>
-                </button>
+                    </button>
+
+        <div class="dropdown dropdown-member" id="memberDropdown-@Model.Id">
+                @await Html.PartialAsync("Dropdowns/_MemberDropdownPartial")
+            </div>
+
             </div>
 
             <div class="card-body">

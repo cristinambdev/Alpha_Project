@@ -1,0 +1,31 @@
+﻿@model MiniProjectsViewModel
+
+@{
+    ViewData["Title"] = "MiniProjects";
+
+}
+
+@await Html.PartialAsync("Modals/_AddMiniProjectFormPartial", Model.AddMiniProjectForm)
+@await Html.PartialAsync("Modals/_EditMiniProjectFormPartial", new EditMiniProjectViewModel
+{
+    StatusOptions = Model.StatusOptions
+})
+
+<section id="projects">
+    <div class="page-header">
+        <h2>@ViewData["Title"]</h2>
+            <button type="button" data-type="modal" data-target="#addMiniProjectModal" class="btn btn-add btn-blue">Add Mini Project</button>
+        
+    </div>
+
+    <section class="project-list">
+        @if(Model.MiniProjects != null && Model.MiniProjects.Any())
+        {
+            @foreach (var miniproject in Model.MiniProjects)
+            {
+                @await Html.PartialAsync("ListsItems/_MiniProjectListItemPartial", miniproject)
+            }
+        }
+    </section>
+
+</section>

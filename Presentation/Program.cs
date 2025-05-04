@@ -8,11 +8,19 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
+// By chat gpt- Load the default appsettings.json (already happens implicitly, but it is explicitly here)
+// Then load  secrets file — optional: true means "OK if it's missing"
+builder.Configuration
+       .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+       .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true);
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<AppDbContext>(x => 
@@ -74,6 +82,8 @@ builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
 builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMiniProjectRepository, MiniProjectRepository>();
+
 
 
 builder.Services.AddScoped<IClientService, ClientService>();
@@ -81,7 +91,7 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
+builder.Services.AddScoped<IMiniProjectService, MiniProjectService>();
 
 var app = builder.Build();
 
@@ -96,13 +106,14 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
+app.UseStaticFiles();
 
-app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/admin/overview"));
-app.MapControllers();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Admin}/{action=Index}/{id?}")
     .WithStaticAssets();
-
+app.MapControllers();
+app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/admin/overview"));
 
 app.Run();

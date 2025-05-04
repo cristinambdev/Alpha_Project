@@ -12,7 +12,7 @@
             <form novalidate method="post" asp-action="AddMember" asp-controller="Users" enctype="multipart/form-data" >
                 <div class="image-previewer circle">
                     <img src="" class="image-preview" />
-                    <input asp-for="UserImage" type="file" accept="image/*" class="hide" />
+                    <input asp-for="UserImage" type="file" accept="image/*" class="hide" name="UserImage" />
                 </div>
 
                 <div class="form-horizontal-group">

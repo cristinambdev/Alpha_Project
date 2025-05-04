@@ -1,0 +1,39 @@
+﻿@model MiniProjectViewModel
+
+
+    <div class="project card" data-project-id="@Model.Id">
+        <div class="card-header">
+
+          <div class="project-image">
+            <img src="@Model.ProjectImage" alt="project-image" />
+           </div>
+                <span class="client-name">@Model.ClientName</span>
+           
+
+        <h6 class="project-name">@Model.Title</h6>
+
+
+            <div id="project-actions-container">
+            <button type="button" data-type="dropdown" data-target="#miniprojectDropdown-@Model.Id" class="btn-action">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </button>
+
+            <div class="dropdown dropdown-project" id="miniprojectDropdown-@Model.Id">
+                    @await Html.PartialAsync("Dropdowns/_MiniProjectDropdownPartial")
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+        <p>@Html.Raw(@Model.Description)</p>
+        </div>
+
+        <div class="card-footer">
+            <div class="project-time warning">
+            <div class="deadline">@Model.StatusName</div>
+            </div>
+
+           
+        </div>
+   </div> 
+

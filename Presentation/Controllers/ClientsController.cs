@@ -1,18 +1,26 @@
 ﻿using Business.Models;
 using Business.Services;
+using Data.Contexts;
 using Data.Entities;
 using Domain.Extentions;
 using Domain.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Text.Json;
+using static System.Net.Mime.MediaTypeNames;
 
 
 namespace Presentation.Controllers;
 
-public class ClientsController(IClientService clientService, IWebHostEnvironment env) : Controller
+public class ClientsController(IClientService clientService, IWebHostEnvironment env, AppDbContext context, IStatusService statusService) : Controller
 {
     private readonly IClientService _clientService = clientService;
+    private readonly IStatusService _statusService = statusService;
+    private readonly AppDbContext _context = context;
     private readonly IWebHostEnvironment _env = env;
 
     [HttpGet]
@@ -20,15 +28,33 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
     public async Task<IActionResult> Index()
     {
         var clientResult = await _clientService.GetClientsAsync();
+        var statusResult = await _statusService.GetStatusesAsync();
 
         if (!clientResult.Succeeded)
         {
             // handle error (optional)
         }
-
-        var clients = clientResult.Result?.Select(c => new ClientViewModel
+        // Suggested by Chat GPT. Map the status result into the view and form select
+         var statusList = statusResult.Result?
+        .Select(status => new SelectListItem
         {
-            Client = c
+            Value = status.StatusName ?? "", 
+            Text = status.StatusName ?? " "
+        })
+        .ToList() ?? new List<SelectListItem>();
+        // Add Active and Inactive only if they are not present in the result
+        if (!statusList.Any(x => x.Value == "Active"))
+            statusList.Add(new SelectListItem { Value = "Active", Text = "Active" });
+
+        if (!statusList.Any(x => x.Value == "Inactive"))
+            statusList.Add(new SelectListItem { Value = "Inactive", Text = "Inactive" });
+
+        var clients = clientResult.Result?.Select(client => new ClientViewModel
+        {
+            Client = client,
+            StatusList = statusList
+
+
         }) ?? new List<ClientViewModel>();
 
         var viewModel = new ClientsViewModel
@@ -37,7 +63,7 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
         };
 
         return View(viewModel);
-    }  
+    }
 
 
     [HttpPost]
@@ -54,31 +80,41 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
                 );
             return BadRequest(new { success = false, errors });
         }
-        //map formData 
-        var client = form.MapTo<AddClientFormData>();
+        // Manually map the AddClientViewModel to AddClientFormData
+        var client = new AddClientFormData
+        {
+            ClientName = form.ClientName,
+            Email = form.Email,
+            StreetName = form.StreetName,
+            PostalCode = form.PostalCode,
+            City = form.City,
+            Phone = form.Phone,
+            Date = form.Date,
+            Status = form.Status.ToString(),
+        };
 
 
-       //upload image handling
+        //upload image handling
+        string? imagePath = null;
         if (form.ClientImage != null)
         {
-            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
+            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "clients");
             Directory.CreateDirectory(uploadFolder);
 
             // By Chat GPT: restructuring of code for image filename and storing path
             var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}";
             var filePath = Path.Combine(uploadFolder, fileName);
-            //var filePath = Path.Combine(uploadFolder, $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}");
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await form.ClientImage.CopyToAsync(stream);
             }
 
-            // By Chat GPT: Set image path to display later
-            client.Image = Path.Combine("uploads", fileName).Replace("\\", "/");
+            imagePath = $"/uploads/clients/{fileName}";
         }
-            
-       var result = await _clientService.CreateClientAsync(client);
+        client.Image = imagePath;
+
+        var result = await _clientService.CreateClientAsync(client);
 
         if (result.Succeeded)
         {
@@ -88,72 +124,148 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
         {
             return Problem("Unable to submit data");
         }
-
     }
+
 
 
     [HttpPost]
-    public async Task<IActionResult> EditClient(EditClientViewModel form)
+    public async Task<IActionResult> EditClient(EditClientViewModel model)
     {
-        try
+        
+
+        if (!ModelState.IsValid)
         {
-            // Log the incoming form data
-            Debug.WriteLine($"EditClient called with ID: {form.Id}");
-
-            if (!ModelState.IsValid)
-            //manage information through API
-            {
-                var errors = ModelState
-                    .Where(x => x.Value?.Errors.Count > 0)
-                    .ToDictionary( // kvp - key value pair , JSON object
-                        kvp => kvp.Key,
-                        kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToArray()
-                     );
-                return BadRequest(new { success = false, errors });
-            }
-            // Send Data to clientService
-            var editClientFormData = form.MapTo<EditClientFormData>();
-            Debug.WriteLine($"Mapped form data, ClientName: {editClientFormData.ClientName}");
-
-            //image handling
-            if (form.ClientImage != null)
-            {
-                Debug.WriteLine("Processing image...");
-                var uploadFolder = Path.Combine(_env.WebRootPath, "uploads");
-                Directory.CreateDirectory(uploadFolder);
-
-                var filePath = Path.Combine(uploadFolder, $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}");
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await form.ClientImage.CopyToAsync(stream);
-                }
-
-                // By Chat GPT: Save the path
-                editClientFormData.Image = filePath; // Save the path
-            }
-            Debug.WriteLine("Calling UpdateClientAsync...");
-            var result = await _clientService.UpdateClientAsync(editClientFormData);
-            //var result = await _clientService.UpdateClientAsync(form);
-            Debug.WriteLine($"Service result: Success={result.Succeeded}, StatusCode={result.StatusCode}, Error={result.Error}");
-
-            if (result.Succeeded)
-            {
-                return Ok(new { success = true });
-            }
-            else
-            {
-                return Problem("Unable to edit data");
-            }
-
+            var errors = ModelState.ToDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray()
+            );
+            return BadRequest(new { errors });
         }
-        catch (Exception ex)
+
+
+        string? imagePath = null;
+        if (model.ClientImage != null)
         {
-            // Log the full exception details
-            Debug.WriteLine($"Exception in EditClient: {ex.Message}");
-            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
-            return Problem($"Exception: {ex.Message}");
+            // Handle image upload
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.ClientImage.FileName)}";
+            var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "clients");
+            Directory.CreateDirectory(uploadPath);
+            var filePath = Path.Combine(uploadPath, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await model.ClientImage.CopyToAsync(stream);
+            }
+
+            imagePath = $"/uploads/clients/{fileName}";
+        }
+
+        var entity = await _context.Clients.FindAsync(model.Id);
+        if (entity == null)
+            return NotFound();
+
+        entity.ClientName = model.ClientName;
+        entity.Email = model.Email;
+        entity.Phone = model.Phone;
+        entity.StreetName = model.StreetName;
+        entity.PostalCode = model.PostalCode;
+        entity.City = model.City;
+        entity.Date = model.Date;
+        entity.Status = model.Status;
+
+        if (imagePath != null)
+        {
+            entity.Image = imagePath;
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new { success = true });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetClientData(int clientId)
+    {
+
+        var client = await _context.Clients
+             .Where(c => c.Id == clientId.ToString()) // help from Chat GPT to poupulate items
+             .Select(c => new
+
+             {
+                 c.Id,
+                 c.ClientName,
+                 c.Email,
+                 c.Phone,
+                 c.StreetName,
+                 c.PostalCode,
+                 c.City,
+                 c.Date,
+                 c.Status,
+                 ClientImage = c.Image
+
+             })
+            .FirstOrDefaultAsync();
+
+
+        if (client == null)
+        {
+            return NotFound();
+        }
+
+        return Json(client);
+
+
+    }
+
+    //[HttpDelete]
+    //public async Task<IActionResult> DeleteCustomer([FromRoute] string id)
+    //{
+    //    var client = await _clientService.GetClientByIdAsync(id);
+    //    if (client?.Result == null)
+    //        return NotFound();
+
+    //    var result = await _clientService.DeleteClientAsync(id);
+    //    if (result.Succeeded)
+    //    {
+    //        return RedirectToAction("Index");
+    //    }
+
+    //    return Problem("Unable to delete the client.");
+    //}
+
+    [HttpPost("Clients/DeleteCustomer/{id}")]
+    public async Task<IActionResult> DeleteCustomer([FromRoute] string id)
+    {
+
+        var deleteResult = await _clientService.DeleteClientAsync(id);
+
+        if (deleteResult.Succeeded)
+        {
+            Console.WriteLine($"Client with ID: {id} deleted successfully. Redirecting to Index.");
+            return Json(new { success = true, message = "Client deleted successfully!" }); // Return JSON for AJAX
+        }
+        else
+        {
+            return Json(new { success = false, message = "Failed to delete client.", errors = deleteResult.Error }); // Return JSON with errors
         }
     }
 
+    [HttpGet]
+    public async Task<JsonResult> SearchClients(string term)
+    {
+        if (string.IsNullOrEmpty(term))
+            return Json(new List<object>());
+
+        var clients = await _context.Clients
+            .Where(x => x.ClientName!.Contains(term) || x.Email!.Contains(term))
+            .Select(x => new 
+            { x.Id,
+                ClientImage = x.Image ?? "",
+                x.ClientName })
+            .ToListAsync();
+
+        return Json(clients);
+    }
 
 }
+

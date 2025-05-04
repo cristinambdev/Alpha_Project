@@ -27,6 +27,7 @@ public class ClientEntity
 
     public string? Image { get; set; }
 
-    public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
+    public ICollection<ProjectClientEntity> ProjectClients { get; set; } = new List<ProjectClientEntity>();
+
 
 }

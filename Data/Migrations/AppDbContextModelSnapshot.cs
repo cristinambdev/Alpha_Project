@@ -63,6 +63,59 @@ namespace Data.Migrations
                     b.ToTable("Clients");
                 });
 
+            modelBuilder.Entity("Data.Entities.MiniProjectEntity", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("Budget")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClientName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("ProjectImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("StartDate")
+                        .HasColumnType("date");
+
+                    b.Property<int>("StatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StatusId");
+
+                    b.ToTable("MiniProjects");
+                });
+
+            modelBuilder.Entity("Data.Entities.ProjectClientEntity", b =>
+                {
+                    b.Property<string>("ProjectId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ClientId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ProjectId", "ClientId");
+
+                    b.HasIndex("ClientId");
+
+                    b.ToTable("ProjectClients");
+                });
+
             modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
                 {
                     b.Property<string>("Id")
@@ -71,10 +124,6 @@ namespace Data.Migrations
                     b.Property<decimal?>("Budget")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("ClientId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Created")
                         .HasColumnType("datetime2");
@@ -98,19 +147,26 @@ namespace Data.Migrations
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ClientId");
 
                     b.HasIndex("StatusId");
 
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("Data.Entities.ProjectUserEntity", b =>
+                {
+                    b.Property<string>("ProjectId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ProjectId", "UserId");
+
                     b.HasIndex("UserId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("ProjectUsers");
                 });
 
             modelBuilder.Entity("Data.Entities.StatusEntity", b =>
@@ -131,6 +187,28 @@ namespace Data.Migrations
                         .IsUnique();
 
                     b.ToTable("Statuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            StatusName = "Not Started"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            StatusName = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            StatusName = "Completed"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            StatusName = "On Hold"
+                        });
                 });
 
             modelBuilder.Entity("Data.Entities.Tag", b =>
@@ -156,15 +234,12 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("City")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StreetName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
@@ -382,29 +457,62 @@ namespace Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
+            modelBuilder.Entity("Data.Entities.MiniProjectEntity", b =>
+                {
+                    b.HasOne("Data.Entities.StatusEntity", "Status")
+                        .WithMany("MiniProjects")
+                        .HasForeignKey("StatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Data.Entities.ProjectClientEntity", b =>
                 {
                     b.HasOne("Data.Entities.ClientEntity", "Client")
-                        .WithMany("Projects")
+                        .WithMany("ProjectClients")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Data.Entities.ProjectEntity", "Project")
+                        .WithMany("ProjectClients")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
+                {
                     b.HasOne("Data.Entities.StatusEntity", "Status")
                         .WithMany("Projects")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Status");
+                });
+
+            modelBuilder.Entity("Data.Entities.ProjectUserEntity", b =>
+                {
+                    b.HasOne("Data.Entities.ProjectEntity", "Project")
+                        .WithMany("ProjectUsers")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Data.Entities.UserEntity", "User")
-                        .WithMany("Projects")
+                        .WithMany("ProjectUsers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Client");
-
-                    b.Navigation("Status");
+                    b.Navigation("Project");
 
                     b.Navigation("User");
                 });
@@ -473,11 +581,20 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Data.Entities.ClientEntity", b =>
                 {
-                    b.Navigation("Projects");
+                    b.Navigation("ProjectClients");
+                });
+
+            modelBuilder.Entity("Data.Entities.ProjectEntity", b =>
+                {
+                    b.Navigation("ProjectClients");
+
+                    b.Navigation("ProjectUsers");
                 });
 
             modelBuilder.Entity("Data.Entities.StatusEntity", b =>
                 {
+                    b.Navigation("MiniProjects");
+
                     b.Navigation("Projects");
                 });
 
@@ -485,7 +602,7 @@ namespace Data.Migrations
                 {
                     b.Navigation("Address");
 
-                    b.Navigation("Projects");
+                    b.Navigation("ProjectUsers");
                 });
 #pragma warning restore 612, 618
         }

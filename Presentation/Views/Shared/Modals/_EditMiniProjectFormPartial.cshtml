@@ -1,0 +1,160 @@
+﻿@model EditMiniProjectViewModel
+
+<section id="editMiniProjectModal" class="modal">
+    <div class="card">
+
+        <div class="card-header">
+            <h3>Edit Mini Project</h3>
+            <button type="button" class="btn-close" data-type="close" data-target="#editMiniProjectModal"></button>
+        </div>
+
+        <div class="card-body">
+            <form novalidate method="post" asp-action="EditMiniProject" asp-controller="MiniProjects" asp-route-id="@Model.Id" id="editMiniProjectForm" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" id="edit-project-id" name="Id" />
+                <input type="hidden" asp-for="ExistingImageUrl" />
+
+                <div class="form-group">
+                    <div class="image-previewer square">
+                        <img src="" class="image-preview" />
+@*                         <img src="@Model.ExistingImageUrl" class="image-preview" />
+ *@                        <input asp-for="ProjectImage" accept="image/*" class="hide" id="edit-project-image" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Title">Project Name</label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="Title" id="edit-project-title" />
+                        <span asp-validation-for="Title"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Description">Description</label>
+
+                    <div class="wysiwyg">
+
+                        <textarea id="edit-project-description" asp-for="Description" id="edit-project-description"></textarea>
+
+                        <div id="edit-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
+
+                        <div id="edit-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">
+                            <span class="ql-formats">
+                                <button class="ql-bold"></button>
+                                <button class="ql-italic"></button>
+                                <button class="ql-underline"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-align" value=""></button>
+                                <button class="ql-align" value="center"></button>
+                                <button class="ql-align" value="right"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-list" value="bullet"></button>
+                                <button class="ql-list" value="ordered"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button class="ql-link"></button>
+                            </span>
+                        </div>
+                        <span asp-validation-for="Description"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" asp-for="ClientName">Client Name</label>
+                    <div class="field-group">
+                        <input class="form-input" asp-for="ClientName" id="edit-project-clientname" />
+                        <span asp-validation-for="ClientName"></span>
+                    </div>
+                </div>
+            
+
+                <div class="form-horizontal-group">
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="StartDate">Start Date</label>
+                        <div class="field-group">
+                            <input class="form-input" type="date" asp-for="StartDate" id="edit-project-startdate" />
+                            <span asp-validation-for="StartDate"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="EndDate">End Date</label>
+                        <div class="field-group">
+                            <input class="form-input" type="date" asp-for="EndDate" id="edit-project-enddate" />
+                            <span asp-validation-for="EndDate"></span>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" asp-for="Budget">Budget</label>
+                    <div class="form-input-extended">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                        <input class="form-input" asp-for="Budget" id="edit-project-budget" />
+                        <span asp-validation-for="Budget"></span>
+                    </div>
+                </div>
+              @*   <div class="form-group">
+                    <label asp-for="StatusId" class="form-label">Status</label>
+                    <select asp-for="StatusId" asp-items="Model.StatusOptions" class="form-input"></select>
+                    <span asp-validation-for="StatusId"></span>
+                </div> *@
+                <div class="form-group">
+                    <label class="form-label" asp-for="StatusId">Choose Status</label>
+
+                    <div class="custom-select" data-placeholder="Choose a status">
+                        <button type="button" class="custom-select-trigger">
+                            <span class="custom-select-text">Choose Status</span>
+                        </button>
+                        <ul class="custom-select-options">
+                            @foreach (var status in Model.StatusOptions!)
+                            {
+                                <li class="custom-select-option" data-value="@status.Value">@status.Text</li>
+                            }
+                        </ul>
+                        <input type="hidden" asp-for="StatusId" id="edit-project-status" />
+                        <span asp-validation-for="StatusId"></span>
+                    </div>
+                </div>
+             
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-submit btn-blue">Save</button>
+
+
+            </form>
+        </div>
+
+    </div>
+
+</section>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+         initWysiwyg('#edit-project-description-wysiwyg-editor', '#edit-project-description-wysiwyg-toolbar', '#edit-project-description', '@Html.Raw(ViewBag.Description ?? "")')
+    })
+    function initWysiwyg(wysiwygEditorId, wysiwygToolbarId, textareaId, content) {
+        const textarea = document.querySelector(textareaId)
+        const quill = new Quill(wysiwygEditorId, {
+            modules: {
+                syntax: true,
+                toolbar: wysiwygToolbarId
+            },
+            placeholder: 'Type something',
+            theme: 'snow'
+        })
+
+        if(content)
+            quill.root.innerHTML = content;
+
+        quill.on('text-change', () => {
+            textarea.value = quill.root.innerHTML;
+        })
+    }
+        document.getElementById('editMiniProjectForm').addEventListener('submit', () => {
+        console.log("Form submit triggered");
+        console.log("Description:", document.querySelector('#edit-project-description').value);
+    });
+
+</script>

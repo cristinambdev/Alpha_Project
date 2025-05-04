@@ -1,15 +1,13 @@
 ﻿using Business.Services;
 using Data.Contexts;
+using Data.Entities;
 using Domain.Extentions;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.CodeAnalysis;
-using Microsoft.SqlServer.Server;
+using Microsoft.EntityFrameworkCore;
 using Presentation.Models;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace Presentation.Controllers;
 
@@ -24,31 +22,62 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
 
     [HttpGet]
     [Route("admin/projects")]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Index(string id)
     {
+        var allProjects = await _context.Projects
+            .Include(x => x.ProjectUsers)
+                .ThenInclude(x => x.User)
+            .Include(x => x.ProjectClients)
+                .ThenInclude(x => x.Client)
+            .ToListAsync();
 
-        var projectResult = await _projectService.GetProjectsAsync();
-        var clients = await _clientService.GetClientsAsync();
-        var users = await _userService.GetUsersAsync();
+        // Fetch users and clients
+        var users = await _context.Users.ToListAsync();
+        var clients = await _context.Clients.ToListAsync();
 
-        var viewModel = new ProjectsViewModel
+        // Map projects to ProjectViewModel
+        var projectViewModels = allProjects.Select(p => new ProjectViewModel
         {
-            Projects = projectResult.Result?.Select(project => new ProjectViewModel
+            Id = p.Id,
+            ProjectName = p.ProjectName,
+            Description = p.Description!,
+            TimeLeft = GetTimeLeft(p.EndDate),
+            Clients = p.ProjectClients.Select(pc => new ClientViewModel
             {
-                Id = project.Id,
-                ClientImage = project.Client?.Image ?? "", // Handle null Client
-                ProjectName = project.ProjectName,
-                ClientName = project.Client?.ClientName ?? "No client assigned", // Handle null Client
-                Description = project.Description ?? "No description", // Handle null Description
-                TimeLeft = GetTimeLeft(project.EndDate),
-                Users = project.User != null
-                    ? new List<string> { project.User.UserImage ?? "default-user-image" }
-                    : new List<string> { "No user assigned" } // Handle null User
-            }) ?? []
+                Id = pc.Client.Id,
+                ClientName = pc.Client.ClientName,
+                Image = pc.Client.Image
+            }).ToList(),
+            Users = p.ProjectUsers.Select(u => new UserViewModel
+            {
+                Id = u.User.Id,
+                FirstName = u.User.FirstName,
+                LastName = u.User.LastName,
+                UserImage = u.User.UserImage
+            }).ToList()
+        }).ToList();
+
+        var model = new ProjectsViewModel
+        {
+            Projects = projectViewModels,
+            Users = users.Select(u => new UserViewModel
+            {
+                Id = u.Id,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                UserImage = u.UserImage
+            }).ToList(),
+            Clients = clients.Select(c => new ClientViewModel
+            {
+                Id = c.Id,
+                ClientName = c.ClientName,
+                Image = c.Image
+            }).ToList()
         };
 
-        return View(viewModel);
+        return View(model); // Ensure you're passing ProjectsViewModel here
     }
+
 
     private string GetTimeLeft(DateTime? endDate)//created by chat GPT to calculate time left
     {
@@ -68,72 +97,117 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddProject(AddProjectViewModel form, string SelectedUserIds)
+    public async Task<IActionResult> AddProject(AddProjectViewModel form)
     {
-        if (!ModelState.IsValid)
+        try
         {
-            var errors = ModelState
-                .Where(x => x.Value?.Errors.Count > 0)
-                .ToDictionary(
-                    kvp => kvp.Key,
-                    kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToList()
-                );
-            return BadRequest(new { success = false, errors });
-        }
-        //var existingMembers = await _context.Users
-        //    .Where(m => m.Projects.ProjectId == form.Id)
-        //    .ToListAsync();
-
-        //_userService.GetUsersAsync.RemoveRange(existingMembers):
-        //    if(!string.IsNullOrEmpty(SelectedUserIds))
-        //    {
-        //    var userIds = JsonSerializer.Deserelaize<List<int>>(SelectedUserIds)
-        //        if(userIds != null) 
-        //        {
-        //        foreach(var userId in userIds)
-        //            {
-        //            _context.Users.Add(new UserEntity { ProjectId = form.Id, UserId = userId})
-        //            }
-        //        }
-        //    }
-
-        var addProjectFormData = form.MapTo<AddProjectFormData>();
-
-        //upload image handling
-        if (form.ClientImage != null)
-        {
-            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "clients");
-            Directory.CreateDirectory(uploadFolder);
-
-            // By Chat GPT: restructuring of code for image filename and storing path
-            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage!.FileName)}";
-            var filePath = Path.Combine(uploadFolder, fileName);
-
-            //var filePath = Path.Combine(uploadFolder, $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}");
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            if (!ModelState.IsValid)
             {
-                await form.ClientImage.CopyToAsync(stream);
+                var errors = ModelState
+                    .Where(x => x.Value?.Errors.Count > 0)
+                    .ToDictionary(
+                        kvp => kvp.Key,
+                        kvp => kvp.Value?.Errors.Select(x => x.ErrorMessage).ToList()
+                    );
+                return BadRequest(new { success = false, errors });
+            }
+            // Chat gpt -Set default UserId if not provided in the form
+            // Ensure Id is generated if missing
+            if (string.IsNullOrEmpty(form.Id))
+            {
+                form.Id = Guid.NewGuid().ToString();
             }
 
-            // By Chat GPT: Set image path to display later
-            addProjectFormData.Image = $"/uploads/clients/{fileName}";
-        }
-        // If using authentication, set the UserId from the current user
-        if (string.IsNullOrEmpty(form.UserId))
-        {
-            form.UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value!;
-        }
+            // Ensure UserId is populated, either from form or current user
+            if (string.IsNullOrEmpty(form.UserId))
+            {
+                form.UserId = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            }
 
-        var result = await _projectService.CreateProjectAsync(addProjectFormData);
+            if (string.IsNullOrEmpty(form.UserId))
+            {
+                ModelState.AddModelError("UserId", "UserId is required.");
+                return BadRequest(new { success = false, errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage) });
+            }
+            //upload image handling
+            string? imagePath = null; // suggested by chat GPT to store the image value
+            if (form.ClientImage != null)
+            {
+                var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "clients");
+                Directory.CreateDirectory(uploadPath);
 
-        if (result.Succeeded)
-        {
-            return Ok(new { success = true });
+                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}";
+                var filePath = Path.Combine(uploadPath, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await form.ClientImage.CopyToAsync(stream);
+                }
+
+                imagePath = $"/uploads/clients/{fileName}";
+            }
+
+            //// Remove existing project users
+            //var existingMembers = await _context.ProjectUsers
+            //    .Where(pu => pu.ProjectId == form.Id)
+            //    .ToListAsync();
+            //_context.ProjectUsers.RemoveRange(existingMembers);
+            //// Add new project users
+            //if (!string.IsNullOrEmpty(SelectedUserIds))
+            //{
+            //    var userIds = JsonSerializer.Deserialize<List<string>>(SelectedUserIds);
+            //    if (userIds != null)
+            //    {
+            //        foreach (var userId in userIds)
+            //        {
+            //            _context.ProjectUsers.Add(new ProjectUserEntity { ProjectId = form.Id, UserId = userId });
+            //        }
+            //    }
+            //}
+            //// Remove existing project clients
+            //var existingClients = await _context.ProjectClients
+            //    .Where(c => c.ProjectId == form.Id)
+            //    .ToListAsync();
+            //_context.ProjectClients.RemoveRange(existingClients);
+            //// Add new project clients
+            //if (!string.IsNullOrEmpty(SelectedClientIds))
+            //{
+            //    var clientIds = JsonSerializer.Deserialize<List<string>>(SelectedClientIds);
+            //    if (clientIds != null)
+            //    {
+            //        foreach (var clientId in clientIds)
+            //        {
+            //            _context.Add(new ProjectClientEntity { ProjectId = form.Id, ClientId = clientId });
+            //        }
+            //    }
+            //}
+
+
+            // Map the view model to form data for the service
+            var addProjectFormData = form.MapTo<AddProjectFormData>();
+
+            // Manually set any properties that need special handling
+            var formDataType = typeof(AddProjectFormData);
+            if (formDataType.GetProperty("Image") != null)
+            {
+                formDataType.GetProperty("Image")!.SetValue(addProjectFormData, imagePath);
+            }
+            // Call the service to create the project
+            var result = await _projectService.CreateProjectAsync(addProjectFormData);
+
+
+            if (result.Succeeded)
+            {
+                return Ok(new { success = true });
+            }
+            else
+            {
+                return Problem($"Unable to submit data: {result.Error}");
+            }
         }
-        else
+        catch (Exception ex)
         {
-            return Problem($"Unable to submit data: {result.Error}");
+            return StatusCode(500, new { success = false, error = ex.Message });
         }
 
     }
@@ -152,7 +226,24 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
             return BadRequest(new { success = false, errors });
         }
         var editProjectFormData = form.MapTo<EditProjectFormData>();
-        //var result = await _projectService.UpdateProjectAsync(editProjectFormData);
+
+        string? imagePath = null;
+
+        if (form.ClientImage != null)
+        {
+            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "clients");
+            Directory.CreateDirectory(uploadFolder);
+
+            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}";
+            var filePath = Path.Combine(uploadFolder, fileName);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await form.ClientImage.CopyToAsync(stream);
+            }
+
+            imagePath = $"/uploads/clients/{fileName}";
+        }
         var result = await _projectService.UpdateProjectAsync(editProjectFormData);
         if (result.Succeeded)
         {
@@ -172,4 +263,5 @@ public class ProjectsController(IProjectService projectService, IWebHostEnvironm
     {
         return Json(new { });
     }
+
 }

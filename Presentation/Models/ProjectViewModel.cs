@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Presentation.Models;
 
@@ -16,7 +17,12 @@ public class ProjectViewModel
 
     public string TimeLeft { get; set; } = null!;
 
-    public IEnumerable<string> Users { get; set; } = [];
+    public Project Project { get; set; } = null!;
 
-    public IEnumerable<string> Clients { get; set; } = [];
+    public IEnumerable<UserViewModel> Users { get; set; } =  Enumerable.Empty<UserViewModel>(); //chat gpt avoid any issues with initializing empty collections
+    public IEnumerable<ClientViewModel> Clients { get; set; } = Enumerable.Empty<ClientViewModel>();
+
+    //public IEnumerable<string> Users { get; set; } = [];
+
+    //public IEnumerable<string> Clients { get; set; } = [];
 }

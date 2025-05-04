@@ -6,11 +6,15 @@ namespace Presentation.Models;
 
 public class AddProjectViewModel
 {
-    public IEnumerable<SelectListItem> Clients { get; set; } = [];
+    // Use custom collections instead of SelectListItem
+    public IEnumerable<UserViewModel> Users { get; set; } = new List<UserViewModel>();
+    public IEnumerable<ClientViewModel> Clients { get; set; } = new List<ClientViewModel>();
+    
+    //public IEnumerable<SelectListItem> ClientsTags { get; set; } = [];
 
-    public IEnumerable<SelectListItem> Users { get; set; } = [];
+    //public IEnumerable<SelectListItem> UsersTags { get; set; } = [];
 
-    public string Id { get; set; } = null!;
+    public string? Id { get; set; } 
 
     [Display(Name = "Project Image", Prompt = "Select an image")]
     [DataType(DataType.Upload)]
@@ -22,7 +26,7 @@ public class AddProjectViewModel
     public string ProjectName { get; set; } = null!;
 
     [Display(Name = "Client Name", Prompt = "Client Name")]
-    [Required(ErrorMessage = "Required")]
+    //[Required(ErrorMessage = "Required")]
     [DataType(DataType.Text)]
     public string ClientName { get; set; } = null!;
 
@@ -31,7 +35,6 @@ public class AddProjectViewModel
     public string? Description { get; set; }
 
     [Display(Name = "Start Date")]
-    [Required(ErrorMessage = "Required")]
     //[DataType(DataType.Date)]
     public DateTime StartDate { get; set; } = DateTime.Now;
 
@@ -41,12 +44,12 @@ public class AddProjectViewModel
     public DateTime EndDate { get; set; } = DateTime.Now;
 
     [Display(Name = "Members", Prompt = "Add Project Members")]
-    [Required(ErrorMessage = "Required")]
+    //[Required(ErrorMessage = "Required")]
     [DataType(DataType.Text)]
     public string Members { get; set; } = null!;
 
     [Display(Name = "Budget", Prompt = "")]
-    [Required(ErrorMessage = "Required")]
+    //[Required(ErrorMessage = "Required")]
     [DataType(DataType.Currency)]
     public decimal Budget {  get; set; }
 

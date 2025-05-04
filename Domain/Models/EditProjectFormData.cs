@@ -1,9 +1,11 @@
-﻿namespace Domain.Models;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Domain.Models;
 
 public class EditProjectFormData
 {
     public string? Id { get; set; }
-    public string? Image { get; set; }
+    public IFormFile? ClientImage { get; set; }
     public string ProjectName { get; set; } = null!;
 
     public string? Description { get; set; }
@@ -14,7 +16,7 @@ public class EditProjectFormData
     public decimal? Budget { get; set; }
     public string ClientId { get; set; } = null!;
 
-    public string UserId { get; set; } = null!;
+    public int UserId { get; set; } 
 
     public int StatusId { get; set; }
 }

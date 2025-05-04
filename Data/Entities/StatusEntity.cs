@@ -11,4 +11,6 @@ public class StatusEntity
     public string StatusName { get; set; } = null!;
     public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
 
+    public virtual ICollection<MiniProjectEntity> MiniProjects { get; set; } = [];
+
 }

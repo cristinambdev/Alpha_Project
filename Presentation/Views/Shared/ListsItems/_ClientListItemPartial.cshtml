@@ -1,6 +1,6 @@
-﻿    @model IEnumerable<ClientViewModel>
+﻿@model IEnumerable<ClientViewModel>
 
-    <div class="card">
+<div class="card">
 
     <table>
         <thead>
@@ -30,24 +30,33 @@
                         <td class="client-phone">@client.Client.Phone</td>
                         <td class="client-date">@client.Client.Date</td>
                         <td class="client-status">
-                            <div class="badge success">
-                                <span class="success">@client.Client.Status</span>
+
+                            <div class="badge @(client.Client.Status == "1" || client.Client.Status == "Active" ? "success" : "danger")">
+                                <span class="@(client.Client.Status == "1" || client.Client.Status == "Active" ? "success" : "danger")">
+                                    @(client.Client.Status == "1" || client.Client.Status == "Active" ? "Active" : "Inactive")
+                                </span>
                             </div>
                         </td>
-                        <td class="client-actions" id="editClientModal-@client.Client.Id">
-                            <i class="fa-solid fa-ellipsis"
-                               data-type="modal"
-                               data-target="#editClientModal"
-                               data-id="@client.Client.Id"
-                               data-name="@client.Client.ClientName"
-                               data-email="@client.Client.Email"
-                               data-phone="@client.Client.Phone"
-                               data-address="@client.Client.StreetName, @client.Client.PostalCode, @client.Client.City"
-                               data-status="@client.Client.Status"
-                               data-image="@client.Client.Image"
-                               data-template="@client.Client.Date">
-                           
-                            </i>
+
+                        <td class="client-actions" data-id="@client.Client.Id">
+                                <i class="fa-solid fa-ellipsis edit-client-button"
+                                   data-type="dropdown"
+                                   data-target="#clientDropdown-@client.Client.Id"
+                                   data-id="@client.Client.Id"
+                                   data-name="@client.Client.ClientName"
+                                   data-email="@client.Client.Email"
+                                   data-phone="@client.Client.Phone"
+                                   data-streetname="@client.Client.StreetName"
+                                   data-postalcode="@client.Client.PostalCode"
+                                   data-city="@client.Client.City"
+                                    data-status="@(client.Client.Status == "0" || client.Client.Status == "Inactive" ? "0" : "1")"
+                                   data-image="@client.Client.Image"
+                                   data-template="@client.Client.Date">
+
+                                </i>
+                            <div class="dropdown dropdown-client" id="clientDropdown-@client.Client.Id">
+                                @await Html.PartialAsync("Dropdowns/_ClientDropdownPartial", client.Client)
+                            </div>
                         </td>
                    </tr>
                 }
@@ -57,30 +66,3 @@
     </table>
 
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('.fa-ellipsis').forEach(icon => {
-            icon.addEventListener('click', function () {
-                const modal = document.querySelector('#editClientModal');
-
-                modal.querySelector('[name="ClientName"]').value = this.dataset.name;
-                modal.querySelector('[name="Email"]').value = this.dataset.email;
-                modal.querySelector('[name="Phone"]').value = this.dataset.phone;
-                modal.querySelector('[name="Address"]').value = this.dataset.address;
-
-                // If using a hidden field for ID
-                let idField = modal.querySelector('[name="Id"]');
-                if (idField) {
-                    idField.value = this.dataset.id;
-                }
-
-                // Update status dropdown
-                const statusInput = modal.querySelector('[name="client-select-value"]');
-                if (statusInput) {
-                    statusInput.value = this.dataset.status.toLowerCase() === "active" ? "1" : "2";
-                    modal.querySelector('.custom-select-text').innerText = this.dataset.status;
-                }
-            });
-        });
-    });
-</script>

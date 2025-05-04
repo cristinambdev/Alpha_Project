@@ -16,6 +16,8 @@ public class UserEntity : IdentityUser
 
     public virtual UserAddressEntity? Address { get; set; }
 
-    public virtual ICollection<ProjectEntity> Projects { get; set; } = [];
+
+    public ICollection<ProjectUserEntity> ProjectUsers { get; set; } = [];
+
 
 }

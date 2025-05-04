@@ -3,7 +3,7 @@
 public class EditClientFormData
 {
     public string? Id { get; set; }
-    public string? Image { get; set; }
+    public string? ClientImage { get; set; }
     public string ClientName { get; set; } = null!;
 
     public string? Email { get; set; }
@@ -17,6 +17,6 @@ public class EditClientFormData
 
     public DateTime? Date { get; set; }
 
-    public string? Status { get; set; }
+    public int? StatusId { get; set; }
 }
 

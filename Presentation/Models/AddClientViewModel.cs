@@ -45,5 +45,5 @@ public class AddClientViewModel
 
     [Display(Name = "Status", Prompt = "Enter a status")]
     [DataType(DataType.Text)]
-    public string? Status { get; set; }
+    public int? Status { get; set; }
 }
