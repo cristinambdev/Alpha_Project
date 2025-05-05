@@ -469,4 +469,24 @@
     })
 
 
+
 })
+
+// === DARK MODE with Bootstrap Theme===
+document.addEventListener("DOMContentLoaded", function () {
+    const toggle = document.getElementById("darkModeToggle");
+    const isDarkMode = localStorage.getItem("darkMode") === "true";
+
+    // Apply saved mode
+    if (isDarkMode) {
+        document.body.classList.add("dark-mode");
+        toggle.checked = true;
+    }
+
+    // Listen for toggle changes
+    toggle.addEventListener("change", function () {
+        const enabled = toggle.checked;
+        document.body.classList.toggle("dark-mode", enabled);
+        localStorage.setItem("darkMode", enabled);  // Save the preference
+    });
+});
