@@ -868,7 +868,7 @@ body.dark-mode {
     width: 42px;
     height: 24px;
     border-radius: 30px;
-    background-color: var(--darkmode-toggle-background);
+    background-color: #E3E5E8;
     position: relative;
     top: 0;
     right: 0;
