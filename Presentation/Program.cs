@@ -92,6 +92,12 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMiniProjectService, MiniProjectService>();
 
+builder.Services.Configure<CookiePolicyOptions>(options =>
+{
+    options.CheckConsentNeeded = context => !context.Request.Cookies.ContainsKey("cookieConsent");
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+});
+
 var app = builder.Build();
 
 app.UseCors(x => x.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
@@ -100,7 +106,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 
-
+app.UseCookiePolicy();
 app.UseAuthentication();
 app.UseAuthorization();
 
