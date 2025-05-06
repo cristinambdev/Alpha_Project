@@ -24,20 +24,21 @@
 
 
         <form novalidate asp-controller="Auth" asp-action="SignIn" class="no-ajax" method="post" enctype="multipart/form-data">
-
-            
+           
             <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
 
        
             <div class="form-group">
                 <label class="form-label" asp-for="Email"></label>
                 <input class="form-input" asp-for="Email" />
+                <span asp-validation-for="Email"></span>
 
             </div>
 
             <div class="form-group">
                 <label class="form-label" asp-for="Password"></label>
                 <input class="form-input" asp-for="Password" />
+                <span asp-validation-for="Password"></span>
 
             </div>
 
@@ -47,13 +48,15 @@
                     <span class="checkbox-box"></span>
                 </label>
                 <label for="ispersistent-checkbox" asp-for="IsPersistent" class="checkbox-label">Remember me <a href="#">Forgot Password?</a></label>
-
+                <span asp-validation-for="IsPersistent"></span>
             
             </div>
 
             @if (!string.IsNullOrWhiteSpace(ViewBag.ErrorMessage as string))
             {
-                <div class="alert-notification error">@ViewBag.ErrorMessage</div>
+                <div class="alert-notification error">
+                    @ViewBag.ErrorMessage
+                    </div>
             }
 
 
@@ -73,3 +76,4 @@
 
 </section>
 
+@* @await Html.PartialAsync("_ValidationScripts") *@

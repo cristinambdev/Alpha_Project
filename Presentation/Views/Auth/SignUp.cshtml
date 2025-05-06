@@ -25,7 +25,9 @@
 
         <form asp-controller="Auth" asp-action="SignUp" method="post" novalidate enctype="multipart/form-data" class="no-ajax">
 
-            @if (!string.IsNullOrEmpty(ViewBag?.ErrorMessage))
+            <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
             {
                 <div class="alert-notification error">
                     @ViewBag?.ErrorMessage
@@ -39,27 +41,27 @@
 
                 <div class="form-group">
                     <label class="form-label" asp-for="LastName"></label>
-                    <input class="form-input" asp-for="LastName" />
-                    <span asp-validation-for="LastName"></span>
+                <input class="form-input" asp-for="LastName"  />
+                <span asp-validation-for="LastName" ></span>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" asp-for="Email"></label>
-                <input class="form-input" asp-for="Email" />
-                    <span asp-validation-for="Email"></span>
+                <input class="form-input" asp-for="Email"  />
+                <span asp-validation-for="Email" ></span>
                 </div>
 
 
                 <div class="form-group">
                     <label class="form-label" asp-for="Password"></label>
                     <input class="form-input" asp-for="Password" />
-                    <span asp-validation-for="Password"></span>
+                <span asp-validation-for="Password" ></span>
                 </div>
 
                 <div class="form-group">
                 <label class="form-label" asp-for="ConfirmPassword"></label>
                 <input class="form-input" asp-for="ConfirmPassword" />
-                <span asp-validation-for="ConfirmPassword"></span>
+                <span asp-validation-for="ConfirmPassword" ></span>
                 </div>
 
             <div class="form-group-checkbox">
@@ -68,7 +70,7 @@
                     <span class="checkbox-box"></span>
                 </label>
                 <label for="terms-checkbox" asp-for="TermsAndConditions" class="checkbox-label">I accept <a href="#">Terms and Conditions</a></label>
-                <span asp-validation-for="TermsAndConditions"></span>
+                <span asp-validation-for="TermsAndConditions" c></span>
             </div>
 
             
@@ -85,4 +87,5 @@
    </div>
 
 </section>
-
+@* @await Html.PartialAsync("_ValidationScripts")
+ *@

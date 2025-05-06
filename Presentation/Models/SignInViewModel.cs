@@ -5,13 +5,13 @@ namespace Presentation.Models;
 
 public class SignInViewModel
 {
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
     [DataType(DataType.EmailAddress)]
     [Display(Name = "Email", Prompt = "Enter Email Address")]
     public string Email { get; set; } = null!;
 
-    [Required]
+    [Required(ErrorMessage = "Required")]
     [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$")]
     [DataType(DataType.Password)]
     [Display(Name = "Password", Prompt = "Enter Password")]

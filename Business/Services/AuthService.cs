@@ -24,8 +24,14 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
         if (formData == null)
             return new AuthResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are supplied." };
 
+        //suggested by chat gpt - create a user that will be used in the signin overload instead of adding the email to the overload
+        var user = await _userManager.FindByEmailAsync(formData.Email!);
+        if (user == null)
+        {
+            return new AuthResult { Succeeded = false, StatusCode = 401, Error = "Invalid Email or password." };
+        }
 
-        var result = await _signInManager.PasswordSignInAsync(formData.Email!, formData.Password!, formData.IsPersistent, false);
+        var result = await _signInManager.PasswordSignInAsync(user, formData.Password!, formData.IsPersistent, lockoutOnFailure: false);
 
 
         if (!result.Succeeded)
@@ -51,6 +57,11 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
         if (formData == null)
             return new AuthResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are supplied." };
         var email = formData.Email.Trim().ToLower();
+
+        var existingUser = await _userManager.FindByEmailAsync(email);
+        if (existingUser != null)
+            return new AuthResult { Succeeded = false, StatusCode = 400, Error = "An account with this email already exists." };
+       
         var userEntity = new UserEntity
         {
             UserName = formData.Email,

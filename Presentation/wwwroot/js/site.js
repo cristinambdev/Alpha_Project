@@ -106,8 +106,31 @@
 
 
     // === FORM SUBMISSION HANDLING ===
-    const forms = document.querySelectorAll('form')
+    const forms = document.querySelectorAll('form:not(.no-ajax)') //suggested by chat GPT so that Signup and sign-in that have no-ajax would validate and submit correctly
     forms.forEach(form => {
+        // Find all validatable fields
+        const fields = form.querySelectorAll("input[data-val='true'], select[data-val='true'], textarea[data-val='true']");
+
+        // Add input events for validation
+        fields.forEach(field => {
+            // For text inputs, validate on input
+            field.addEventListener("input", function () {
+                validateField(field);
+            });
+
+            // For all fields, validate on blur
+            field.addEventListener("blur", function () {
+                validateField(field);
+            });
+
+            // For checkboxes, validate on change
+            if (field.type === "checkbox") {
+                field.addEventListener("change", function () {
+                    validateField(field);
+                });
+            }
+        });
+
         form.addEventListener('submit', async (e) => {
             e.preventDefault()
 
@@ -122,6 +145,11 @@
             }
 
             try {
+                //const res = await fetch(form.action, {
+                //    method: 'post',
+                //    body: formData
+                //})
+                //suggested by Chat GPT
                 const method = form.dataset.method || form.getAttribute('method') || 'post'
 
                 const res = await fetch(form.action, {
@@ -144,15 +172,17 @@
 
                     if (data.errors) {
                         Object.keys(data.errors).forEach(key => {
-                            let input = form.querySelector(`[name="${key}"]`)
+                            const input = form.querySelector(`[name="${key}"]`)
+                            const span = form.querySelector(`[data-valmsg-for="${key}"]`)
+
                             if (input) {
-                                input.classList.add('input-validation-error')
+                                input.classList.add("input-validation-error")
                             }
 
-                            let span = form.querySelector(`[data-valmsg-for="${key}"]`)
                             if (span) {
+                                span.classList.remove("field-validation-valid")
+                                span.classList.add("field-validation-error")
                                 span.innerText = data.errors[key].join('\n')
-                                span.classList.add('field-validation-error')
                             }
                         })
                     }
@@ -161,8 +191,8 @@
                     const errorText = await res.text()
                     console.error('Form submission failed:', res.status, errorText)
                 }
-            } catch (error) {
-                console.error('Error submitting form:', error) // Debug log from chat gpt
+            } catch{
+                console.log('Error submitting form:') // Debug log from chat gpt
             }
         })
 
@@ -470,23 +500,5 @@
 
 
 
+
 })
-
-// === DARK MODE with Bootstrap Theme===
-document.addEventListener("DOMContentLoaded", function () {
-    const toggle = document.getElementById("darkModeToggle");
-    const isDarkMode = localStorage.getItem("darkMode") === "true";
-
-    // Apply saved mode
-    if (isDarkMode) {
-        document.body.classList.add("dark-mode");
-        toggle.checked = true;
-    }
-
-    // Listen for toggle changes
-    toggle.addEventListener("change", function () {
-        const enabled = toggle.checked;
-        document.body.classList.toggle("dark-mode", enabled);
-        localStorage.setItem("darkMode", enabled);  // Save the preference
-    });
-});

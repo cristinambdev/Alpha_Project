@@ -10,6 +10,15 @@
 
         <div class="card-body">
             <form novalidate method="post" asp-action="AddMember" asp-controller="Users" enctype="multipart/form-data" >
+                <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+
+                @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage as string))
+                {
+                    <div class="alert-notification error">
+                        @ViewBag?.ErrorMessage
+                    </div>
+                }
+                
                 <div class="image-previewer circle">
                     <img src="" class="image-preview" />
                     <input asp-for="UserImage" type="file" accept="image/*" class="hide" name="UserImage" />
