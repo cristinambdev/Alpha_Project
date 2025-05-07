@@ -1,10 +1,22 @@
-﻿
+﻿@{
+    var provider = User?.FindFirstValue(ClaimTypes.AuthenticationMethod);
 
+    if (string.IsNullOrEmpty(provider))
+    {
+        provider = "";
+    }
+    var imageClaim = User?.Claims.FirstOrDefault(c => c.Type == "image");
+    var imageUrl = imageClaim?.Value;
+    var name = User?.FindFirstValue("DisplayName");
+   
+
+        
+}
     <div class="dropdown-header">
 
         <div class="account-name">
-            <img src="~/images/avatar_5.svg" alt="avatar" />
-            <span>Hi there!</span>
+        <img src=@imageUrl alt="avatar" />
+            <span>@name</span>
         </div>
         
     </div>

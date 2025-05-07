@@ -249,8 +249,8 @@ body.dark-mode {
     --form-label-color: var(--white-200);
     --form-input-text-color: var(--white-200);
     --form-input-placeholder-color: var(--gray-600);
-    --form-input-background-color: transparent;
-    --form-input-border-color: var(--gray-400);
+/*    --form-input-background-color: transparent;
+*/    --form-input-border-color: var(--gray-400);
     --form-input-border-focus-color: var(--blue-semilight);
     --wysiwyg-text-color: var(--white-200);
     /*button-action*/
@@ -897,11 +897,12 @@ input:checked + .slider:before {
     content: '\2b';
     font-family: var(--font-fa-free);
 }
-.btn-close, 
+.btn-close,
 .btn-remove {
     all: unset; /* remove all Bootstrap default styles */
     transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
-    background-color: var(--btn-close--background-color);
+    /*    background-color: var(--btn-close--background-color);
+*/ 
     border: 2px solid var(--btn-close--border-color);
     color: var(--btn-close--text-color);
     cursor: pointer;
@@ -909,7 +910,7 @@ input:checked + .slider:before {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99999;
+    z-index: 99;
     height: 35px;
     width: 35px;
     outline: none;
@@ -918,12 +919,23 @@ input:checked + .slider:before {
     .btn-close::after,
     .btn-remove::after {
         content: '\f00d';
-        font-family: var(--font-fa-free);
+        /*        font-family: var(--font-fa-free);
+*/ font-family: 'Font Awesome 5 Free'; /* Or the correct name */
         font-weight: 700;
         color: var(--btn-close--text-color);
+        filter: invert(100%);
     } 
     
-    .btn-remove-tag {
+   .btn-close:hover, 
+  .btn-remove:hover {
+        color: var(--btn-close--hover-text-color);
+        background-color: var(--btn-close--hover-background-color);
+        border: var(--btn-close--hover-border-color);
+        border-radius: 14px;
+        cursor: pointer;
+    }
+
+.btn-remove-tag {
     transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out, color 0.1s ease-in-out;
     background-color: var(--btn-close--background-color);
     border: var(--btn-close--border-color);
@@ -937,14 +949,7 @@ input:checked + .slider:before {
     height: 35px;
     width: 35px;
     outline: none;
-} .btn-close:hover, 
-  .btn-remove:hover {
-        color: var(--btn-close--hover-text-color);
-        background-color: var(--btn-close--hover-background-color);
-        border: var(--btn-close--hover-border-color);
-        border-radius: 14px;
-        cursor: pointer;
-    } 
+}
   .btn-submit {
     width: 100%;
     margin-top: 1rem;
@@ -1386,7 +1391,13 @@ input:checked + .slider:before {
     border: 1px solid var(--form-input-border-focus--color);
 } form-input::placeholder {
     color: var(--form-input-placeholder-color);
-} form input[type="hidden"] {
+}
+.form-input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(100%);
+    /* by chat gpt as the calendar was invisble in white background.
+        Inverts the color, potentially making a white icon black */
+}
+  form input[type="hidden"] {
     display: none;
     visibility: hidden;
 } textarea, form-textarea {

@@ -63,5 +63,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             new StatusEntity { Id = 4, StatusName = "On Hold" }
             );
         
+
     }
 }

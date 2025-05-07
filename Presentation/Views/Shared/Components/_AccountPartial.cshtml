@@ -1,19 +1,23 @@
 ﻿
 @{
     var provider = User?.FindFirstValue(ClaimTypes.AuthenticationMethod);
-    // var provider = User?.Identities.FirstOrDefault()?.AuthenticationType ?? "Local Identity";
 
     if (string.IsNullOrEmpty(provider))
-        provider = "Local Identity";
+    {
+        provider = "";
+    }
+    var imageClaim = User?.Claims.FirstOrDefault(c => c.Type == "image");
+    var imageUrl = imageClaim?.Value;
     var email = User?.FindFirstValue(ClaimTypes.Email);
+    var name = User?.FindFirstValue("DisplayName");
 }
 <div id="account-container">
         <button type="button" data-type="dropdown" data-target="#account-dropdown" class="btn btn-account">
             <div class="account-image">
-                <img src="~/images/avatar_5.svg" alt="template-avatar">
+                <img src=@imageUrl alt="avatar">
             </div>
             <div class="account-info">
-                <span class="provider">@provider</span>
+                <span class="provider">@name</span>
                 <span class="email">@email</span>
             </div>
               

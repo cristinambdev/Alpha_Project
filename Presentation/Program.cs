@@ -65,6 +65,7 @@ builder.Services.AddAuthentication(x =>
         x.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"]!;
         x.CallbackPath = "/signin-google";
 
+
         //byt Chat GPT - Override the default Google authentication events so that the Google screen option shows every time.
         x.Events = new OAuthEvents
         {

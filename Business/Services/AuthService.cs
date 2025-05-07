@@ -2,6 +2,8 @@
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Business.Models;
+using System.Security.Claims;
+using Microsoft.SqlServer.Server;
 
 
 namespace Business.Services;
@@ -24,7 +26,6 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
         if (formData == null)
             return new AuthResult { Succeeded = false, StatusCode = 400, Error = "Not all required fields are supplied." };
 
-        //suggested by chat gpt - create a user that will be used in the signin overload instead of adding the email to the overload
         var user = await _userManager.FindByEmailAsync(formData.Email!);
         if (user == null)
         {
@@ -45,13 +46,61 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
                 errorMessage = "Two-factor authentication required.";
             return new AuthResult { Succeeded = false, StatusCode = 401, Error = errorMessage };
         }
+        if(result.Succeeded)
+        { // with chat gpt help
+            var roles = await _userManager.GetRolesAsync(user);
+
+            string displayName = $"{user.FirstName} {user.LastName}";
+            string displayRole = string.Join(", ", roles);
+            string displayImage = user.UserImage ?? "";
+
+            // Call AddClaimByEmailAsync to add the claims
+            await AddClaimByEmailAsync(user.Email!, "DisplayName", displayName, "", "");
+            await AddClaimByEmailAsync(user.Email!, "DisplayRole", displayRole, "", "");
+            if (!string.IsNullOrEmpty(displayImage))
+            {
+                await AddClaimByEmailAsync(user.Email!, "DisplayImage", displayImage, "", "");
+            }
+
+        }
+
 
         return new AuthResult { Succeeded = true, StatusCode = 200 };
 
-       
     }
 
+    public async Task AddClaimByEmailAsync(string email, string typeName, string value, string typeRole, string typeImage)
+    {
+        var user = await _userManager.FindByEmailAsync(email);
 
+        if (user != null)
+        {
+            var claims = await _userManager.GetClaimsAsync(user);
+            // Add DisplayName claim 
+            if (!claims.Any(x => x.Type == typeName))
+            {
+                await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(typeName, value) });// by chat gpt  wrap each Claim object in a collection before passing it to AddClaimsAsync
+            }
+            // Add Image claim 
+            if (!claims.Any(x => x.Type == typeImage))
+            {
+                await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(typeImage, value) });
+            }
+
+            // Add Role claim 
+            if (!claims.Any(x => x.Type == typeRole))
+            {
+                var roles = await _userManager.GetRolesAsync(user); //by chat gpt to get role claims
+                if (roles.Any())
+                {
+                    var displayRole = string.Join(", ", roles);
+
+                    await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim("DisplayRole", displayRole) });
+                }
+            }
+        }
+     
+    }
     public async Task<AuthResult> SignUpAsync(SignUpFormData formData)
     {
         if (formData == null)
