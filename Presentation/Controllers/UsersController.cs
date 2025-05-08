@@ -150,7 +150,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
                 },
             };
 
-            var result = await _userManager.CreateAsync(user, "TempPassword123!");
+            var result = await _userManager.CreateAsync(user, "ChangeMe123!");
 
             if (!result.Succeeded)
             {
