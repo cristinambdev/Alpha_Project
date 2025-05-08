@@ -8,11 +8,8 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 // By chat gpt- Load the default appsettings.json (already happens implicitly, but it is explicitly here)
@@ -137,7 +134,6 @@ using (var scope = app.Services.CreateScope())
             await userManager.AddToRoleAsync(user, "Admin");
 
     }
-
 
 }
 

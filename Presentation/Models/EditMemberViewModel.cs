@@ -46,6 +46,6 @@ public class EditMemberViewModel
 
     [Display(Name = "Role", Prompt = "Role")]
     [DataType(DataType.Text)]
-    public string Role { get; set; } = null!;
+    public string? Role { get; set; }
 }
 

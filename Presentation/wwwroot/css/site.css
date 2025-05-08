@@ -609,32 +609,25 @@ input:checked + .slider:before {
     #notification-container, #account-container {
     position: relative;
    
-} #account-container .btn-account {
+} #account-container {
         display: flex;
         align-items: center;
-        gap: 2rem;
-        padding: 1rem;
+        justify-content: center;
+        gap: 1rem;
         cursor: pointer;
-        width: 100%;
-        position: relative;
         outline: none;
-    } #account-container .btn-account:focus, #account-container .btn-account:focus-visible, #account-container .btn-account:active {
-            outline: none;
-            box-shadow: none;
-        } #account-container .btn-account::-moz-focus-inner {
-            border: 0;
-        } #account-container .btn-account .account-image {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        } #account-container .btn-account .account-info {
-            display: flex;
-            flex-direction: column;
-            line-height: 1;
-            text-align: left;
-            font-size: 1rem;
-            font-weight: 600;
-        } #notification-dropdown {
+    }
+    #account-container .account-info {
+        padding-top: 1rem;
+        text-align: left;
+    }
+            #account-container .account-info .email,
+            #account-container .account-info .role {
+                font-weight: 600;
+                margin-bottom: 0;
+            }
+
+        #notification-dropdown {
             min-width: 400px;
             z-index: 99;
         } #notification-dropdown .dropdown-header {

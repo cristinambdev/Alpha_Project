@@ -9,19 +9,19 @@
     var imageClaim = User?.Claims.FirstOrDefault(c => c.Type == "image");
     var imageUrl = imageClaim?.Value;
     var email = User?.FindFirstValue(ClaimTypes.Email);
-    var name = User?.FindFirstValue("DisplayName");
+    var role = User?.FindFirstValue(ClaimTypes.Role);
 }
-<div id="account-container">
-        <button type="button" data-type="dropdown" data-target="#account-dropdown" class="btn btn-account">
+<div id="account-container" type="button" data-type="dropdown" data-target="#account-dropdown" >
+            
             <div class="account-image">
                 <img src=@imageUrl alt="avatar">
             </div>
+
             <div class="account-info">
-                <span class="provider">@name</span>
-                <span class="email">@email</span>
+                <p class="email">@email</p>
+                <p>Current Role: <span class="role">@role</span></p>
             </div>
               
-        </button>
   
 </div>
 <div id="account-dropdown" class="dropdown dropdown-account">
