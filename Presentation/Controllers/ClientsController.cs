@@ -54,6 +54,7 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
 
         var clients = clientResult.Result?.Select(client => new ClientViewModel
         {
+            Id = client.Id,
             Client = client,
             StatusList = statusList
 
@@ -180,7 +181,6 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
         {
             entity.Image = imagePath;
         }
-
         await _context.SaveChangesAsync();
 
         return Ok(new { success = true });
@@ -221,10 +221,12 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
     }
 
 
-    [HttpPost("Clients/DeleteCustomer/{id}")]
-    public async Task<IActionResult> DeleteCustomer([FromRoute] string id)
+    [HttpPost]
+    public async Task<IActionResult> DeleteClient(string id)
     {
-
+        var client = await _clientService.GetClientByIdAsync(id);
+        if (client == null)
+            return NotFound();
         var deleteResult = await _clientService.DeleteClientAsync(id);
 
         if (deleteResult.Succeeded)

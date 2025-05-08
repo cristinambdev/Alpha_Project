@@ -48,6 +48,5 @@ public class EditClientViewModel
     [DataType(DataType.Text)]
     public string? Status { get; set; }
 
-    // Chat GPT - Add this property to hold the available statuses for the dropdown
     
 }

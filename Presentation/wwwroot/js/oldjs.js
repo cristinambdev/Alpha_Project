@@ -51,8 +51,7 @@
 
     // === CUSTOM SELECTS ===
     function initializeCustomSelect(select) { //suggested by chat GPT to resue data
-      
-
+        //const customSelect = document.querySelector('.custom-select');
         const trigger = select.querySelector('.custom-select-trigger')
         const triggerText = select.querySelector('.custom-select-text')
         const options = select.querySelectorAll('.custom-select-option')
@@ -158,6 +157,7 @@
                     hiddenInput.value = selectedOption.dataset.value
                 }
             })
+            console.log("Role just before submission:", document.querySelector('input[name="Role"]').value)
 
             const formData = new FormData(form)
 
@@ -181,7 +181,7 @@
                         'Accept': 'application/json'
                     }
                 })
-               
+
 
                 if (res.ok) {
                     const modalElement = form.closest('.modal')
@@ -213,7 +213,7 @@
                     const errorText = await res.text()
                     console.error('Form submission failed:', res.status, errorText)
                 }
-            } catch{
+            } catch {
                 console.log('Error submitting form:') // Debug log from chat gpt
             }
         })
@@ -386,74 +386,82 @@
         })
 
 
-    // === EDIT CLIENT  Prefill Modal (triggered from dropdown) ===
-    document.querySelectorAll('.dropdown-client .dropdown-action[data-target="#editClientModal"]').forEach(editButton => {
-        editButton.addEventListener('click', function (event) {
-            event.stopPropagation(); // Prevent click from closing the dropdown immediately
+    // === EDIT CLIENT  Prefill Modal ===
+    document.querySelectorAll('.fa-ellipsis').forEach(icon => {
+        icon.addEventListener('click', function () {
 
-            const modal = document.querySelector('#editClientModal');
-            if (!modal) return;
+            const modal = document.querySelector('#editClientModal')
+            if (!modal) return // Prevent error if modal is not on the page
+            const form = modal.querySelector('form')
+            if (!form) return // Optional: prevent error if form is missing
 
-            const form = modal.querySelector('form');
-            if (!form) return;
 
-            form.reset();
+            // Reset form first
+            form.reset()
 
-            // Get data attributes from the <i> tag inside the clicked "Edit" button
-            const clientId = this.dataset.id; 
-            const name = this.querySelector('i').dataset.name;
-            const email = this.querySelector('i').dataset.email;
-            const phone = this.querySelector('i').dataset.phone;
-            const streetname = this.querySelector('i').dataset.streetname;
-            const postalcode = this.querySelector('i').dataset.postalcode;
-            const city = this.querySelector('i').dataset.city;
-            const status = this.querySelector('i').dataset.status;
-            const template = this.querySelector('i').dataset.template;
+            // Get client ID and store it in the form
+            const clientId = this.dataset.id
+            const idInput = form.querySelector('input[name="Id"]')
+            if (idInput) {
+                idInput.value = clientId
 
-            // Prepare the date to be formatted
-            let formattedDate = '';
-            if (template) {
-                let dateObject;
-                try {
-                    dateObject = new Date(template);
-                    formattedDate = dateObject.toISOString().slice(0, 10) || '';
-                } catch (e) {
+                // Pre-fill the status dropdown - Convert text status to numeric value
+                let statusValue = this.dataset.status
+                // Convert text status to value if needed
+                if (statusValue === "Active") statusValue = "1"
+                if (statusValue === "Inactive") statusValue = "0"
+
+                const statusInput = form.querySelector('input[name="Status"]')
+                if (statusInput) {
+                    statusInput.value = statusValue
+                }
+
+
+                // Update the status dropdown text
+                const select = statusInput?.closest('.custom-select')
+                if (select) {
+                    const option = select.querySelector(`.custom-select-option[data-value="${statusValue}"]`)
+                    if (option) {
+                        const triggerText = select.querySelector('.custom-select-text')
+                        if (triggerText) {
+                            triggerText.textContent = option.textContent
+                        }
+                    } else {
+                        console.warn(`No matching option found for status value: ${statusValue}`)
+                    }
                 }
             }
-            // Pre-fill the form fields
-            form.querySelector('input[name="Id"]').value = clientId || '';
-            form.querySelector('input[name="ClientName"]').value = name || '';
-            form.querySelector('input[name="Email"]').value = email || '';
-            form.querySelector('input[name="Phone"]').value = phone || '';
-            form.querySelector('input[name="StreetName"]').value = streetname || '';
-            form.querySelector('input[name="PostalCode"]').value = postalcode || '';
-            form.querySelector('input[name="City"]').value = city || '';
-            form.querySelector('input[name="Status"]').value = status || ''; 
-            form.querySelector('input[name="Date"]').value = formattedDate || '';
 
-
-            // Update status dropdown text
-            const select = form.querySelector('.custom-select');
-            if (select) {
-                const triggerText = select.querySelector('.custom-select-text');
-                const option = select.querySelector(`.custom-select-option[data-value="${status}"]`);
-                if (option && triggerText) {
-                    triggerText.textContent = option.textContent;
+            // Set other form fields, checking if they exist first
+            const fieldsToSetEditClientModal = {
+                'ClientName': this.dataset.name,
+                'Email': this.dataset.email,
+                'Phone': this.dataset.phone,
+                'StreetName': this.dataset.streetname,
+                'PostalCode': this.dataset.postalcode,
+                'City': this.dataset.city,
+                'Date': new Date(this.dataset.template).toISOString().slice(0, 10)
+            }
+            for (const [fieldName, value] of Object.entries(fieldsToSetEditClientModal)) {
+                const field = form.querySelector(`[name="${fieldName}"]`)
+                if (field) {
+                    field.value = value
+                } else {
+                    console.warn(`Field not found: ${fieldName}`)
                 }
             }
 
             // Set the image preview
-            const imagePreview = form.querySelector('.image-preview');
-            if (imagePreview && this.querySelector('i').dataset.image) {
-                imagePreview.src = this.querySelector('i').dataset.image;
-                form.querySelector('.image-previewer').classList.add('selected');
+            const imagePreview = form.querySelector('.image-preview')
+            if (imagePreview && this.dataset.image) {
+                imagePreview.src = this.dataset.image
+                form.querySelector('.image-previewer').classList.add('selected')
             }
 
             // Show the modal
-            modal.classList.add('modal-show');
+            modal.classList.add('modal-show')
         })
     })
-
     // === EDIT MEMBER FORM: Prefill Modal===
 
     const editButtons = document.querySelectorAll('[data-target="#editMemberModal"]')
@@ -478,7 +486,7 @@
                         }
                         idField.value = data.id;
 
-                        
+
                         // === Fill input fields ===
                         const editUserFields = {
                             FirstName: data.firstName,
@@ -501,12 +509,16 @@
                         // === Handle custom-select for Role ===
                         const roleValue = data.role;
                         const roleSelect = form.querySelector('.custom-select')
+                        console.log("Role value from API:", roleValue);
 
                         if (roleSelect) {
                             const hiddenInput = roleSelect.querySelector('input[name="Role"]')
                             const triggerText = roleSelect.querySelector('.custom-select-text')
                             const options = roleSelect.querySelectorAll('.custom-select-option')
                             const placeholder = roleSelect.getAttribute('data-placeholder') || "Choose role"
+
+                            console.log("Updating role selector with value:", roleValue);
+                            console.log("Hidden input found:", hiddenInput);
 
                             // Set value first
                             if (hiddenInput) {

@@ -31,31 +31,20 @@
                         <td class="client-date">@client.Client.Date</td>
                         <td class="client-status">
 
-                            <div class="badge @(client.Client.Status == "1" || client.Client.Status == "Active" ? "success" : "danger")">
-                                <span class="@(client.Client.Status == "1" || client.Client.Status == "Active" ? "success" : "danger")">
-                                    @(client.Client.Status == "1" || client.Client.Status == "Active" ? "Active" : "Inactive")
+                            <div class="badge @(client.Client.Status == "Active" ? "success" : "danger")">
+                                <span class="@(client.Client.Status == "Active" ? "success" : "danger")">
+                                    @(client.Client.Status == "Active" ? "Active" : "Inactive")
                                 </span>
                             </div>
                         </td>
 
-                        <td class="client-actions" data-id="@client.Client.Id">
-                                <i class="fa-solid fa-ellipsis edit-client-button"
-                                   data-type="dropdown"
-                                   data-target="#clientDropdown-@client.Client.Id"
-                                   data-id="@client.Client.Id"
-                                   data-name="@client.Client.ClientName"
-                                   data-email="@client.Client.Email"
-                                   data-phone="@client.Client.Phone"
-                                   data-streetname="@client.Client.StreetName"
-                                   data-postalcode="@client.Client.PostalCode"
-                                   data-city="@client.Client.City"
-                                    data-status="@(client.Client.Status == "0" || client.Client.Status == "Inactive" ? "0" : "1")"
-                                   data-image="@client.Client.Image"
-                                   data-template="@client.Client.Date">
+                        <td class="client-actions" data-id="@client.Client.Id" >
+                            <button type="button" data-type="dropdown" data-target="#clientDropdown-@client.Client.Id" class="btn-action edit-client-button">
+                                <i class="fa-solid fa-ellipsis"></i>
+                            </button>
 
-                                </i>
                             <div class="dropdown dropdown-client" id="clientDropdown-@client.Client.Id">
-                                @await Html.PartialAsync("Dropdowns/_ClientDropdownPartial", client.Client)
+                                @await Html.PartialAsync("Dropdowns/_ClientDropdownPartial", client)
                             </div>
                         </td>
                    </tr>

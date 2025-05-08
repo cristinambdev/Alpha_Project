@@ -1,11 +1,22 @@
-﻿@model Client
+﻿@model ClientViewModel
 
 <div class="dropdown-body">
 
     <nav class="dropdown-actions">
 
-        <button class="dropdown-action" data-type="modal" data-target="#editClientModal" data-id="@Model.Id" data-user-id="@Model.Id">
-            <i class="fa-solid fa-pen-to-square"></i>
+        <button class="dropdown-action"  data-target="#editClientModal" data-id="@Model.Id" data-user-id="@Model.Id">
+            <i class="fa-solid fa-pen-to-square"
+               data-id="@Model.Client.Id"
+               data-name="@Model.Client.ClientName"
+               data-email="@Model.Client.Email"
+               data-phone="@Model.Client.Phone"
+               data-streetname="@Model.Client.StreetName"
+               data-postalcode="@Model.Client.PostalCode"
+               data-city="@Model.Client.City"
+               data-status="@(Model.Client.Status == "0" ? "Inactive" : (Model.Client.Status == "1" ? "Active" : Model.Client.Status))"
+               data-image="@Model.Client.Image"
+               data-template="@Model.Client.Date?.ToString("yyyy-MM-dd")"> @* suggested by chat gpt to convert the date type *@
+            </i>
             <span data-modal="true" data-target="#editClientModal">Edit</span>
         </button>
 
@@ -14,7 +25,7 @@
 
     <nav class="dropdown-actions">
 
-        <form class="delete-form" method="post" asp-action="DeleteCustomer" asp-controller="Clients" asp-route-id="@Model.Id" data-id="@Model.Id">
+        <form class="delete-form" method="post" asp-action="DeleteClient" asp-controller="Clients" asp-route-id="@Model.Id" data-id="@Model.Id">
             <button type="submit" class="dropdown-action remove delete-btn" data-id="@Model.Id" data-delete-id="@Model.Id">
                 <i class="fa-solid fa-trash"></i>
                 <span>Delete Client</span>
