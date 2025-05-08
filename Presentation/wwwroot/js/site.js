@@ -51,6 +51,7 @@
 
     // === CUSTOM SELECTS ===
     function initializeCustomSelect(select) { //suggested by chat GPT to resue data
+        //const customSelect = document.querySelector('.custom-select');
         const trigger = select.querySelector('.custom-select-trigger')
         const triggerText = select.querySelector('.custom-select-text')
         const options = select.querySelectorAll('.custom-select-option')
@@ -106,6 +107,18 @@
 
 
     // === FORM SUBMISSION HANDLING ===
+    function validateField(field) {
+        const errorSpan = field.closest(".form-group")?.querySelector(".error-message");
+        if (!errorSpan) return;
+
+        if (!field.value.trim()) {
+            errorSpan.textContent = `${field.name} is required.`;
+            field.classList.add("input-error");
+        } else {
+            errorSpan.textContent = "";
+            field.classList.remove("input-error");
+        }
+    }
     const forms = document.querySelectorAll('form:not(.no-ajax)') //suggested by chat GPT so that Signup and sign-in that have no-ajax would validate and submit correctly
     forms.forEach(form => {
         // Find all validatable fields
@@ -136,6 +149,15 @@
 
             clearErrorMessages(form)
 
+            //by chat gpt so that the custom-select gets the selected value before the form is submitted
+            document.querySelectorAll('.custom-select').forEach(select => {
+                const selectedOption = select.querySelector('.custom-select-option.selected')
+                const hiddenInput = select.querySelector('input[type="hidden"]')
+                if (selectedOption && hiddenInput) {
+                    hiddenInput.value = selectedOption.dataset.value
+                }
+            })
+            console.log("Role just before submission:", document.querySelector('input[name="Role"]').value)
 
             const formData = new FormData(form)
 
@@ -159,7 +181,7 @@
                         'Accept': 'application/json'
                     }
                 })
-
+               
 
                 if (res.ok) {
                     const modalElement = form.closest('.modal')
@@ -277,6 +299,7 @@
         })
     })
     // all prefill in forms with help of Chat GPT
+
     //=== EDIT MINIPROJECT FORM: Prefill Modal ===
     document.querySelectorAll('.edit-mini-project-button')
         .forEach(btn => {
@@ -442,56 +465,104 @@
     // === EDIT MEMBER FORM: Prefill Modal===
 
     const editButtons = document.querySelectorAll('[data-target="#editMemberModal"]')
-    editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const userId = this.getAttribute('data-user-id')
 
+    editButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const userId = button.getAttribute('data-user-id')
 
             if (userId) {
                 fetch(`/Users/GetUserData/${userId}`)
                     .then(response => response.json())
                     .then(data => {
                         const form = document.querySelector('#editMemberModal form')
+                        if (!form) return;
 
-
-                        // Add hidden ID field
                         let idField = form.querySelector('input[name="Id"]')
                         if (!idField) {
                             idField = document.createElement('input')
-                            idField.type = 'hidden'
-                            idField.name = 'Id'
+                            idField.type = 'hidden';
+                            idField.name = 'Id';
                             form.appendChild(idField)
                         }
-                        idField.value = data.id
+                        idField.value = data.id;
 
-                        // Set values for input fields taken from current member
+                        
+                        // === Fill input fields ===
                         const editUserFields = {
                             FirstName: data.firstName,
                             LastName: data.lastName,
                             Email: data.email,
                             Phone: data.phoneNumber,
                             JobTitle: data.jobTitle,
+                            //Role: data.role,
                             StreetName: data.streetName,
                             PostalCode: data.postalCode,
                             City: data.city
-                        }
+                        };
 
                         for (const [name, value] of Object.entries(editUserFields)) {
                             const input = form.querySelector(`input[name="${name}"]`)
                             if (input) {
-                                input.value = value || ''
+                                input.value = value || '';
+                            }
+                        }
+                        // === Handle custom-select for Role ===
+                        const roleValue = data.role;
+                        const roleSelect = form.querySelector('.custom-select')
+                        console.log("Role value from API:", roleValue);
+
+                        if (roleSelect) {
+                            const hiddenInput = roleSelect.querySelector('input[name="Role"]')
+                            const triggerText = roleSelect.querySelector('.custom-select-text')
+                            const options = roleSelect.querySelectorAll('.custom-select-option')
+                            const placeholder = roleSelect.getAttribute('data-placeholder') || "Choose role"
+
+                            console.log("Updating role selector with value:", roleValue);
+                            console.log("Hidden input found:", hiddenInput);
+
+                            // Set value first
+                            if (hiddenInput) {
+                                hiddenInput.value = roleValue || '';
+                            }
+
+                            // Reset custom select
+                            options.forEach(option => {
+                                option.classList.remove('same-as-selected');
+                            });
+
+                            // Reset custom select active state
+                            options.forEach(option => option.classList.remove('same-as-selected'));
+
+                            if (roleValue) {
+                                const matchingOption = Array.from(options).find(option => option.dataset.value === roleValue);
+                                if (matchingOption) {
+                                    triggerText.textContent = matchingOption.textContent;
+                                    matchingOption.classList.add('same-as-selected');
+                                    roleSelect.classList.remove('has-placeholder');
+                                } else {
+                                    triggerText.textContent = placeholder;
+                                    roleSelect.classList.add('has-placeholder');
+                                }
+                            } else {
+                                triggerText.textContent = placeholder;
+                                roleSelect.classList.add('has-placeholder');
+                            }
+                        }
+                        // === Set image preview ===
+                        const imagePreview = form.querySelector('.image-preview');
+                        const previewWrapper = form.querySelector('.image-previewer')
+
+                        if (imagePreview) {
+                            imagePreview.src = data.userImage || '';
+                            if (data.userImage) {
+                                previewWrapper?.classList.add('selected')
+                            } else {
+                                previewWrapper?.classList.remove('selected')
                             }
                         }
 
-                        // Set image preview
-                        const imagePreview = form.querySelector('.image-preview')
-                        if (imagePreview && data.userImage) {
-                            imagePreview.src = data.userImage
-                            form.querySelector('.image-previewer').classList.add('selected')
-                        }
-
-                        // Show the modal
-                        document.querySelector('#editMemberModal').classList.add('modal-show')
+                        // === Show modal ===
+                        document.querySelector('#editMemberModal')?.classList.add('modal-show')
                     })
                     .catch(error => console.error('Error loading user data:', error))
             }

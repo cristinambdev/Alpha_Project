@@ -3,8 +3,10 @@
 
     ViewData["Title"] = "Team Members";
 }
-@await Html.PartialAsync("Modals/_AddMemberFormPartial", Model.AddMemberForm)
-@await Html.PartialAsync("Modals/_EditMemberFormPartial", Model.EditMemberForm)
+
+    @await Html.PartialAsync("Modals/_AddMemberFormPartial", Model.AddMemberForm)
+    @await Html.PartialAsync("Modals/_EditMemberFormPartial", Model.EditMemberForm)
+
 
 <section id="team-members">
     <div class="page-header">

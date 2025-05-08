@@ -758,7 +758,18 @@ input:checked + .slider:before {
     font-weight: 400;
     font-style: normal;
     font-family: var(--font-standard);
-} .success {
+}
+        .badge-role {
+            border-radius: 10px;
+            display: inline-block;
+            padding: .25rem .5rem;
+            font-size: .9em;
+            font-weight: 700;
+            font-style: normal;
+            font-family: var(--font-standard);
+            border: .5px solid var(--gray-600);
+        }
+    .success {
     background-color: var(--light-green) !important;
     color: var(--green) !important;
 } .warning {
@@ -1276,7 +1287,12 @@ input:checked + .slider:before {
     column-gap: 2rem;
     row-gap: 3rem;
     padding: 2rem;
-} @media (min-width: 968px) {
+}
+card-header.member {
+    display: flex;
+    justify-content: space-between;
+}
+@media (min-width: 968px) {
     .members-list {
         grid-template-columns: repeat(3, 1fr);
     }

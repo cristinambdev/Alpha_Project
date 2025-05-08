@@ -1,4 +1,6 @@
-﻿namespace Domain.Models;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Domain.Models;
 
 public class AddUserFormData
 {

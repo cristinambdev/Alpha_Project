@@ -5,8 +5,12 @@
     ViewData["Title"] = "Clients";
 }
 
-@await Html.PartialAsync("Modals/_AddClientFormPartial", Model.AddClientForm) 
-@await Html.PartialAsync("Modals/_EditClientFormPartial", Model.EditClientForm)
+@if (User.IsInRole("Admin"))
+{
+    @await Html.PartialAsync("Modals/_AddClientFormPartial", Model.AddClientForm)
+    @await Html.PartialAsync("Modals/_EditClientFormPartial", Model.EditClientForm)
+}
+
 
 <section id="clients">
     <div class="page-header">

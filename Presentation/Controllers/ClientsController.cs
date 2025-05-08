@@ -12,10 +12,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Text.Json;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace Presentation.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class ClientsController(IClientService clientService, IWebHostEnvironment env, AppDbContext context, IStatusService statusService) : Controller
 {
     private readonly IClientService _clientService = clientService;

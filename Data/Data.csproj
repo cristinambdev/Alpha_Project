@@ -5,12 +5,6 @@
 			  <ImplicitUsings>enable</ImplicitUsings>
 			  <Nullable>enable</Nullable>
 		  </PropertyGroup>
-		  <ItemGroup>
-		    <Compile Remove="Constants\ClaimConstants.cs" />
-		  </ItemGroup>
-		  <ItemGroup>
-		    <Content Include="Constants\ClaimConstants.cs" />
-		  </ItemGroup>
 
 		  <ItemGroup>
 			  <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.3" />

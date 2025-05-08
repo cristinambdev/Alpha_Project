@@ -59,7 +59,7 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
             await AddClaimByEmailAsync(user.Email!, "DisplayRole", displayRole, "", "");
             if (!string.IsNullOrEmpty(displayImage))
             {
-                await AddClaimByEmailAsync(user.Email!, "DisplayImage", displayImage, "", "");
+                await AddClaimByEmailAsync(user.Email!, "image", displayImage, "", "");
             }
 
         }
@@ -82,13 +82,14 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
                 await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(typeName, value) });// by chat gpt  wrap each Claim object in a collection before passing it to AddClaimsAsync
             }
             // Add Image claim 
-            if (!claims.Any(x => x.Type == typeImage))
-            {
-                await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(typeImage, value) });
+            if (typeName.ToLower() == "image" && !claims.Any(x => x.Type == typeName && x.Value == value)) // Check typeName for "image"
+
+                {
+                    await _userManager.AddClaimsAsync(user, new List<Claim> { new Claim(typeImage, value) });
             }
 
             // Add Role claim 
-            if (!claims.Any(x => x.Type == typeRole))
+            if (typeName.ToLower() == "displayrole" && !claims.Any(x => x.Type == "DisplayRole")) // Hardcoded "DisplayRole" type
             {
                 var roles = await _userManager.GetRolesAsync(user); //by chat gpt to get role claims
                 if (roles.Any())

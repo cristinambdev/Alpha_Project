@@ -2,7 +2,7 @@
 
 public class UsersViewModel
 {
-    public IEnumerable<UserViewModel> Users { get; set; } = [];
+    public List<UserViewModel> Users { get; set; } = [];
 
     public AddMemberViewModel AddMemberForm { get; set; } = new();
 

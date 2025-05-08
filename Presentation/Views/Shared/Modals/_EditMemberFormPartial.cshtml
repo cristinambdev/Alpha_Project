@@ -85,6 +85,37 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Role">Role</label>
+
+                    <div class="custom-select" data-placeholder="Choose a role">
+
+                        <button type="button" class="custom-select-trigger">
+                            <span class="custom-select-text">Choose role</span>
+                        </button>
+                        <ul class="custom-select-options">
+                            <li class="custom-select-option" data-value="Admin">Admin</li>
+                            <li class="custom-select-option" data-value="User">User</li>
+                        </ul>
+                        <input type="hidden" name="Role" asp-for="Role" id="roleInput" value="@Model?.Role" />
+
+
+                        @*  <ul class="custom-select-options">
+                        @if (ViewBag?.Roles is List<SelectListItem> roles)
+                        {
+                            foreach (var role in roles)
+                            {
+                                <li class="custom-select-option" data-value="@role.Value">@role.Text</li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="custom-select-option" data-value="">No roles available</li>
+                        }
+                        </ul> *@
+                    </div>
+                </div>
          
                 <button type="submit" class="btn btn-submit btn-blue">Save</button>
             </form>

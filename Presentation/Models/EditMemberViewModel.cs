@@ -32,10 +32,6 @@ public class EditMemberViewModel
     [DataType(DataType.Text)]
     public string? JobTitle { get; set; } = null!;
 
-    //[Display(Name = "Address", Prompt = "Your address")]
-    //[DataType(DataType.Text)]
-    //public string? Address { get; set; }
-
     [Display(Name = "Address", Prompt = "Enter Address")]
     [DataType(DataType.Text)]
     public string? StreetName { get; set; }
@@ -48,5 +44,8 @@ public class EditMemberViewModel
     [DataType(DataType.Text)]
     public string? City { get; set; }
 
+    [Display(Name = "Role", Prompt = "Role")]
+    [DataType(DataType.Text)]
+    public string Role { get; set; } = null!;
 }
 

@@ -14,6 +14,7 @@ public class UserEntity : IdentityUser
 
     public string? JobTitle { get; set; }
 
+    public string? Role { get; set; } 
     public virtual UserAddressEntity? Address { get; set; }
 
 

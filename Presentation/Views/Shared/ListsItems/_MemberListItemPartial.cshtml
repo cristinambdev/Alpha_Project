@@ -2,15 +2,16 @@
 
 
     <div class="member card" data-project-id="@Model.Id">
-            <div class="card-header">
-    @*         <button type="button" data-type="modal" data-target="#editMemberModal" class="btn-action" >
-     *@            <button type="button" data-type="dropdown" data-target="#memberDropdown-@Model.Id" class="btn-action">
+            <div class="card-header member">
+                    
+                    <button type="button" data-type="dropdown" data-target="#memberDropdown-@Model.Id" class="btn-action">
                     <i class="fa-solid fa-ellipsis"></i>
                     </button>
 
-        <div class="dropdown dropdown-member" id="memberDropdown-@Model.Id">
-                @await Html.PartialAsync("Dropdowns/_MemberDropdownPartial")
-            </div>
+                   
+                    <div class="dropdown dropdown-member" id="memberDropdown-@Model.Id">
+                        @await Html.PartialAsync("Dropdowns/_MemberDropdownPartial")
+                    </div>
 
             </div>
 
@@ -22,9 +23,16 @@
                 <div class="jobtitle">
                     <span class="badge normal">@Model.JobTitle</span>
                 </div>
-                
-                <span class="email">@Model.Email</span>
-                <span class="phone">@Model.PhoneNumber</span>
+                <div class="email">
+                    <span> @Model.Email</span>
+                </div>
+
+                <div class="phone">
+                    <span >@Model.PhoneNumber</span>
+                </div>
+                 <div class="badge @(Model.Role == "Admin" ? "success" : (Model.Role == "User" ? "info" : "info"))" >
+                    <span class="badge-role @(Model.Role == "Admin" ? "success" : (Model.Role == "User" ? "info" : "info"))">@Model.Role</span>
+                 </div>
             </div>
 
             <div class="card-footer">

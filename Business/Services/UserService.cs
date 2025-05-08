@@ -70,7 +70,6 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
         if(existsResult.Succeeded)
             return new UserResult { Succeeded = false, StatusCode = 409, Error = "user with same email already exists." };
 
-       
 
         try
         {
@@ -85,7 +84,7 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
                 PhoneNumber = formData.PhoneNumber,   
                 UserImage = formData.UserImage
             };
-            var defaultPassword = "TempPassword123!"; //suggested by Chat Gpt
+            var defaultPassword = "ChangeMe123!"; //suggested by Chat Gpt
             var result = await _userManager.CreateAsync(userEntity, defaultPassword);
             //var result = await _userRepository.AddAsync(userEntity);
             if (result.Succeeded)
@@ -109,10 +108,6 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
 
     public async Task<UserResult> UpdateUserAsync(EditUserFormData formData)
     {
-        //var existingUser = await _userRepository.GetAsync(x => x.Id == formData.Id);
-        //var userEntity = await _userManager.Users
-        //    .Include(x => x.Address)
-        //    .FirstOrDefaultAsync(x => x.Id == formData.Id);
         var userEntity = await _userManager.Users
             .Include(u => u.Address)
             .FirstOrDefaultAsync(u => u.Id == formData.Id);

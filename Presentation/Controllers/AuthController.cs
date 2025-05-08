@@ -91,11 +91,12 @@ public class AuthController(UserManager<UserEntity> userManager, SignInManager<U
     [HttpPost]
     public async Task<IActionResult> SignIn(SignInViewModel model, string returnUrl = "~/")
     {
-        ViewBag.ReturnUrl = returnUrl;
 
         if (!ModelState.IsValid)
         {
-            // Return to view with validation errors
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ErrorMessage = "Incorrect email or password";
+
             return View(model);
         }
 
@@ -106,15 +107,19 @@ public class AuthController(UserManager<UserEntity> userManager, SignInManager<U
             IsPersistent = model.IsPersistent
         };
 
-        // Use the AuthService instead of directly using SignInManager
+       
         var result = await _authService.SignInAsync(signInFormData);
 
         if (result.Succeeded)
         {
-            return LocalRedirect(returnUrl);
+            if(Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            return RedirectToAction("Index", "Overview");
         }
 
         // Show error message
+        ViewBag.ReturnUrl = returnUrl;
         ViewBag.ErrorMessage = result.Error ?? "Incorrect email or password.";
         return View(model);
 
