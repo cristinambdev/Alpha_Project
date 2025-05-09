@@ -1,6 +1,7 @@
 ﻿using Business.Services;
 using Data.Contexts;
 using Data.Repositories;
+using Domain.Extentions;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,14 +11,12 @@ using Presentation.Models;
 
 namespace Presentation.Controllers;
 
-public class MiniProjectsController(AppDbContext context, IMiniProjectService miniProjectService, IWebHostEnvironment env, IStatusService statusService, ILogger<IMiniProjectRepository> logger) : Controller
+public class MiniProjectsController(AppDbContext context, IMiniProjectService miniProjectService, IStatusService statusService, IImageService imageService) : Controller
 {
     private readonly AppDbContext _context = context;
     private readonly IMiniProjectService _miniProjectService = miniProjectService;
-    private readonly IWebHostEnvironment _env = env;
     private readonly IStatusService _statusService = statusService;
-    private readonly ILogger<IMiniProjectRepository> _logger = logger;
-
+    private readonly IImageService _imageService = imageService;
 
 
     public async Task<IActionResult> Index()
@@ -58,36 +57,10 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
     }
 
 
-    // Helper method to calculate TimeLeft (you might already have this)
-    private string GetTimeLeft(DateTime endDate)
-    {
-        var timeLeft = endDate - DateTime.Now;
-        if (timeLeft.TotalDays > 1)
-        {
-            return $"{timeLeft.Days} days left";
-        }
-        else if (timeLeft.TotalHours > 1)
-        {
-            return $"{timeLeft.Hours} hours left";
-        }
-        else if (timeLeft.TotalMinutes > 1)
-        {
-            return $"{timeLeft.Minutes} minutes left";
-        }
-        else if (timeLeft.TotalSeconds >= 0)
-        {
-            return $"{timeLeft.Seconds} seconds left";
-        }
-        else
-        {
-            return "Overdue";
-        }
-    }
-
+  
     [HttpPost]
     public async Task<IActionResult> AddMiniProject(AddMiniProjectViewModel form)
     {
-        Console.WriteLine($"Received Budget in AddMiniProject: {form.Budget}");
 
         try
         {
@@ -118,31 +91,12 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
             string? imagePath = null;
             if (form.ProjectImage != null)
             {
-                var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "miniprojects");
-                Directory.CreateDirectory(uploadPath);
+                imagePath = await _imageService.SaveImageAsync(form.ProjectImage, "miniprojects");
 
-                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ProjectImage.FileName)}";
-                var filePath = Path.Combine(uploadPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await form.ProjectImage.CopyToAsync(stream);
-                }
-
-                imagePath = $"/uploads/miniprojects/{fileName}";
             }
-            var formData = new AddMiniProjectFormData
-            {
-                Title = form.Title,
-                Description = form.Description,
-                ClientName = form.ClientName,
-                StartDate = form.StartDate!.Value,
-                EndDate = form.EndDate!.Value,
-                Budget = form.Budget,
-                ProjectImage = imagePath,
-                StatusId = form.StatusId,
-            };
-
+            //Mapping
+            var formData = form.MapTo<AddMiniProjectFormData>();
+            formData.ProjectImage = imagePath;
 
             var result = await _miniProjectService.CreateMiniProjectAsync(formData);
             if (!result.Succeeded)
@@ -159,40 +113,28 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
         }
 
     }
-    [HttpGet]
+    [HttpGet] //suggested by Chat gpt to populate the form
     public async Task<IActionResult> EditMiniProject(string id)
     {
-        var project = await _context.MiniProjects
-       .AsNoTracking() // Don't track original suggested by chat gpt because a different Id was creating when opening edit form
-       .FirstOrDefaultAsync(p => p.Id == id);
-
-        if (project == null)
-            return NotFound();
-
-        // Fetch status options for the dropdown
-        var statusResult = await _statusService.GetStatusesAsync();
-        var statusOptions = statusResult.Succeeded && statusResult.Result != null
-            ? statusResult.Result.Select(s => new SelectListItem
-            {
-                Value = s.Id.ToString(),
-                Text = s.StatusName
-            }).ToList()
-            : new List<SelectListItem>();  // Fallback if statuses are not available
+        var miniProject = await _miniProjectService.GetMiniProjectByIdAsync(id);
+        var statuses = await _statusService.GetStatusesAsync();
 
         var viewModel = new EditMiniProjectViewModel
         {
-            Id = project.Id,
-            Title = project.Title,
-            Description = project.Description,
-            ClientName = project.ClientName!,
-            StartDate = project.StartDate,
-            EndDate = project.EndDate,
-            Budget = project.Budget,
-            StatusId = project.StatusId,
-            ExistingImageUrl = project.ProjectImage,
-            StatusOptions = statusOptions  // Pass the status options here
+            Id = miniProject.Id,
+            Title = miniProject.Title,
+            Description = miniProject.Description,
+            ClientName = miniProject.ClientName!,
+            StartDate = miniProject.StartDate,
+            EndDate = miniProject.EndDate,
+            Budget = miniProject.Budget,
+            StatusId = miniProject.StatusId,
+            StatusOptions = statuses.Result?.Select(s => new SelectListItem
+            {
+                Value = s.Id.ToString(),
+                Text = s.StatusName,
+            })
         };
-        _logger.LogInformation("View model created with ID: {ViewModelId}", viewModel.Id);
 
         return View(viewModel);
 
@@ -201,11 +143,7 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
     [HttpPost]
     public async Task<IActionResult> EditMiniProject(EditMiniProjectViewModel model, string id)
     {
-        Console.WriteLine("EditMiniProject POST called");
-        Console.WriteLine($"ID from URL: {id}");
-        Console.WriteLine($"ID from model: {model.Id}");
-
-        if (model.Id != id) return BadRequest("ID mismatch");
+       
 
         if (!ModelState.IsValid)
         {
@@ -227,26 +165,22 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
             return BadRequest(new { errors });
         }
 
-        // Handle file upload 
+        
 
+        // Create a form data object expected by the service method
+        //var formData = model.MapTo<EditMiniProjectFormData>();
+        Console.WriteLine("Looking for project ID: " + model.Id);
+
+        var existing = await _miniProjectService.GetMiniProjectByTitleAsync(model.Title);
+        if (existing == null)
+            return NotFound();
+        //  Handle the file upload
         string? imagePath = null;
         if (model.ProjectImage != null)
         {
-            // Handle image upload
-            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.ProjectImage.FileName)}";
-            var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "miniprojects");
-            Directory.CreateDirectory(uploadPath);
-            var filePath = Path.Combine(uploadPath, fileName);
+            imagePath = await _imageService.SaveImageAsync(model.ProjectImage, "miniprojects");
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.ProjectImage.CopyToAsync(stream);
-            }
-
-            imagePath = $"/uploads/miniprojects/{fileName}";
         }
-
-        // Create a form data object expected by the service method
         var formData = new EditMiniProjectFormData
         {
             Id = model.Id,
@@ -256,38 +190,16 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
             StartDate = model.StartDate,
             EndDate = model.EndDate,
             Budget = model.Budget,
+            ProjectImage = imagePath,
             StatusId = model.StatusId,
-            ExistingImageUrl = model.ExistingImageUrl
-            //ProjectImage = model.ProjectImage,
-            //ExistingImageUrl = model.ExistingImageUrl
+
         };
-        if (imagePath != null)
-        {
-            formData.ExistingImageUrl = imagePath;
-        }
         // Call the service method 
         var result = await _miniProjectService.UpdateMiniProjectAsync(formData);
         await _context.SaveChangesAsync();
 
            return Ok(new { success = true });
-        
-
-        // If update failed, return error
-    }
-
-    //suggested by chat gpt as there was a mismatch between Ids in the editminiprojectsform
-    [HttpGet("ValidateProject/{id}")]
-    public async Task<IActionResult> ValidateProject(string id)
-    {
-        var exists = await _context.MiniProjects.AnyAsync(p => p.Id == id);
-        return exists ? Ok() : NotFound();
-    }
-
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public async Task<IActionResult> GetProjects()
-    {
-        return Json(await _context.MiniProjects.ToListAsync());
-    }
+            }
 
 
     [HttpPost]
@@ -300,7 +212,6 @@ public class MiniProjectsController(AppDbContext context, IMiniProjectService mi
         if (result.Succeeded)
         {
             return Json(new { success = true, message = "MiniProject deleted successfully!" }); // Return JSON for AJAX
-
 
         }
 

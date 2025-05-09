@@ -28,12 +28,10 @@ public interface IMiniProjectService
     Task<MiniProjectEntity> GetMiniProjectByIdAsync(string id);
 }
 
-public class MiniProjectService(AppDbContext context, IMiniProjectRepository miniprojectRepository, ILogger<IMiniProjectRepository> logger, IWebHostEnvironment env) : IMiniProjectService
+public class MiniProjectService(AppDbContext context, IMiniProjectRepository miniprojectRepository) : IMiniProjectService
 {
     private readonly IMiniProjectRepository _miniprojectRepository = miniprojectRepository;
     private readonly AppDbContext _context = context;
-    private readonly ILogger<IMiniProjectRepository> _logger = logger;
-    private readonly IWebHostEnvironment _env = env;
 
 
 
@@ -148,32 +146,27 @@ public class MiniProjectService(AppDbContext context, IMiniProjectRepository min
             if (form== null)
                 return new MiniProjectResult { Succeeded = false, StatusCode = 400, Error = "Form data can't be null" };
 
-            // Debug output to help diagnose issues
-            Debug.WriteLine($"UpdateMiniProjectAsync called for project ID: {form.Id}");
+            
 
 
             var existingProject = await _miniprojectRepository.GetAsync(x => x.Id == form.Id);
             if (existingProject.Result == null)
             {
-                Debug.WriteLine($"Project with ID '{form.Id}' not found");
                 return new MiniProjectResult { Succeeded = false, StatusCode = 404, Error = "Project not found" };
             }
 
-            var projectEntity = form.MapTo<MiniProjectEntity>();
-            Debug.WriteLine($"Mapped to entity with ID: {projectEntity.Id}, Name: {projectEntity.Title}");
+            var miniprojectEntity = form.MapTo<MiniProjectEntity>();
 
 
-            var updateResult = await _miniprojectRepository.UpdateAsync(projectEntity);
-            Debug.WriteLine($"Update result: Success={updateResult.Succeeded}, Status={updateResult.StatusCode}, Error={updateResult.Error}");
+            var updateResult = await _miniprojectRepository.UpdateAsync(miniprojectEntity);
 
             return new MiniProjectResult { Succeeded = false, StatusCode = updateResult.StatusCode, Error = updateResult.Error };
 
         }
 
-        catch (Exception ex)
+        catch 
         {
-            Debug.WriteLine($"Error updating client: {ex.Message}");
-            Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            
 
             return new MiniProjectResult { Succeeded = false, StatusCode = 500 };
         }

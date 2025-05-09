@@ -11,13 +11,12 @@
         <div class="card-body">
             <form novalidate method="post" asp-action="EditMiniProject" asp-controller="MiniProjects" asp-route-id="@Model.Id" id="editMiniProjectForm" enctype="multipart/form-data">
                 <input type="hidden" asp-for="Id" id="edit-project-id" name="Id" />
-                <input type="hidden" asp-for="ExistingImageUrl" />
+           
 
                 <div class="form-group">
                     <div class="image-previewer square">
                         <img src="" class="image-preview" />
-@*                         <img src="@Model.ExistingImageUrl" class="image-preview" />
- *@                        <input asp-for="ProjectImage" accept="image/*" class="hide" id="edit-project-image" />
+                         <input asp-for="ProjectImage" accept="image/*" class="hide" id="edit-project-image" />
                     </div>
                 </div>
 
@@ -34,8 +33,7 @@
 
                     <div class="wysiwyg">
 
-                        <textarea id="edit-project-description" asp-for="Description" id="edit-project-description"></textarea>
-
+                        <textarea id="edit-project-description" asp-for="Description"></textarea>
                         <div id="edit-project-description-wysiwyg-editor" class="wysiwyg-editor"></div>
 
                         <div id="edit-project-description-wysiwyg-toolbar" class="wysiwyg-toolbar">

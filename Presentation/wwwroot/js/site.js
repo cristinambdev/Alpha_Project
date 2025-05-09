@@ -316,8 +316,10 @@
                 const projectImage = btn.getAttribute('data-image')
 
                 // Set the hidden ID field
-                const idInput = document.getElementById('edit-project-id')
-                if (idInput) idInput.value = id
+                const idInput = document.getElementById('edit-project-id');
+                if (idInput) {
+                    idInput.value = id; // 'id' should come from the clicked button's data-id attribute
+                }
 
 
                 // Set form field values - USE IDs from rendered HTML
@@ -361,12 +363,16 @@
                 }
 
                 // Handle WYSIWYG editor (remains the same as you are using the ID)
-                const textarea = document.getElementById('edit-project-description')
-                if (textarea) textarea.value = description || ''
-                const quillEditor = Quill.find(document.querySelector('#edit-project-description-wysiwyg-editor'))
-                if (quillEditor) {
-                    quillEditor.root.innerHTML = description || ''
+                const quillContainer = document.querySelector('#edit-project-description-wysiwyg-editor');
+                if (quillContainer && quillContainer.__quill) {
+                    quillContainer.__quill.root.innerHTML = description || '';
                 }
+                //const textarea = document.getElementById('edit-project-description')
+                //if (textarea) textarea.value = description || ''
+                //const quillEditor = Quill.find(document.querySelector('#edit-project-description-wysiwyg-editor'))
+                //if (quillEditor) {
+                //    quillEditor.root.innerHTML = description || ''
+                //}
 
                 // Handle image preview
                 const img = document.querySelector('#editMiniProjectModal .image-preview')

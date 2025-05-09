@@ -8,13 +8,11 @@ public class EditMiniProjectViewModel
 {
 
 
-
     public string Id { get; set; } = null!;
 
     [DataType(DataType.Upload)]
     public IFormFile? ProjectImage { get; set; }
 
-    public string? ExistingImageUrl { get; set; }
 
     [Display(Name = "Project Name", Prompt = "Project Name")]
     [DataType(DataType.Text)]

@@ -88,6 +88,7 @@ public abstract class BaseRepository<TEntity, TModel> : IBaseRepository<TEntity,
         return new RepositoryResult<IEnumerable<TSelect>> { Succeeded = true, StatusCode = 200, Result = result };
     }
 
+
     public virtual async Task<RepositoryResult<TModel>> GetAsync(Expression<Func<TEntity, bool>> where, params Expression<Func<TEntity, object>>[] includes)
     {
 

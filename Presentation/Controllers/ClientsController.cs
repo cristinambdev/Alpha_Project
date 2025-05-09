@@ -79,20 +79,9 @@ public class ClientsController(IClientService clientService, AppDbContext contex
                 );
             return BadRequest(new { success = false, errors });
         }
-        // Manually map the AddClientViewModel to AddClientFormData
+        //mapping
         var client = form.MapTo<AddClientFormData>();
-        //var client = new AddClientFormData
-        //{
-        //    ClientName = form.ClientName,
-        //    Email = form.Email,
-        //    StreetName = form.StreetName,
-        //    PostalCode = form.PostalCode,
-        //    City = form.City,
-        //    Phone = form.Phone,
-        //    Date = form.Date,
-        //    Status = form.Status.ToString(),
-        //};
-
+     
 
         //upload image handling
         string? imagePath = null;
@@ -101,23 +90,7 @@ public class ClientsController(IClientService clientService, AppDbContext contex
             imagePath = await _imageService.SaveImageAsync(form.ClientImage, "clients");
 
         }
-        //string? imagePath = null;
-        //if (form.ClientImage != null)
-        //{
-        //    var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "clients");
-        //    Directory.CreateDirectory(uploadFolder);
-
-        //    // By Chat GPT: restructuring of code for image filename and storing path
-        //    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}";
-        //    var filePath = Path.Combine(uploadFolder, fileName);
-
-        //    using (var stream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        await form.ClientImage.CopyToAsync(stream);
-        //    }
-
-        //    imagePath = $"/uploads/clients/{fileName}";
-        //}
+   
         client.Image = imagePath;
 
         var result = await _clientService.CreateClientAsync(client);
@@ -155,22 +128,6 @@ public class ClientsController(IClientService clientService, AppDbContext contex
 
         }
 
-        //string? imagePath = null;
-        //if (model.ClientImage != null)
-        //{
-        //    // Handle image upload
-        //    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.ClientImage.FileName)}";
-        //    var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "clients");
-        //    Directory.CreateDirectory(uploadPath);
-        //    var filePath = Path.Combine(uploadPath, fileName);
-
-        //    using (var stream = new FileStream(filePath, FileMode.Create))
-        //    {
-        //        await model.ClientImage.CopyToAsync(stream);
-        //    }
-
-        //    imagePath = $"/uploads/clients/{fileName}";
-        //}
 
         var entity = await _context.Clients.FindAsync(model.Id);
         if (entity == null)
