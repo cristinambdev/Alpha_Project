@@ -1,43 +1,43 @@
 ﻿@model AddProjectViewModel
 
-@* @{
-    // Serialize Users (Ensure this is the correct model type)
+@{
+    // Serialize Users
     var selectedUsersJson = JsonSerializer.Serialize(
         Model.Users.Select(u => new
         {
-            id = u.Id,               // Access the User model's Id
-            userImage = u.UserImage,  // Access the User model's Image
-            fullName = u.FirstName + " " + u.LastName // Combine First and Last Name
+            id = u.Id,
+            userImage = u.UserImage,
+            fullName = u.FirstName + " " + u.LastName
         })
     );
 
-    // Serialize Clients (Ensure this is the correct model type)
+    // Serialize Clients
     var selectedClientsJson = JsonSerializer.Serialize(
         Model.Clients.Select(c => new
         {
-            id = c.Client.Id,        // Access the Client model's Id
-            clientImage = c.Client.Image, // Access the Client model's Image
-            clientName = c.Client.ClientName // Access the Client model's Name
+            id = c.Client.Id,
+            clientImage = c.Client.Image,
+            clientName = c.Client.ClientName
         })
     );
-} *@
+}
 <section id="addProjectModal" class="modal">
     <div class="card">
-      
+
         <div class="card-header">
             <h3>Add Project</h3>
             <button type="button" class="btn-close" data-type="close" data-target="#addProjectModal"></button>
         </div>
 
-        <div class="card-body"> 
+        <div class="card-body">
             <form novalidate method="post" asp-action="AddProject" asp-controller="Projects" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id"/> 
+                <input type="hidden" asp-for="Id" />
                 @* inputs below suggested by Chat GPT *@
-                @* <input type="hidden" name="SelectedClientIds" id="SelectedClientIds" value="[]" />
+                <input type="hidden" name="SelectedClientIds" id="SelectedClientIds" value="[]" />
                 <input type="hidden" name="SelectedUserIds" id="SelectedUserIds" value="[]" />
                 <input type="hidden" id="usersSearchUrl" value="@Url.Action("SearchUsers", "Users")" />
-                <input type="hidden" id="clientsSearchUrl" value="@Url.Action("SearchClients", "Clients")" />*@
-                <input type="hidden" asp-for="UserId" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" /> 
+                <input type="hidden" id="clientsSearchUrl" value="@Url.Action("SearchClients", "Clients")" />
+                <input type="hidden" asp-for="UserId" value="@User.FindFirst(ClaimTypes.NameIdentifier)?.Value" />
 
                 <div class="form-group">
                     <div class="image-previewer square">
@@ -86,86 +86,84 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                @*  <div class="form-group">
                     <label class="form-label" asp-for="ClientName">Client Name</label>
                     <div class="field-group">
                         <input class="form-input" asp-for="ClientName" />
                         <span asp-validation-for="ClientName"></span>
                     </div>
-                </div>
-
-                 @* <div class="form-group">
-                    <label class="form-label" asp-for="ClientName">Client Name</label>
- 
-                        <div id="tagged-clients" class="form-input form-tag-select">
-                            <input type="text" id="client-search" class="form-tag-input" placeholder="Add Client(s)..."/>
-                            <label for="client-search" class="fa-solid fa-ellipsis"></label>
-                            <div id="client-search-results" class="search-results"></div>
-                            <input type="hidden" name="client-select-value" asp-for="ClientName" />
-                            <span asp-validation-for="ClientName"></span>
-                        </div>
                 </div> *@
 
-                  
+                <div class="form-group">
+                    <label class="form-label" asp-for="ClientName">Client Name</label>
 
-                    <div class="form-horizontal-group">
+                    <div id="tagged-clients" class="form-input form-tag-select">
+                        <input type="text" id="client-search" class="form-tag-input" placeholder="Add Client(s)..." />
+                        <label for="client-search" class="fa-solid fa-ellipsis"></label>
+                        <div id="client-search-results" class="search-results"></div>
+                        <input type="hidden" name="client-select-value" asp-for="ClientName" />
+                        <span asp-validation-for="ClientName"></span>
+                    </div>
+                </div>
 
-                        <div class="form-group">
-                            <label class="form-label" asp-for="StartDate" >Start Date</label>
-                            <div class="field-group">
-                                <input class="form-input" type="date" asp-for="StartDate" />
-                                <span asp-validation-for="StartDate"></span>
-                            </div>
+
+
+                <div class="form-horizontal-group">
+
+                    <div class="form-group">
+                        <label class="form-label" asp-for="StartDate">Start Date</label>
+                        <div class="field-group">
+                            <input class="form-input" type="date" asp-for="StartDate" />
+                            <span asp-validation-for="StartDate"></span>
                         </div>
-
-                        <div class="form-group">
-                            <label class="form-label" asp-for="EndDate">End Date</label>
-                            <div class="field-group">
-                            <input class="form-input" type="date" asp-for="EndDate" />
-                                <span asp-validation-for="EndDate"></span>
-                            </div>
-                        </div>
-
                     </div>
 
+                    <div class="form-group">
+                        <label class="form-label" asp-for="EndDate">End Date</label>
+                        <div class="field-group">
+                            <input class="form-input" type="date" asp-for="EndDate" />
+                            <span asp-validation-for="EndDate"></span>
+                        </div>
+                    </div>
+
+                </div>
+                @* 
                 <div class="form-group">
                     <label class="form-label" asp-for="Members">Members Name</label>
                     <div class="field-group">
                         <input class="form-input" asp-for="Members" />
                         <span asp-validation-for="Members"></span>
                     </div>
+                </div> *@
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Members"> Members</label>
+                    <div id="tagged-users" class="form-input form-tag-select">
+                        <input type="text" id="user-search" class="form-tag-input" placeholder="Add Member(s)..." />
+                        <label for="user-search" class="fa-solid fa-ellipsis"></label>
+                        <div id="user-search-results" class="search-results"></div>
+                        <input type="hidden" name="member-select-value" asp-for="Members" />
+                        <span asp-validation-for="Members"></span>
+                    </div>
                 </div>
 
-                    @* <div class="form-group">
-                        <label class="form-label" asp-for="Members"> Members</label>
-                        <div id="tagged-users" class="form-input form-tag-select">
-                            <input type="text" id="user-search" class="form-tag-input" placeholder="Add Member(s)..." />
-                            <label for="user-search" class="fa-solid fa-ellipsis"></label>
-                            <div id="user-search-results" class="search-results"></div>
-                            <input type="hidden" name="member-select-value" asp-for="Members" />
-                            <span asp-validation-for="Members"></span>
-                        </div>
-                        
 
-                    </div> *@
-                       
-                   
 
-                    <div class="form-group">
-                        <label class="form-label" asp-for="Budget">Budget</label>
-                        <div class="form-input-extended">
-                             <i class="fa-solid fa-dollar-sign"></i>
-                            <input class="form-input" asp-for="Budget" />
-                            <span asp-validation-for="Budget"></span>
-                        </div>
+                <div class="form-group">
+                    <label class="form-label" asp-for="Budget">Budget</label>
+                    <div class="form-input-extended">
+                        <i class="fa-solid fa-dollar-sign"></i>
+                        <input class="form-input" asp-for="Budget" />
+                        <span asp-validation-for="Budget"></span>
                     </div>
+                </div>
 
-                    <button type="submit" class="btn btn-submit btn-blue">Create</button>
-           
-              
+                <button type="submit" class="btn btn-submit btn-blue">Create</button>
+
+
             </form>
         </div>
- 
+
     </div>
 
 </section>
@@ -198,47 +196,47 @@
             }
 
 
-            
-    //      // === USERS ===
 
-    // const preselectedUsers = []
+         // === USERS ===
 
-    //      initTagSelector({
-    //          containerId: "tagged-users",
-    //          inputId: "user-search",
-    //          resultsId: "user-search-results",
-    //          //searchUrl: (query) => '@Url.Action("SearchUsers", "Users")' + '?term=' + encodeURIComponent(query),
-    //          searchUrl: (query) => `${urlConfig.usersSearchUrl}?term=${encodeURIComponent(query)}`, //Chat gpt
-    //          displayProperty: "fullName",
-    //          imageProperty: "MemberImage",
-    //          tagClass: "user-tag",
-    //          tagType: "user",
-    //          hiddenInputId: "SelectedUserIds", //chat gpt
-    //          avatarFolder: "/uploads/members/",
-    //          emptyMessage: "No users found.",
-    //          preselected: preselectedUsers,
-    //          selectedInputIds: 'SelectedUserIds'
-    //      })
+    const preselectedUsers = []
 
-    //      // === CLIENTS ===
-    //      const preselectedClients = []
+         initTagSelector({
+             containerId: "tagged-users",
+             inputId: "user-search",
+             resultsId: "user-search-results",
+             //searchUrl: (query) => '@Url.Action("SearchUsers", "Users")' + '?term=' + encodeURIComponent(query),
+             searchUrl: (query) => `${urlConfig.usersSearchUrl}?term=${encodeURIComponent(query)}`, //Chat gpt
+             displayProperty: "fullName",
+             imageProperty: "MemberImage",
+             tagClass: "user-tag",
+             tagType: "user",
+             hiddenInputId: "SelectedUserIds", //chat gpt
+             avatarFolder: "/uploads/members/",
+             emptyMessage: "No users found.",
+             preselected: preselectedUsers,
+             selectedInputIds: 'SelectedUserIds'
+         })
 
-    //      initTagSelector({
-    //          containerId: "tagged-clients",
-    //          inputId: "client-search",
-    //          resultsId: "client-search-results",
-    //          //searchUrl: (query) => '@Url.Action("SearchClients", "Clients")' + '?term=' + encodeURIComponent(query),
-    //          searchUrl: (query) => `${urlConfig.clientsSearchUrl}?term=${encodeURIComponent(query)}`,
-    //          displayProperty: "clientName",
-    //          imageProperty: "ClientImage",
-    //          tagClass: "client-tag",
-    //          tagType: "client",
-    //          hiddenInputId: "SelectedClientIds",
-    //          avatarFolder: "/uploads/clients/",
-    //          emptyMessage: "No clients found.",
-    //          preselected: preselectedClients,
-    //          selectedInputIds: 'SelectedUserIds'
-    //      })
-               
+         // === CLIENTS ===
+         const preselectedClients = []
+
+         initTagSelector({
+             containerId: "tagged-clients",
+             inputId: "client-search",
+             resultsId: "client-search-results",
+             //searchUrl: (query) => '@Url.Action("SearchClients", "Clients")' + '?term=' + encodeURIComponent(query),
+             searchUrl: (query) => `${urlConfig.clientsSearchUrl}?term=${encodeURIComponent(query)}`,
+             displayProperty: "clientName",
+             imageProperty: "ClientImage",
+             tagClass: "client-tag",
+             tagType: "client",
+             hiddenInputId: "SelectedClientIds",
+             avatarFolder: "/uploads/clients/",
+             emptyMessage: "No clients found.",
+             preselected: preselectedClients,
+             selectedInputIds: 'SelectedUserIds'
+         })
+
 
 </script>

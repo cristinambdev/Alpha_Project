@@ -5,20 +5,19 @@ using Presentation.Models;
 using Microsoft.EntityFrameworkCore;
 using Data.Entities;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+
 
 namespace Presentation.Controllers;
 
 //[Authorize(Roles = "Admin")]
-public class UsersController(IUserService userService, AppDbContext context, IWebHostEnvironment env, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager) : Controller
+public class UsersController(IUserService userService, AppDbContext context, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager, IImageService imageService) : Controller
 {
     private readonly IUserService _userService = userService;
     private readonly AppDbContext _context = context;
-    private readonly IWebHostEnvironment _env = env;
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly RoleManager<IdentityRole> _roleManager = roleManager;
+    private readonly IImageService _imageService = imageService;
 
 
     [HttpGet]
@@ -29,21 +28,20 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
 
         var viewModel = new UsersViewModel()
         {
-            Users = new List<UserViewModel>() 
+            Users = new List<UserViewModel>()
         };
-
+        // with chat gpt help
         foreach (var user in userResult?.Result!)
         {
-            // Create a new instance of UserEntity
-            var userEntity = new Data.Entities.UserEntity
+            var userEntity = new UserEntity
             {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            PhoneNumber = user.PhoneNumber,
-            JobTitle = user.JobTitle,
-            UserImage = user.UserImage
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                JobTitle = user.JobTitle,
+                UserImage = user.UserImage
             };
 
             // Get roles for the user
@@ -116,23 +114,12 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
             }
 
             //  Handle the file upload
-            string? imagePath = null; // suggested by chat GPT to store the image 
+            string? imagePath = null;
             if (form.UserImage != null)
             {
-                var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "members");
-                Directory.CreateDirectory(uploadPath);
+                imagePath = await _imageService.SaveImageAsync(form.UserImage, "members");
 
-                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.UserImage.FileName)}";
-                var filePath = Path.Combine(uploadPath, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await form.UserImage.CopyToAsync(stream);
-                }
-
-                imagePath = $"/uploads/members/{fileName}";
             }
-
             var user = new UserEntity
             {
                 FirstName = form.FirstName,
@@ -158,7 +145,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
                 return BadRequest(new { success = false, errors = result.Errors.Select(e => e.Description) });
             }
 
-            var roleResult = await _userManager.AddToRoleAsync(user, form.Role);
+            var roleResult = await _userManager.AddToRoleAsync(user, form.Role!);
             if (!roleResult.Succeeded)
             {
                 return BadRequest(new { success = false, errors = roleResult.Errors.Select(e => e.Description) });
@@ -203,7 +190,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
     }
 
     [HttpPost]
-    public async Task<IActionResult> EditMember([FromForm] EditMemberViewModel form) // [FromForm] suggested by chat GPT as form is handling different formats
+    public async Task<IActionResult> EditMember(EditMemberViewModel form)
     {
 
         if (!ModelState.IsValid)
@@ -217,23 +204,14 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
             return BadRequest(new { success = false, errors });
         }
 
-        //// Handle image upload
-        string? imagePath = null;// byt chat GPT - Keep existing image by default
-        if (form.UserImage != null && form.UserImage.Length > 0)
+        //  Handle the file upload
+        string? imagePath = null;
+        if (form.UserImage != null)
         {
-            var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "members");
-            Directory.CreateDirectory(uploadPath);
+            imagePath = await _imageService.SaveImageAsync(form.UserImage, "members");
 
-            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.UserImage.FileName)}";
-            var filePath = Path.Combine(uploadPath, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await form.UserImage.CopyToAsync(stream);
-            }
-
-            imagePath = $"/uploads/members/{fileName}";
         }
+
         // Get the existing user with address
         var user = await _userManager.Users
             .Include(u => u.Address)
@@ -255,14 +233,14 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
         {
             user.UserImage = imagePath;
         }
-       
-        // Handle address
+
+        // Handle address with help og chat gpt
         user.Address ??= new UserAddressEntity { UserId = user.Id };
         user.Address.StreetName = form.StreetName ?? string.Empty;
         user.Address.PostalCode = form.PostalCode ?? string.Empty;
         user.Address.City = form.City ?? string.Empty;
 
-        // **Update User Role by chat gpt
+        // Update User Role by chat gpt
         var existingRoles = await _userManager.GetRolesAsync(user);
         var newRole = form.Role;
 
@@ -270,7 +248,7 @@ public class UsersController(IUserService userService, AppDbContext context, IWe
         await _userManager.RemoveFromRolesAsync(user, existingRoles);
 
         // Add the new role
-        var addRoleResult = await _userManager.AddToRoleAsync(user, newRole);
+        var addRoleResult = await _userManager.AddToRoleAsync(user, newRole!);
         if (!addRoleResult.Succeeded)
         {
             ModelState.AddModelError(string.Empty, "Failed to update user role.");

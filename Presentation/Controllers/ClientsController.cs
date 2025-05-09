@@ -1,29 +1,24 @@
-﻿using Business.Models;
-using Business.Services;
+﻿using Business.Services;
 using Data.Contexts;
-using Data.Entities;
 using Domain.Extentions;
 using Domain.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Models;
-using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text.Json;
-using static System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Authorization;
 
 
 namespace Presentation.Controllers;
 
 [Authorize(Roles = "Admin")]
-public class ClientsController(IClientService clientService, IWebHostEnvironment env, AppDbContext context, IStatusService statusService) : Controller
+public class ClientsController(IClientService clientService, AppDbContext context, IStatusService statusService, IImageService imageService) : Controller
 {
     private readonly IClientService _clientService = clientService;
     private readonly IStatusService _statusService = statusService;
     private readonly AppDbContext _context = context;
-    private readonly IWebHostEnvironment _env = env;
+    private readonly IImageService _imageService = imageService;
+
 
     [HttpGet]
     [Route("clients")]
@@ -85,37 +80,44 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
             return BadRequest(new { success = false, errors });
         }
         // Manually map the AddClientViewModel to AddClientFormData
-        var client = new AddClientFormData
-        {
-            ClientName = form.ClientName,
-            Email = form.Email,
-            StreetName = form.StreetName,
-            PostalCode = form.PostalCode,
-            City = form.City,
-            Phone = form.Phone,
-            Date = form.Date,
-            Status = form.Status.ToString(),
-        };
+        var client = form.MapTo<AddClientFormData>();
+        //var client = new AddClientFormData
+        //{
+        //    ClientName = form.ClientName,
+        //    Email = form.Email,
+        //    StreetName = form.StreetName,
+        //    PostalCode = form.PostalCode,
+        //    City = form.City,
+        //    Phone = form.Phone,
+        //    Date = form.Date,
+        //    Status = form.Status.ToString(),
+        //};
 
 
         //upload image handling
         string? imagePath = null;
         if (form.ClientImage != null)
         {
-            var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "clients");
-            Directory.CreateDirectory(uploadFolder);
+            imagePath = await _imageService.SaveImageAsync(form.ClientImage, "clients");
 
-            // By Chat GPT: restructuring of code for image filename and storing path
-            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}";
-            var filePath = Path.Combine(uploadFolder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await form.ClientImage.CopyToAsync(stream);
-            }
-
-            imagePath = $"/uploads/clients/{fileName}";
         }
+        //string? imagePath = null;
+        //if (form.ClientImage != null)
+        //{
+        //    var uploadFolder = Path.Combine(_env.WebRootPath, "uploads", "clients");
+        //    Directory.CreateDirectory(uploadFolder);
+
+        //    // By Chat GPT: restructuring of code for image filename and storing path
+        //    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(form.ClientImage.FileName)}";
+        //    var filePath = Path.Combine(uploadFolder, fileName);
+
+        //    using (var stream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await form.ClientImage.CopyToAsync(stream);
+        //    }
+
+        //    imagePath = $"/uploads/clients/{fileName}";
+        //}
         client.Image = imagePath;
 
         var result = await _clientService.CreateClientAsync(client);
@@ -146,28 +148,34 @@ public class ClientsController(IClientService clientService, IWebHostEnvironment
             return BadRequest(new { errors });
         }
 
-
         string? imagePath = null;
         if (model.ClientImage != null)
         {
-            // Handle image upload
-            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.ClientImage.FileName)}";
-            var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "clients");
-            Directory.CreateDirectory(uploadPath);
-            var filePath = Path.Combine(uploadPath, fileName);
+            imagePath = await _imageService.SaveImageAsync(model.ClientImage, "clients");
 
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await model.ClientImage.CopyToAsync(stream);
-            }
-
-            imagePath = $"/uploads/clients/{fileName}";
         }
+
+        //string? imagePath = null;
+        //if (model.ClientImage != null)
+        //{
+        //    // Handle image upload
+        //    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(model.ClientImage.FileName)}";
+        //    var uploadPath = Path.Combine(_env.WebRootPath, "uploads", "clients");
+        //    Directory.CreateDirectory(uploadPath);
+        //    var filePath = Path.Combine(uploadPath, fileName);
+
+        //    using (var stream = new FileStream(filePath, FileMode.Create))
+        //    {
+        //        await model.ClientImage.CopyToAsync(stream);
+        //    }
+
+        //    imagePath = $"/uploads/clients/{fileName}";
+        //}
 
         var entity = await _context.Clients.FindAsync(model.Id);
         if (entity == null)
             return NotFound();
-
+        //entity = model.MapTo<ClientEntity>();
         entity.ClientName = model.ClientName;
         entity.Email = model.Email;
         entity.Phone = model.Phone;

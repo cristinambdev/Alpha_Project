@@ -58,28 +58,24 @@
                         <span asp-validation-for="Description"></span>
                     </div>
                 </div>
-                <div class="form-group">
+                @* <div class="form-group">
                     <label class="form-label" asp-for="ClientName">Client Name</label>
                     <div class="field-group">
                         <input class="form-input" asp-for="ClientName" />
                         <span asp-validation-for="ClientName"></span>
                     </div>
-                </div>
-             @*    <div class="form-group">
+                </div> *@
+                <div class="form-group">
                     <label class="form-label" asp-for="ClientName">Client Name</label>
 
-                    <div class="custom-select" data-placeholder="Choose a client">
-                        <button type="button" class="custom-select-trigger">
-                            <span class="custom-select-text"></span>
-                        </button>
-                        <ul class="custom-select-options">
-                            <li class="custom-select-option" data-value="1">Client 1</li>
-                            <li class="custom-select-option" data-value="2">Client 2</li>
-                        </ul>
+                    <div id="tagged-clients" class="form-input form-tag-select">
+                        <input type="text" id="client-search" class="form-tag-input" placeholder="Add Client(s)..." />
+                        <label for="client-search" class="fa-solid fa-ellipsis"></label>
+                        <div id="client-search-results" class="search-results"></div>
                         <input type="hidden" name="client-select-value" asp-for="ClientName" />
                         <span asp-validation-for="ClientName"></span>
                     </div>
-                </div> *@
+                </div>
 
                 <div class="form-horizontal-group">
 
@@ -100,29 +96,23 @@
                     </div>
 
                 </div>
-                <div class="form-group">
+                @* <div class="form-group">
                     <label class="form-label" asp-for="Members">Members Name</label>
                     <div class="field-group">
                         <input class="form-input" asp-for="Members" />
                         <span asp-validation-for="Members"></span>
                     </div>
-                </div>
-                @* <div class="form-group">
+                </div> *@
+                <div class="form-group">
                     <label class="form-label" asp-for="Members"> Members</label>
-
-                    <div class="custom-select" data-placeholder="Choose a member">
-                        <button type="button" class="custom-select-trigger">
-                            <span class="custom-select-text"></span>
-                        </button>
-                        <ul class="custom-select-options">
-                            <li class="custom-select-option" data-value="1">Cristina Mosquera</li>
-                            <li class="custom-select-option" data-value="2">Hans Martinez</li>
-                        </ul>
+                    <div id="tagged-users" class="form-input form-tag-select">
+                        <input type="text" id="user-search" class="form-tag-input" placeholder="Add Member(s)..." />
+                        <label for="user-search" class="fa-solid fa-ellipsis"></label>
+                        <div id="user-search-results" class="search-results"></div>
                         <input type="hidden" name="member-select-value" asp-for="Members" />
                         <span asp-validation-for="Members"></span>
                     </div>
-
-                </div> *@
+                </div>
 
                 <div class="form-group">
                     <label class="form-label" asp-for="Budget">Budget</label>

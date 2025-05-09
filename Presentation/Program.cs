@@ -89,6 +89,7 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMiniProjectService, MiniProjectService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
