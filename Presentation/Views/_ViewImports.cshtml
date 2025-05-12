@@ -1,9 +1,12 @@
 ﻿@using Business.Models
 @using Domain.Models
 @using Presentation.Models
+@using Business.Services
 @using Microsoft.EntityFrameworkCore.Metadata.Internal
 @using System.Security.Claims
 @using System.Text.Json
 
+@inject IUserService userService
+@inject INotificationService notificationService 
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

@@ -12,7 +12,7 @@
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     <script src="~/js/tags.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.9/signalr.min.js"></script>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
@@ -69,8 +69,94 @@
                 const enabled = toggle.checked;
                 document.body.classList.toggle("dark-mode", enabled);
                 localStorage.setItem("darkMode", enabled);  // Save the preference
-            });
-        });
+            })
+        })
+
+             const connection = new SignalR.HubConnectionBuilder()
+            .withUrl("/notificationHub")
+            .build()
+
+
+        connection.on("ReceiveNotification", function(notification) {
+            const notifications = document.querySelector('.notifications')
+
+            const item = document.createElement('div')
+            item.className = 'notification-item'
+            item.setAttribute('data-id', notification.id)
+            item.innerHTML =
+            `
+                    <div class="user-image">
+                        <img src="${notification.icon}" />
+                    </div>
+                    <div class="message">
+                        <span class="title">${notification.message}</span>
+                        <span class="time" data-created="${new Date(notification.created).toISOString()}">${notification.created}</span>
+                    </div>
+                    <button class="btn-remove" onclick="dismissNotification('${notification.id}')"></button>
+
+            `
+
+            notifications.insertBefore(item, notifications.firstChild)
+
+            updateRelativeTimes()
+            updateNotificationCount()
+        })
+
+        connection.on("NotificationDismissed", function(notificationId) {
+            const element = document.querySelector(`.notification-item[data-id="${notificationId}"]`)
+            if(element) {
+                element.remove()
+                updateNotificationCount()
+            }
+        })
+
+        connection.start().catch(error => console.error(error))
+
+        async function dismissNotification(notificationId) {
+            try {
+                const res = await fetch(`/api/notifications/dismiss/${notificationId}`, {method: 'POST'})
+
+                if(res.ok) {
+                    const element = document.querySelector(`.notification-item[data-id="${notificationId}"]`)
+                    if(element) {
+                        element.remove()
+                        updateNotificationCount()
+                        }
+                }
+            }
+            catch(error) {
+                console.error('Error removing notification:', error)
+            }
+        }
+
+        function removeNotification(notificationId) {
+            const element = document.querySelector(`.notification-item[data-id="${notificationId}"]`)
+            if(element) {
+                element.remove()
+                updateNotificationCount()
+            }
+        }
+
+        function updateNotificationCount() {
+            const notifications = document.querySelector('.notifications')
+            const notificationNumber = document.querySelector('#notification-number')
+            const notificationDropdownButton = document.querySelector('#notification-dropdown-button')
+            const count = notifications.querySelectorAll('.notification-item').length
+
+            if(notificationNumber) {
+                notificationNumber.textContent = count
+            }
+
+            let dot = notificationDropdownButton.querySelector('.dot.dot-red')
+            if(count > 0 && !dot) {
+                dot = document.createElement('div')
+                dot.className = 'dot dot-red'
+                notificationDropdownButton.appendChild(dot)
+            }
+            if(count === 0 && dot) {
+                dot.remove()
+            }
+        }
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

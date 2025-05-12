@@ -3,7 +3,7 @@ using Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Business.Models;
 using System.Security.Claims;
-using Microsoft.SqlServer.Server;
+
 
 
 namespace Business.Services;
@@ -17,6 +17,7 @@ public interface IAuthService
 
 public class AuthService(SignInManager<UserEntity> signInManager, UserManager<UserEntity> userManager) : IAuthService
 {
+
     private readonly SignInManager<UserEntity> _signInManager = signInManager;
     private readonly UserManager<UserEntity> _userManager = userManager;
 
@@ -47,7 +48,9 @@ public class AuthService(SignInManager<UserEntity> signInManager, UserManager<Us
             return new AuthResult { Succeeded = false, StatusCode = 401, Error = errorMessage };
         }
         if(result.Succeeded)
-        { // with chat gpt help
+        {
+   
+            // with chat gpt help
             var roles = await _userManager.GetRolesAsync(user);
 
             string displayName = $"{user.FirstName} {user.LastName}";

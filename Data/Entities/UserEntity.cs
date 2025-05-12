@@ -20,5 +20,6 @@ public class UserEntity : IdentityUser
 
     public ICollection<ProjectUserEntity> ProjectUsers { get; set; } = [];
 
+    public ICollection<NotificationDismissedEntity> DismissedNotifications { get; set; } = [];
 
 }

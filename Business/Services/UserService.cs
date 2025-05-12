@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Business.Services;
@@ -18,7 +19,8 @@ public interface IUserService
     Task<UserResult> GetUsersAsync();
     Task<UserResult> UpdateUserAsync(EditUserFormData formData);
     Task<UserResult> GetUserByIdAsync(string id);
-    
+    Task<string> GetDisplayNameAsync(string? userName);
+    Task<string> GetDisplayEmailAsync(string? userEmail);
     }
 
 public class UserService(IUserRepository userRepository, UserManager<UserEntity> userManager, RoleManager<IdentityRole> roleManager) : IUserService
@@ -36,7 +38,25 @@ public class UserService(IUserRepository userRepository, UserManager<UserEntity>
         //var list = await _userManager.Users.ToListAsync();
         //return list.MapTo<UserResult>();
     }
-
+    public async Task<string> GetDisplayNameAsync(string? userName)
+    {
+        if (userName == null)
+        {
+            return "";
+        }
+        var user = await _userManager.FindByNameAsync(userName);
+        return user == null ? "" : $"{user.FirstName} {user.LastName }";
+    }
+    public async Task<string> GetDisplayEmailAsync(string? userEmail)
+    {
+        if (userEmail == null)
+        {
+            return "";
+        }
+        var user = await _userManager.FindByEmailAsync(userEmail);
+        return user == null ? "" : $"{user.Email}";
+    }
+    
     public async Task<UserResult> GetUserByIdAsync(string id)
     {
         var result = await _userRepository.GetAsync(x => x.Id == id);

@@ -1,14 +1,156 @@
-﻿<div id="notification-container">
-    <button type="button" data-type="dropdown" data-target="#notification-dropdown" class="btn-notification">
-        <i class="dot dot-yellow fa-solid fa-circle hide"></i>
+﻿@{
+    var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "anonymous";
+    var notifications = await notificationService.GetNotificationsAsync(userId);
+    notifications = notifications.OrderByDescending(x => x.Created);
+}
+
+<div id="notification-container">
+    <button id="notification-dropdown-button" type="button" data-type="dropdown" data-target="#notification-dropdown" class="btn-notification">
+        @if(notifications.Any())
+        {
+            <i class="dot dot-red fa-solid fa-circle"></i>
+
+        }
         <i class="fa-solid fa-bell" style="--fa-primary-opacity: 0.4; --fa-secondary-opacity: 1;"></i>
     </button>
 
     <div id="notification-dropdown" class="dropdown dropdown-notification">
-        @await Html.PartialAsync("Dropdowns/_NotificationsDropdownPartial")
+        <div class="dropdown-header">
+            <h4>Notifications</h4>
+            <div id="notification-number" class="badge badge-red">@notifications.Count()</div>
+        </div>
+
+        <div class="divider"></div>
+
+
+        <div class="notifications">
+                        @* <div class="notification " data-notification-type="project">
+                    <div class="project-image">
+                        <img src="~/Images/Image_App_Development_Slack.svg" />
+                    </div>
+
+                    <div class="message">
+                        <span class="title">App Development <span>added</span></span>
+                        <span class="time">1 min. ago</span>
+                    </div>
+                    <button class="btn-remove"></button>
+                </div> *@
+
+
+            @foreach(var notification in notifications)
+              {
+                <div class="notification-item" data-id="@notification.Id" data-notification-type="user">
+                    <div class="user-image">
+                        <img src="@Url.Content("~/Images/logo_img.svg")" alt="avatar" />
+                    </div>
+
+                    <div class="message">
+                        <span class="title">@notification.Message</span>
+                        <span class="time" data-created="@notification.Created.ToString("s")">@notification.Created</span>
+                    </div>
+                    <button class="btn-remove" onclick="dismissNotification('@notification.Id')"></button>
+                </div>
+        }
+           
+
+        </div>
     </div>
   
 
 </div>
-   
+
+
+
+
+
+
+<script>
+    // const connection = new SignalR.HubConnectionBuilder()
+    //     .withUrl("/notificationHub")
+    //     .build()
+
+
+    // connection.on("ReceiveNotification", function(notification) {
+    //     const notifications = document.querySelector('.notifications')
+
+    //     const item = document.createElement('div')
+    //     item.className = 'notification-item'
+    //     item.setAttribute('data-id', notification.id)
+    //     item.innerHTML =
+    //     `
+    //             <div class="user-image">
+    //                 <img src="${notification.icon}" />
+    //             </div>
+    //             <div class="message">
+    //                 <span class="title">${notification.message}</span>
+    //                 <span class="time" data-created="${new Date(notification.created).toISOString()}">${notification.created}</span>
+    //             </div>
+    //             <button class="btn-remove" onclick="dismissNotification('${notification.id}')"></button>
+
+    //     `
+
+    //     notifications.insertBefore(item, notifications.firstChild)
+
+    //     updateRelativeTimes()
+    //     updateNotificationCount()
+    // })
+
+    // connection.on("NotificationDismissed", function(notificationId) {
+    //     const element = document.querySelector(`.notification-item[data-id="${notificationId}"]`)
+    //     if(element) {
+    //         element.remove()
+    //         updateNotificationCount()
+    //     }
+    // })
+
+    // connection.start().catch(error => console.error(error))
+
+    // async function dismissNotification(notificationId) {
+    //     try {
+    //         const res = await fetch(`/api/notifications/dismiss/${notificationId}`, {method: 'POST'})
+
+    //         if(res.ok) {
+    //             const element = document.querySelector(`.notification-item[data-id="${notificationId}"]`)
+    //             if(element) {
+    //                 element.remove()
+    //                 updateNotificationCount()
+    //                 }
+    //         }
+    //     }
+    //     catch(error) {
+    //         console.error('Error removing notification:', error)
+    //     }
+    // }
+
+    // function removeNotification(notificationId) {
+    //     const element = document.querySelector(`.notification-item[data-id="${notificationId}"]`)
+    //     if(element) {
+    //         element.remove()
+    //         updateNotificationCount()
+    //     }
+    // }
+
+    // function updateNotificationCount() {
+    //     const notifications = document.querySelector('.notifications')
+    //     const notificationNumber = document.querySelector('#notification-number')
+    //     const notificationDropdownButton = document.querySelector('#notification-dropdown-button')
+    //     const count = notifications.querySelectorAll('.notification-item').length
+
+    //     if(notificationNumber) {
+    //         notificationNumber.textContent = count
+    //     }
+
+    //     let dot = notificationDropdownButton.querySelector('.dot.dot-red')
+    //     if(count > 0 && !dot) {
+    //         dot = document.createElement('div')
+    //         dot.className = 'dot dot-red'
+    //         notificationDropdownButton.appendChild(dot)
+    //     }
+    //     if(count === 0 && dot) {
+    //         dot.remove()
+    //     }
+    // }
+
+</script>
+
 

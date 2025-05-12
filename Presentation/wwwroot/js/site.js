@@ -1,4 +1,6 @@
 ﻿document.addEventListener('DOMContentLoaded', () => {
+    updateRelativeTimes()
+    setInterval(updateRelativeTimes, 60000)
 
     // === DROPDOWNS ===
     const dropdowns = document.querySelectorAll('[data-type="dropdown"]')
@@ -567,3 +569,39 @@
 
 
 })
+
+function updateRelativeTimes() {
+    const elements = document.querySelectorAll('.notification-item .time')
+    const now = new Date();
+
+    elements.forEach(el => {
+        const created = new Date(el.getAttribute('data-created'))
+        const diff = now - created;
+        const diffSeconds = Math.floor(diff / 100)
+        const diffMinutes = Math.floor(diffSeconds / 60)
+        const diffHours = Math.floor(diffMinutes / 60)
+        const diffDays = Math.floor(diffHours / 24)
+        const diffWeeks = Math.floor(diffDays / 7)
+
+        let relativeTime = '';
+
+        if (diffMinutes < 1) {
+            relativeTime = '0 min ago'
+        } else if (diffMinutes < 60) {
+            realtiveTime = diffMinutes + ' min ago'
+        } else if (diffHours < 2) {
+            relativeTime = diffHours + ' hour ago'
+        } else if (diffHours < 24) {
+            reltiveTime = diffHours + ' hours ago'
+        } else if (diffDays < 2) {
+            relativeTime = diffDays + ' day ago'
+        } else if (diffDays < 7) {
+            relativeTime = diffDays + 'days ago'
+        } else {
+            relativeTime = diffWeeks + ' weeks ago'
+        }
+        el.textContent = relativeTime;
+            
+        
+    })
+}

@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     var provider = User?.FindFirstValue(ClaimTypes.AuthenticationMethod);
 
     if (string.IsNullOrEmpty(provider))
@@ -7,16 +8,15 @@
     }
     var imageClaim = User?.Claims.FirstOrDefault(c => c.Type == "image");
     var imageUrl = imageClaim?.Value;
-    var name = User?.FindFirstValue("DisplayName");
-   
 
-        
+    string displayName = await userService.GetDisplayNameAsync(User!.Identity?.Name!); 
+
 }
     <div class="dropdown-header">
 
         <div class="account-name">
         <img src=@imageUrl alt="avatar" />
-            <span>@name</span>
+            <span>@displayName</span>
         </div>
         
     </div>

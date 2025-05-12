@@ -1,16 +1,20 @@
 ﻿using Business.Services;
 using Data.Entities;
-using Domain.Extentions;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.SqlServer.Server;
+using Presentation.Hubs;
 using Presentation.Models;
 using System.Security.Claims;
 
 namespace Presentation.Controllers;
 
-public class AuthController(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, IAuthService authService) : Controller
+public class AuthController(UserManager<UserEntity> userManager, SignInManager<UserEntity> signInManager, IAuthService authService, INotificationService notificationService, IHubContext<NotificationHub> notificationHub) : Controller
 {
+    private readonly INotificationService _notificationService = notificationService;
+    private readonly IHubContext<NotificationHub> _notificationHub = notificationHub;
     private readonly UserManager<UserEntity> _userManager = userManager;
     private readonly SignInManager<UserEntity> _signInManager = signInManager;
     private readonly IAuthService _authService = authService;
@@ -51,10 +55,10 @@ public class AuthController(UserManager<UserEntity> userManager, SignInManager<U
         };
         // Attempt to sign up the user
         var result = await _authService.SignUpAsync(formData);
-        if(result.Succeeded)
+        if (result.Succeeded)
         {
             //Get the newly created user and sign them in automatically
-           var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
                 // By chat gpt- Set the EmailConfirmed field to true, to be able to log in
@@ -107,12 +111,25 @@ public class AuthController(UserManager<UserEntity> userManager, SignInManager<U
             IsPersistent = model.IsPersistent
         };
 
-       
+
         var result = await _authService.SignInAsync(signInFormData);
 
         if (result.Succeeded)
         {
-            if(Url.IsLocalUrl(returnUrl))
+            var user = await _userManager.FindByEmailAsync(model.Email);
+            if (user != null)
+            {
+                var notificationEntity = new NotificationEntity
+                {
+                    Message = $"{user.FirstName} {user.LastName} signed in",
+                    NotificationTypeId = 1 
+                };
+
+                await _notificationService.AddNotificationAsync(notificationEntity, user.Id);
+               
+            }
+
+            if (Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);
 
             return RedirectToAction("Index", "Overview");

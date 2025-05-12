@@ -13,18 +13,32 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 
     public virtual DbSet<ProjectEntity> Projects { get; set; }
     public virtual DbSet<MiniProjectEntity> MiniProjects { get; set; }
-    public virtual DbSet<UserAddressEntity> UserAddreses { get; set; }
+    public virtual DbSet<UserAddressEntity> UserAddresses { get; set; }
 
     public virtual DbSet<Tag> Tags { get; set; }
+    public virtual DbSet<ProjectUserEntity> ProjectUsers { get; set; }
+    public virtual DbSet<ProjectClientEntity> ProjectClients { get; set; }
+    public virtual DbSet<NotificationEntity> Notifications { get; set; }
+    public virtual DbSet<NotificationDismissedEntity> DismissedNotifications { get; set; }
+    public virtual DbSet<NotificationTypeEntity> NotificationTypes { get; set; }
+    public virtual DbSet<NotificationTargetGroupEntity> NotificationTargetGroups { get; set; }
 
-    public DbSet<ProjectUserEntity> ProjectUsers { get; set; }
-    public DbSet<ProjectClientEntity> ProjectClients { get; set; }
+
 
     //Model Creating with help from Chat GPT
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // This line ensures Identity-related configurations (like primary keys) are properly applied
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Ignore<Domain.Models.UserAddress>();
+
+        modelBuilder.Entity<UserAddressEntity>()
+            .HasKey(a => a.UserId);
+
+        modelBuilder.Entity<UserEntity>()
+            .HasOne(u => u.Address)
+            .WithOne(a => a.User)
+            .HasForeignKey<UserAddressEntity>(a => a.UserId);
 
         // Configuring the ProjectUserEntity
         modelBuilder.Entity<ProjectUserEntity>()
@@ -54,7 +68,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
             .WithMany(c => c.ProjectClients)
             .HasForeignKey(pc => pc.ClientId);
 
-     
+        modelBuilder.Entity<NotificationDismissedEntity>()
+                  .HasOne(nd => nd.User)
+                  .WithMany(u => u.DismissedNotifications)
+                  .HasForeignKey(nd => nd.UserId);
+
         //feed the database with values for status - chat gpt
         modelBuilder.Entity<StatusEntity>().HasData(
             new StatusEntity { Id = 1, StatusName = "Not Started" },

@@ -2,7 +2,7 @@ using Business.Services;
 using Data.Contexts;
 using Data.Entities;
 using Data.Repositories;
-using Domain.Models;
+using Presentation.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.OAuth;
@@ -19,6 +19,7 @@ builder.Configuration
        .AddJsonFile("appsettings.Secrets.json", optional: true, reloadOnChange: true);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<AppDbContext>(x => 
     x.UseSqlServer(builder.Configuration.GetConnectionString("AlphaDB"))
@@ -90,6 +91,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMiniProjectService, MiniProjectService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.Configure<CookiePolicyOptions>(options =>
 {
@@ -149,4 +151,5 @@ app.MapControllerRoute(
 app.MapControllers();
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", "/admin/overview"));
 
+app.MapHub<NotificationHub>("/notificationHub");
 app.Run();
