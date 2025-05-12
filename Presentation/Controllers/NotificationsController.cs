@@ -41,7 +41,6 @@ public class NotificationsController(IHubContext<NotificationHub> notificationHu
     public async Task<IActionResult> DismissNotification(string id)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "anonymous";
-        Console.WriteLine($"Attempting to dismiss notification {id} for user ID: {userId}"); // Add this line
 
         if (string.IsNullOrEmpty(userId))
             return Unauthorized(id);
